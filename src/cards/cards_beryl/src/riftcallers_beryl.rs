@@ -15,7 +15,7 @@
 use card_helpers::{costs, history, in_play, show_prompt, text, this};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{
-    CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
+    CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
 };
 use core_ui::design::{self, TimedEffectDataExt};
 use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, IdentityConfig};
@@ -455,6 +455,71 @@ pub fn eria_the_ghost_of_vasilor(meta: CardMetadata) -> CardDefinition {
                 TimedEffectData::new(TimedEffect::MagicCircles1(6))
                     .scale(1.5)
                     .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast01"))
+                    .effect_color(design::YELLOW_900),
+            )
+            .build(),
+    }
+}
+
+pub fn usilyna_master_artificer(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::UsilynaMasterArtificer,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::riftcaller_card(meta, "usilyna"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Identity,
+        abilities: vec![Ability::new(text![
+            "The first time each turn a raid on the",
+            Vault,
+            "begins,",
+            AddPowerCharges(1),
+            "to one of your cards"
+        ])
+        .delegate(in_play::on_raid_started(|g, s, event| {
+            if event.target == RoomId::Vault {
+                custom_state::identity_once_per_turn(g, s, |g, s| {
+                    if g.all_permanents(Side::Riftcaller)
+                        .filter(|c| c.definition().subtypes.contains(&CardSubtype::Charge))
+                        .count()
+                        > 0
+                    {
+                        visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                        prompts::push(g, Side::Riftcaller, s);
+                    }
+                    Ok(())
+                })?;
+            }
+            Ok(())
+        }))
+        .delegate(this::prompt(|g, _, _, _| {
+            show_prompt::with_choices(
+                g.all_permanents(Side::Riftcaller)
+                    .filter(|c| c.definition().subtypes.contains(&CardSubtype::Charge))
+                    .map(|c| {
+                        PromptChoice::new()
+                            .effect(GameEffect::AddPowerCharges(c.id, 1))
+                            .anchor_card(c.id)
+                    })
+                    .collect(),
+            )
+        }))],
+        config: CardConfigBuilder::new()
+            .identity(IdentityConfig {
+                starting_coins: Coins(425),
+                secondary_schools: vec![School::Primal],
+                skills: vec![Skill::Brawn, Skill::Stealth],
+                bio: "In the intricate lanes of Nalorath, Usilyna crafted marvels from dreams \
+                and starlight. Her creations, born from the fusion of magic and mechanism, hum \
+                with the heartbeat of Ayanor, masterpieces of ingenuity and enchantment.",
+            })
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles1(10))
+                    .scale(1.5)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02"))
                     .effect_color(design::YELLOW_900),
             )
             .build(),

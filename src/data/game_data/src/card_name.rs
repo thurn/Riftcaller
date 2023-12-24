@@ -370,6 +370,7 @@ pub enum CardName {
     HasteResonator,
     MaulOfDevastation,
     AngelOfUnity,
+    UsilynaMasterArtificer,
 }
 
 impl CardName {
@@ -393,6 +394,7 @@ impl CardName {
             Self::RiversEye => "River's Eye",
             Self::TheConjurersCircle => "The Conjurer's Circle",
             Self::EriaTheGhostOfVasilor => "Eria, the Ghost of Vasilor",
+            Self::UsilynaMasterArtificer => "Usilyna, Master Artificer",
             _ => "",
         };
 

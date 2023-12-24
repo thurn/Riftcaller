@@ -81,6 +81,13 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::PlayCardForNoMana(..) => "Play".to_string(),
         GameEffect::PreventRaidCardAccess => "Don't Access".to_string(),
         GameEffect::RevealCard(..) => "Reveal".to_string(),
+        GameEffect::AddPowerCharges(_, count) => {
+            if *count == 1 {
+                format!("Add {}", icons::POWER_CHARGE)
+            } else {
+                format!("Add {}{}", count, icons::POWER_CHARGE)
+            }
+        }
     }
 }
 

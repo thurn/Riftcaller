@@ -16,7 +16,7 @@ use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
 use core_data::adventure_primitives::{Coins, Skill};
-use core_data::game_primitives::{CardType, GameObjectId, Rarity, School, Side};
+use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design::{self, TimedEffectDataExt};
 use game_data::card_definition::{
     Ability, ActivatedAbility, CardConfigBuilder, CardDefinition, IdentityConfig,
@@ -338,7 +338,7 @@ pub fn the_conjurers_circle(meta: CardMetadata) -> CardDefinition {
         cost: costs::identity(),
         image: assets::chapter(meta, "ScenerySnowMountain_2"),
         card_type: CardType::Chapter,
-        subtypes: vec![],
+        subtypes: vec![CardSubtype::Charge],
         side: Side::Covenant,
         school: School::Beyond,
         rarity: Rarity::Identity,

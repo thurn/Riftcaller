@@ -15,6 +15,7 @@
 use anyhow::Result;
 use core_data::game_primitives::{GameObjectId, InitiatedBy};
 use game_data::animation_tracker::GameAnimation;
+use game_data::card_state::CardCounter;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
@@ -130,6 +131,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         }
         GameEffect::RevealCard(card_id) => {
             mutations::reveal_card(game, card_id)?;
+        }
+        GameEffect::AddPowerCharges(card_id, count) => {
+            game.card_mut(card_id).add_counters(CardCounter::PowerCharges, count);
         }
     }
 

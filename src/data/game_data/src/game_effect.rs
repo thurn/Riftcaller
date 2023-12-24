@@ -14,7 +14,7 @@
 
 use core_data::game_primitives::{
     AbilityId, ActionCount, CardId, CurseCount, DamageAmount, GameObjectId, InitiatedBy, ManaValue,
-    RoomId, Side,
+    PowerChargeValue, RoomId, Side,
 };
 use serde::{Deserialize, Serialize};
 
@@ -89,6 +89,8 @@ pub enum GameEffect {
     /// Reveal the indicated card. This is an explicit game event which must use
     /// the word "reveal" in card text.
     RevealCard(CardId),
+    /// Add power charge counters to a card
+    AddPowerCharges(CardId, PowerChargeValue),
 }
 
 impl GameEffect {

@@ -248,3 +248,42 @@ fn eria() {
     assert!(!g.client.data.raid_active());
     assert_eq!(g.client.cards.hand().curse_count(), 1);
 }
+
+#[test]
+fn usilyna_planar_sanctuary() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::UsilynaMasterArtificer))
+            .build();
+    let id = g.create_and_play(CardName::PlanarSanctuary);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::AddPowerCharges);
+    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    g.click(Button::EndRaid);
+    g.activate_ability(id, 1);
+    assert_eq!(g.client.cards.hand().real_cards().len(), 1);
+}
+
+#[test]
+fn usilyna_spear_of_conquest() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::UsilynaMasterArtificer))
+            .build();
+    g.create_and_play(CardName::PlanarSanctuary);
+    let spear = g.create_and_play(CardName::SpearOfConquest);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_button(g.user_id(), spear, Button::AddPowerCharges);
+    assert!(g.client.cards.get(spear).arena_icon().contains("1"));
+}
+
+#[test]
+fn usilyna_no_targets() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::UsilynaMasterArtificer))
+            .build();
+    g.create_and_play(CardName::TestAstralWeapon);
+    g.initiate_raid(RoomId::Vault);
+    assert!(!g.has(Button::AddPowerCharges));
+}

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::abilities::encounter_ability_text;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
@@ -167,7 +166,10 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
             ),
             Ability::new_with_delegate(
                 text![
-                    encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
+                    abilities::encounter_ability_text(
+                        text![EncounterBoostCost],
+                        text![EncounterBoostBonus]
+                    ),
                     text![SlowAbility]
                 ],
                 this::is_slow_weapon(|_, _, _, _| true),
@@ -693,7 +695,7 @@ pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
         cost: costs::mana(3),
         image: assets::riftcaller_card(meta, "glimmersong"),
         card_type: CardType::Artifact,
-        subtypes: vec![CardSubtype::Weapon, CardSubtype::Enchanted],
+        subtypes: vec![CardSubtype::Weapon, CardSubtype::Enchanted, CardSubtype::Charge],
         side: Side::Riftcaller,
         school: School::Beyond,
         rarity: Rarity::Rare,
@@ -808,7 +810,10 @@ pub fn spear_of_ultimatum(meta: CardMetadata) -> CardDefinition {
                 }),
             ),
             Ability::new(text![
-                encounter_ability_text(text![EncounterBoostCost], text![EncounterBoostBonus]),
+                abilities::encounter_ability_text(
+                    text![EncounterBoostCost],
+                    text![EncounterBoostBonus]
+                ),
                 text![Breach]
             ]),
         ],
