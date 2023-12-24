@@ -34,6 +34,13 @@ pub fn show(
     }
 }
 
+/// Shows an alert popup for the [Scope] ability.
+pub fn show_alert(game: &mut GameState, scope: Scope) {
+    if game.animations.state == AnimationState::Track {
+        VisualEffects::new().ability_alert(scope.ability_id()).apply(game);
+    }
+}
+
 #[derive(Clone, Debug, Default)]
 pub struct VisualEffects {
     ability_triggered: Option<AbilityId>,

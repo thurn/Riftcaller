@@ -369,6 +369,7 @@ pub enum CardName {
     SealedNecropolis,
     HasteResonator,
     MaulOfDevastation,
+    AngelOfUnity,
 }
 
 impl CardName {

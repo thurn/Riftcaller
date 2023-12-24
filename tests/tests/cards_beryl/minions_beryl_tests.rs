@@ -15,6 +15,7 @@
 use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::CardName;
 use protos::riftcaller::client_action::Action;
+use protos::riftcaller::object_position::Position;
 use protos::riftcaller::DrawCardAction;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
@@ -133,4 +134,63 @@ fn lawhold_cavalier() {
 
     // Can now play permanents again
     assert!(g.play_card_with_result(artifact, g.user_id(), None).is_ok());
+}
+
+#[test]
+fn angel_of_unity_gain_mana() {
+    let cost = 4;
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.create_and_play_with_target(CardName::TestMinionEndRaid, RoomId::Vault);
+    g.create_and_play_with_target(CardName::AngelOfUnity, RoomId::Vault);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::Summon);
+    g.opponent_click(Button::NoWeapon);
+    assert!(!g.client.data.raid_active());
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + 2);
+}
+
+#[test]
+fn angel_of_unity_upgraded() {
+    let cost = 4;
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.create_and_play(CardName::TestScheme1_10);
+    g.create_and_play_upgraded(CardName::AngelOfUnity);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(test_constants::ROOM_ID);
+    g.click(Button::Summon);
+    g.opponent_click(Button::NoWeapon);
+    assert!(!g.client.data.raid_active());
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + 2);
+}
+
+#[test]
+fn angel_of_unity_end_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let id = g.create_and_play_with_target(CardName::AngelOfUnity, RoomId::Vault);
+    g.pass_turn(Side::Covenant);
+    g.create_and_play(CardName::TestAstralWeapon);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::Summon);
+    g.click_on(g.opponent_id(), "Weapon");
+    g.activate_ability(id, 0);
+    assert!(!g.client.data.raid_active());
+    assert!(matches!(g.client.cards.get(id).position(), Position::DiscardPile(..)));
+}
+
+#[test]
+fn angel_of_unity_cannot_activate_when_played() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let id = g.create_and_play_with_target(CardName::AngelOfUnity, RoomId::Vault);
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+}
+
+#[test]
+fn angel_of_unity_cannot_activate_before_room_approach() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let id = g.create_and_play_with_target(CardName::AngelOfUnity, RoomId::Vault);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::Summon);
+    assert!(g.activate_ability_with_result(id, 0).is_err());
 }

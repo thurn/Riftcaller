@@ -15,21 +15,27 @@
 use card_helpers::{
     combat_abilities, costs, delegates, requirements, show_prompt, text, text_helpers, this,
 };
-use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
+use core_data::game_primitives::{
+    CardSubtype, CardType, GameObjectId, ManaValue, Rarity, School, Side,
+};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, Resonance};
+use game_data::card_definition::{
+    Ability, ActivatedAbility, CardConfigBuilder, CardDefinition, Resonance,
+};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardIdsExt, CardPosition};
+use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData};
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
 use game_data::text::TextToken::*;
+use game_data::utils;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{prompts, visual_effects, CardDefinitionExt};
+use rules::{end_raid, mana, prompts, visual_effects, CardDefinitionExt};
 use with_error::fail;
 
 pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
@@ -243,6 +249,67 @@ pub fn lawhold_cavalier(meta: CardMetadata) -> CardDefinition {
             )
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(4))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn angel_of_unity(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::AngelOfUnity,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::covenant_card(meta, "angel_of_unity"),
+        card_type: CardType::Minion,
+        subtypes: vec![CardSubtype::Roombound, CardSubtype::Fey],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            ActivatedAbility::new(
+                costs::sacrifice(),
+                text![
+                    text!["End the raid"],
+                    text!["Use this ability only during a raid on this room"]
+                ],
+            )
+            .delegate(this::can_activate(|g, s, _, flag| {
+                flag.add_constraint(utils::is_true(|| {
+                    Some(g.raid.as_ref()?.target == g.card(s).position().defending_room()?)
+                }))
+            }))
+            .delegate(this::on_activated(|g, s, _| {
+                end_raid::run(g, s.initiated_by(), RaidOutcome::Failure)
+            }))
+            .build(),
+            Ability::new(text_helpers::named_trigger(
+                Combat,
+                text![
+                    text![GainMana(meta.upgrade(1, 2)), "for each minion defending this room"],
+                    text!["End the raid"]
+                ],
+            ))
+            .delegate(this::combat(|g, s, _| {
+                let Some(room_id) = g.card(s).position().defending_room() else {
+                    return Ok(());
+                };
+                visual_effects::show_alert(g, s);
+                mana::gain(
+                    g,
+                    Side::Covenant,
+                    g.defenders_unordered(room_id).count() as ManaValue * s.upgrade(1, 2),
+                );
+                end_raid::run(g, s.initiated_by(), RaidOutcome::Failure)
+            })),
+        ],
+        config: CardConfigBuilder::new()
+            .health(1)
+            .shield(2)
+            .resonance(Resonance::astral())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles2(7))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
             )

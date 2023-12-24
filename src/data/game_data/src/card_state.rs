@@ -180,6 +180,16 @@ impl CardPosition {
     pub fn is_banished(&self) -> bool {
         self.kind() == CardPositionKind::Banished
     }
+
+    /// Returns the [RoomId] this card is currently a defender of, if any
+    pub fn defending_room(&self) -> Option<RoomId> {
+        match self {
+            Self::Room(_, room_id, location) if *location == RoomLocation::Defender => {
+                Some(*room_id)
+            }
+            _ => None,
+        }
+    }
 }
 
 /// A counter which can be placed on a card to track some kind of numeric state
