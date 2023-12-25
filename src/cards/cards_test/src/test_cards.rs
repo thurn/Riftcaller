@@ -390,7 +390,7 @@ pub fn activated_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
         cost: cost(test_constants::ARTIFACT_COST),
         card_type: CardType::Evocation,
         abilities: vec![
-            abilities::store_mana_on_play::<{ test_constants::MANA_STORED }>(),
+            abilities::store_mana_on_play_discard_on_empty::<{ test_constants::MANA_STORED }>(),
             abilities::activated_take_mana::<{ test_constants::MANA_TAKEN }>(actions(1)),
         ],
         config: CardConfig::default(),

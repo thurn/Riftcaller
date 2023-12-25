@@ -603,6 +603,7 @@ pub enum CardSubtype {
     Dictate,
     Decree,
     Fabrication,
+    Arcane,
 
     // Ally subtypes
     Warrior,

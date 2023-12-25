@@ -14,6 +14,7 @@
 
 use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::CardName;
+use protos::riftcaller::object_position::Position;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
@@ -634,4 +635,43 @@ fn lightcallers_command_upgraded() {
     g.activate_ability(id, 0);
     g.initiate_raid(RoomId::Vault);
     assert!(g.has(Button::EndRaid));
+}
+
+#[test]
+fn potentiality_storm() {
+    let cost = 0;
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    let id = g.create_and_play(CardName::PotentialityStorm);
+    assert!(g.client.cards.get(id).arena_icon().contains("3"));
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
+    assert!(g.client.cards.get(id).arena_icon().contains("2"));
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - cost + 1);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
+    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
+    assert!(matches!(g.client.cards.get(id).position(), Position::DiscardPile(..)));
+    assert_eq!(g.client.cards.hand().real_cards().len(), 1);
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.pass_turn(Side::Riftcaller);
+    g.play_card(id, g.user_id(), None);
+    assert!(g.client.cards.get(id).arena_icon().contains("3"));
+}
+
+#[test]
+fn potentiality_storm_cannot_play_without_raids() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    let id = g.create_and_play(CardName::PotentialityStorm);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
+    assert!(g.play_card_with_result(id, g.user_id(), None).is_err());
 }

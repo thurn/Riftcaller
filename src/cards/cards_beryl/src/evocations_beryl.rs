@@ -16,7 +16,8 @@ use std::iter;
 
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{
-    costs, delegates, in_play, raids, requirements, show_prompt, text, text_helpers, this,
+    abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
+    text_helpers, this,
 };
 use core_data::game_primitives::{
     CardId, CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
@@ -33,6 +34,7 @@ use game_data::card_state::{BanishedByCard, CardCounter, CardPosition};
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
+use game_data::history_data::HistoryEvent;
 use game_data::prompt_data::{
     FromZone, PromptChoice, PromptChoiceLabel, PromptData, UnplayedAction,
 };
@@ -40,9 +42,11 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use raid_state::{custom_access, InitiateRaidOptions};
-use rules::mutations::RealizeCards;
-use rules::visual_effects::VisualEffects;
-use rules::{curses, destroy, draw_cards, flags, mana, mutations, prompts, CardDefinitionExt};
+use rules::mutations::{OnZeroStored, RealizeCards};
+use rules::visual_effects::{ShowAlert, VisualEffects};
+use rules::{
+    curses, destroy, draw_cards, flags, mana, mutations, prompts, visual_effects, CardDefinitionExt,
+};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -583,5 +587,66 @@ pub fn lightcallers_command(meta: CardMetadata) -> CardDefinition {
         ))
         .build()],
         config: CardConfig::default(),
+    }
+}
+
+pub fn potentiality_storm(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::PotentialityStorm,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::riftcaller_card(meta, "potentiality_storm"),
+        card_type: CardType::Evocation,
+        subtypes: vec![CardSubtype::Arcane],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            abilities::store_mana_on_play::<3>(),
+            Ability::new(text_helpers::named_trigger(
+                Dawn,
+                text![text![TakeMana(1)], text!["Sacrifice and draw a card when empty"]],
+            ))
+            .delegate(in_play::at_dawn(|g, s, _| {
+                visual_effects::show(g, s, s.card_id(), ShowAlert::No);
+                mutations::take_stored_mana(g, s.card_id(), 1, OnZeroStored::Ignore)?;
+                if g.card(s.card_id()).counters(CardCounter::StoredMana) == 0 {
+                    draw_cards::run(g, Side::Riftcaller, 1, s.initiated_by())?;
+                    mutations::sacrifice_card(g, s.card_id())?;
+                }
+                Ok(())
+            })),
+            Ability::new(text_helpers::named_trigger(
+                Dusk,
+                text![
+                    "If you made",
+                    meta.upgrade(3, 2),
+                    "successful raids last turn, you may play this card from your discard pile"
+                ],
+            ))
+            .delegate(this::at_dusk(|g, s, _| {
+                if g.card(s).position().in_discard_pile()
+                    && history::last_turn(g)
+                        .filter(|event| matches!(event, HistoryEvent::RaidSuccess(..)))
+                        .count()
+                        >= s.upgrade(3, 2)
+                {
+                    visual_effects::show_alert(g, s);
+                    prompts::push(g, Side::Riftcaller, s);
+                }
+                Ok(())
+            }))
+            .delegate(this::prompt(|_, s, _, _| {
+                PlayCardBrowserBuilder::new(s, FromZone::Discard, vec![s.card_id()]).build()
+            })),
+        ],
+        config: CardConfigBuilder::new()
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(12))
+                    .scale(1.5)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagicEpic_Cast02"))
+                    .effect_color(design::BLUE_500),
+            )
+            .build(),
     }
 }

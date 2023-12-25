@@ -28,7 +28,6 @@ use game_data::text::TextToken::*;
 use rules::mutations::OnZeroStored;
 use rules::{curses, mana, mutations, prompts};
 
-use crate::text_helpers::named_trigger;
 use crate::text_macro::text;
 use crate::*;
 
@@ -74,12 +73,23 @@ pub fn gain_mana_on_play<const N: ManaValue>() -> Ability {
     )
 }
 
+/// Store `N` mana in this card when played.
+pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
+    Ability::new_with_delegate(
+        text_helpers::named_trigger(Play, text![StoreMana(N)]),
+        Delegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
+            g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);
+            Ok(())
+        })),
+    )
+}
+
 /// Store `N` mana in this card when played. Move it to the discard pile when
 /// the stored mana is depleted.
-pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
+pub fn store_mana_on_play_discard_on_empty<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
-        text: named_trigger(Play, text![StoreMana(N)]),
+        text: text_helpers::named_trigger(Play, text![StoreMana(N)]),
         delegates: vec![
             Delegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
                 g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);

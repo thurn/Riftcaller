@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{AbilityId, AttackValue, CardId, HasAbilityId, HasCardId};
+use core_data::game_primitives::{
+    AbilityId, AttackValue, CardId, HasAbilityId, HasCardId, TurnNumber,
+};
 use game_data::card_definition::Cost;
 use game_data::delegate_data::{
     AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, Delegate, DiscardedCard,
@@ -22,7 +24,7 @@ use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{AbilityPromptSource, GamePrompt};
 
-use crate::delegates;
+use crate::{delegates, requirements};
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.
@@ -67,6 +69,16 @@ pub fn can_activate(transformation: TransformationFn<CanActivateAbility, Flag>) 
 /// A minion combat delegate
 pub fn combat(mutation: MutationFn<CardId>) -> Delegate {
     Delegate::MinionCombatAbility(EventDelegate { requirement: card, mutation })
+}
+
+/// A delegate which triggers at dawn
+pub fn at_dawn(mutation: MutationFn<TurnNumber>) -> Delegate {
+    Delegate::Dawn(EventDelegate { requirement: requirements::always, mutation })
+}
+
+/// A delegate which triggers at dusk
+pub fn at_dusk(mutation: MutationFn<TurnNumber>) -> Delegate {
+    Delegate::Dusk(EventDelegate { requirement: requirements::always, mutation })
 }
 
 /// A delegate which triggers when this card is moved from a deck *or* hand to a

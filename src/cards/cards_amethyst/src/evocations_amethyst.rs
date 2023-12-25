@@ -109,7 +109,7 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::store_mana_on_play::<12>(),
+            abilities::store_mana_on_play_discard_on_empty::<12>(),
             Ability {
                 ability_type: AbilityType::Activated {
                     cost: actions(1),
@@ -149,7 +149,7 @@ pub fn magical_resonator(_: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::store_mana_on_play::<9>(),
+            abilities::store_mana_on_play_discard_on_empty::<9>(),
             Ability {
                 ability_type: AbilityType::Activated {
                     cost: Cost { mana: None, actions: 1, custom_cost: once_per_turn() },

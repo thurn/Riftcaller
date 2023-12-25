@@ -371,6 +371,7 @@ pub enum CardName {
     MaulOfDevastation,
     AngelOfUnity,
     UsilynaMasterArtificer,
+    PotentialityStorm,
 }
 
 impl CardName {

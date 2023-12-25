@@ -145,7 +145,7 @@ fn token_description(token: TextTokenKind) -> Option<CardInfoElement> {
             "{}: A power charge. Stored while in play to spend on abilities.", 
             icons::POWER_CHARGE
         )),
-        TextTokenKind::Play => entry("Play", "Triggers when this card enters the arena"),
+        TextTokenKind::Play => entry("Play", "Triggers when this card is played"),
         TextTokenKind::Dawn => entry("Dawn", "Triggers at the start of the Riftcaller's turn"),
         TextTokenKind::Dusk => entry("Dusk", "Triggers at the start of the Covenant's turn"),
         TextTokenKind::Score => entry("Score", "Triggers when the Covenant scores this card"),

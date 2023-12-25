@@ -14,7 +14,7 @@
 
 use core_data::game_primitives::{CardId, HasAbilityId, RoomId, Side};
 use game_data::delegate_data::{AccessEvent, RaidEvent, UsedWeapon};
-use game_data::game_state::GameState;
+use game_data::game_state::{GameState, TurnData};
 use game_data::history_data::{AbilityActivation, HistoryCounters, HistoryEvent};
 
 /// Returns the record of game events which happened on the current
@@ -22,6 +22,20 @@ use game_data::history_data::{AbilityActivation, HistoryCounters, HistoryEvent};
 /// processed.
 pub fn current_turn(game: &GameState) -> impl Iterator<Item = &HistoryEvent> + '_ {
     game.history.for_turn(game.info.turn)
+}
+
+/// Returns the record of game events which happened in the opponent's turn
+/// immediately prior to the current turn.
+///
+/// Returns the empty iterator if invoked on the Covenant player's first turn.
+pub fn last_turn(game: &GameState) -> impl Iterator<Item = &HistoryEvent> + '_ {
+    let current = game.info.turn;
+    game.history.for_turn(match current.side {
+        Side::Covenant => {
+            TurnData { side: Side::Riftcaller, turn_number: current.turn_number.saturating_sub(1) }
+        }
+        Side::Riftcaller => TurnData { side: Side::Covenant, turn_number: current.turn_number },
+    })
 }
 
 /// Returns the [HistoryCounters] reference for the current game turn.

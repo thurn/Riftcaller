@@ -84,7 +84,7 @@ pub fn lodestone(_: CardMetadata) -> CardDefinition {
         school: School::Neutral,
         rarity: Rarity::Common,
         abilities: vec![
-            abilities::store_mana_on_play::<12>(),
+            abilities::store_mana_on_play_discard_on_empty::<12>(),
             abilities::activated_take_mana::<2>(actions(1)),
         ],
         config: CardConfig::default(),

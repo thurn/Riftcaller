@@ -311,10 +311,13 @@ pub fn take_stored_mana(
     mana::gain(game, card_id.side, taken);
     dispatch::invoke_event(game, StoredManaTakenEvent(&card_id))?;
 
-    if on_zero_stored == OnZeroStored::Sacrifice
-        && game.card(card_id).counters(CardCounter::StoredMana) == 0
-    {
-        sacrifice_card(game, card_id)?;
+    if game.card(card_id).counters(CardCounter::StoredMana) == 0 {
+        match on_zero_stored {
+            OnZeroStored::Sacrifice => {
+                sacrifice_card(game, card_id)?;
+            }
+            OnZeroStored::Ignore => {}
+        }
     }
 
     Ok(taken)
