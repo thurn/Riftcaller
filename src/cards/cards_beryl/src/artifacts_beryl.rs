@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use card_helpers::{
-    abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
+    abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
+    text_helpers, this,
 };
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
@@ -41,7 +42,8 @@ use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::visual_effects::{ShowAlert, VisualEffects};
 use rules::{
-    end_raid, flags, mana, mutations, prompts, queries, visual_effects, CardDefinitionExt,
+    draw_cards, end_raid, flags, mana, mutations, prompts, queries, visual_effects,
+    CardDefinitionExt,
 };
 use with_error::WithError;
 
@@ -876,6 +878,56 @@ pub fn maul_of_devastation(meta: CardMetadata) -> CardDefinition {
                     .scale(1.5)
                     .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Cast03"))
                     .effect_color(design::BLUE_500),
+            )
+            .build(),
+    }
+}
+
+pub fn amaras_decree(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::AmarasDecree,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(2),
+        image: assets::riftcaller_card(meta, "amaras_decree"),
+        card_type: CardType::Artifact,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: abilities::some(vec![
+            meta.is_upgraded.then(|| {
+                Ability::new(text_helpers::named_trigger(Play, text!["Draw a card"])).delegate(
+                    this::on_played(|g, s, _| {
+                        draw_cards::run(g, Side::Riftcaller, 1, s.initiated_by())
+                    }),
+                )
+            }),
+            Some(
+                Ability::new(text!["The Covenant cannot score schemes on the turn they’re played"])
+                    .delegate(in_play::can_covenant_score_scheme(|g, s, &card_id, flag| {
+                        flag.add_constraint(
+                            history::cards_played_this_turn(g).all(|id| id != card_id),
+                            s,
+                        )
+                    }))
+                    .delegate(this::on_leaves_play(|g, _, _| {
+                        mutations::check_for_covenant_scoring_schemes(g)
+                    }))
+                    .delegate(in_play::at_dusk(|g, _, _| {
+                        mutations::check_for_covenant_scoring_schemes(g)
+                    })),
+            ),
+        ]),
+        config: CardConfigBuilder::new()
+            .note(
+                "Schemes which meet their progress requirement are scored on the subsequent \
+                turn at Dusk",
+            )
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(13))
+                    .scale(1.5)
+                    .effect_color(design::YELLOW_900)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Debuff_P1")),
             )
             .build(),
     }

@@ -369,10 +369,25 @@ pub fn can_score_accessed_card(
 /// the game by scoring points.
 ///
 /// Note that if you prevent a player from winning via points, you are
-/// responsible for checking for score victory if that effect ends, e.g. by
-/// invoking `mutations::check_for_score_victory()`
+/// responsible for checking for score victory if that effect ends by invoking
+/// `mutations::check_for_score_victory()`
 pub fn can_win_by_scoring_points(transformation: TransformationFn<Side, AbilityFlag>) -> Delegate {
     Delegate::CanWinGameViaPoints(QueryDelegate {
+        requirement: requirements::face_up_in_play,
+        transformation,
+    })
+}
+
+/// A delegate which intercepts queries for whether the Covenant player can
+/// currently score the given card
+///
+/// Note that if you prevent a scheme from being scored, you are responsible
+/// for checking for schemes to score when that effect ends by invoking
+/// `mutations::check_for_scoring_schemes()`.
+pub fn can_covenant_score_scheme(
+    transformation: TransformationFn<CardId, AbilityFlag>,
+) -> Delegate {
+    Delegate::CanCovenantScoreScheme(QueryDelegate {
         requirement: requirements::face_up_in_play,
         transformation,
     })

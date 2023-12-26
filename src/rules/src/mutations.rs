@@ -29,7 +29,7 @@ use core_data::game_primitives::{
 };
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_name::CardVariant;
-use game_data::card_state::{CardCounter, CardState};
+use game_data::card_state::{CardCounter, CardIdsExt, CardState};
 #[allow(unused)] // Used in rustdocs
 use game_data::card_state::{CardData, CardPosition, CardPositionKind};
 use game_data::delegate_data::{
@@ -467,19 +467,50 @@ pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32)
     let card = game.card(card_id);
     if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {
         if card.counters(CardCounter::Progress) >= scheme_points.progress_requirement {
-            turn_face_up(game, card_id);
-            move_card(game, card_id, CardPosition::Scoring)?;
-            game.add_animation(|| GameAnimation::ScoreCard(Side::Covenant, card_id));
-            dispatch::invoke_event(game, CovenantScoreCardEvent(&card_id))?;
-            dispatch::invoke_event(
-                game,
-                ScoreCardEvent(&ScoreCard { player: Side::Covenant, card_id }),
-            )?;
-
-            move_card(game, card_id, CardPosition::Scored(Side::Covenant))?;
+            covenant_score_scheme(game, card_id)?;
         }
     }
 
+    Ok(())
+}
+
+/// Manually check all cards in play occupying rooms to see if any of them are
+/// eligible to be scored by the Covenant player.
+///
+/// This is *only* required if the normal process of automatically scoring cards
+/// when they meet their progress requirement has been prevented by some game
+/// effect. In that situation this function is used to search for schemes to
+/// score once the prevention effect ends.
+///
+/// Note: This function still checks the value of the `CanCovenantScoreScheme`
+/// query, so an effect modifying the rules around scoring schemes should ensure
+/// this query properly returns true before invoking this function.
+pub fn check_for_covenant_scoring_schemes(game: &mut GameState) -> Result<()> {
+    for card_id in &game.occupants_in_all_rooms().card_ids() {
+        let Some(points) = game.card(*card_id).definition().config.stats.scheme_points else {
+            continue;
+        };
+
+        if game.card(*card_id).counters(CardCounter::Progress) >= points.progress_requirement {
+            covenant_score_scheme(game, *card_id)?;
+        }
+    }
+    Ok(())
+}
+
+/// Score the [CardId] scheme card as the Covenant player
+fn covenant_score_scheme(game: &mut GameState, card_id: CardId) -> Result<()> {
+    if query_flag(game, |g| flags::can_covenant_score_scheme(g, card_id)) {
+        turn_face_up(game, card_id);
+        move_card(game, card_id, CardPosition::Scoring)?;
+        game.add_animation(|| GameAnimation::ScoreCard(Side::Covenant, card_id));
+        dispatch::invoke_event(game, CovenantScoreCardEvent(&card_id))?;
+        dispatch::invoke_event(
+            game,
+            ScoreCardEvent(&ScoreCard { player: Side::Covenant, card_id }),
+        )?;
+        move_card(game, card_id, CardPosition::Scored(Side::Covenant))?;
+    }
     Ok(())
 }
 

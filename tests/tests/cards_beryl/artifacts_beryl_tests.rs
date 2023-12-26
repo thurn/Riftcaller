@@ -698,3 +698,30 @@ fn maul_of_devastation_after_access() {
     );
     g.click(Button::EndRaid);
 }
+
+#[test]
+fn amaras_decree() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.pass_turn(Side::Covenant);
+    g.create_and_play(CardName::AmarasDecree);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.me().score(), 0);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
+    assert_eq!(g.me().score(), 10);
+}
+
+#[test]
+fn amaras_decree_destroyed() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.pass_turn(Side::Covenant);
+    g.create_and_play(CardName::AmarasDecree);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestScheme1_10);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.me().score(), 0);
+    g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
+    assert_eq!(g.me().score(), 10);
+}

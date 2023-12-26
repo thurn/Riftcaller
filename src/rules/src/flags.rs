@@ -22,10 +22,10 @@ use core_data::game_primitives::{
 use game_data::card_definition::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    CanActivateAbility, CanActivateAbilityQuery, CanEndRaidAccessPhaseQuery, CanEvadeMinionQuery,
-    CanInitiateRaidQuery, CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery,
-    CanSummonQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
-    CanWinGameViaPointsQuery,
+    CanActivateAbility, CanActivateAbilityQuery, CanCovenantScoreSchemeQuery,
+    CanEndRaidAccessPhaseQuery, CanEvadeMinionQuery, CanInitiateRaidQuery, CanPlayCardQuery,
+    CanProgressCardQuery, CanProgressRoomQuery, CanSummonQuery, CanTakeDrawCardActionQuery,
+    CanTakeGainManaActionQuery, CanUseNoWeaponQuery, CanWinGameViaPointsQuery,
 };
 use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_actions::CardTarget;
@@ -561,4 +561,9 @@ pub fn card_selector_state_is_valid(prompt: &CardSelectorPrompt) -> bool {
 /// Can the [Side] player currently win the game by scoring points?
 pub fn can_win_game_via_points(game: &GameState, side: Side) -> AbilityFlag {
     dispatch::perform_query(game, CanWinGameViaPointsQuery(&side), AbilityFlag::new(true))
+}
+
+/// Can the Covenant player currently score the [CardId] scheme?
+pub fn can_covenant_score_scheme(game: &GameState, card_id: CardId) -> AbilityFlag {
+    dispatch::perform_query(game, CanCovenantScoreSchemeQuery(&card_id), AbilityFlag::new(true))
 }
