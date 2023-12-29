@@ -29,7 +29,8 @@ use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, FromZone, PromptChoice, PromptChoiceLabel,
-    PromptContext, PromptData,
+    PromptContext, PromptData, RoomSelectorPrompt, RoomSelectorPromptContext,
+    RoomSelectorPromptEffect,
 };
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
@@ -400,6 +401,72 @@ pub fn the_conjurers_circle(meta: CardMetadata) -> CardDefinition {
                 skills: vec![Skill::Stealth, Skill::Persuasion],
                 bio: "In the silent snowfall of Frostreach, the Conjurer’s Circle summons \
                 moonlit spirits. Their magic conjures ephemeral wonders, disappearing at dawn.",
+            })
+            .build(),
+    }
+}
+
+pub fn the_honorbound(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TheHonorbound,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::chapter(meta, "SceneryLibrary_inside_1"),
+        card_type: CardType::Chapter,
+        subtypes: vec![],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Identity,
+        abilities: vec![Ability::new(text_helpers::named_trigger(
+            Dusk,
+            text!["You may remove a", Curse, "from the Riftcaller to progress a card"],
+        ))
+        .delegate(in_play::at_dusk(|g, s, _| {
+            if curses::is_riftcaller_cursed(g)
+                && g.occupants_in_all_rooms().any(|card| flags::can_progress_card(g, card.id))
+            {
+                visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                prompts::push(g, Side::Covenant, s);
+            }
+            Ok(())
+        }))
+        .delegate(this::prompt(|g, s, _, _| {
+            if !curses::is_riftcaller_cursed(g) {
+                return None;
+            }
+
+            show_prompt::room_selector(RoomSelectorPrompt {
+                initiated_by: s.ability_id(),
+                effect: RoomSelectorPromptEffect::RemoveCurseToProgressRoom,
+                valid_rooms: g
+                    .occupants_in_all_rooms()
+                    .filter_map(|card| {
+                        if flags::can_progress_card(g, card.id) {
+                            card.position().occupying_room()
+                        } else {
+                            None
+                        }
+                    })
+                    .collect(),
+                context: Some(RoomSelectorPromptContext::RemoveCurseToProgressRoom),
+                can_skip: true,
+            })
+        }))],
+        config: CardConfigBuilder::new()
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(14))
+                    .scale(1.5)
+                    .effect_color(design::YELLOW_900)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagic2_LightImpact03")),
+            )
+            .identity(IdentityConfig {
+                starting_coins: Coins(475),
+                secondary_schools: vec![School::Primal],
+                skills: vec![Skill::Brawn, Skill::Stealth],
+                bio: "Forged in the fiery crucibles of Khazpar, The Honorbound pledge fealty \
+                to codes older than the kingdom itself. In their molten chambers, they shape \
+                destinies with unbreakable oaths and iron-willed resolve, their legacy written \
+                in flame.",
             })
             .build(),
     }

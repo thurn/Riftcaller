@@ -659,6 +659,7 @@ pub fn liminal_transposition(meta: CardMetadata) -> CardDefinition {
                         })
                         .collect(),
                     context: Some(RoomSelectorPromptContext::Access),
+                    can_skip: false,
                 })
             }))
             .delegate(delegates::can_score_accessed_card(

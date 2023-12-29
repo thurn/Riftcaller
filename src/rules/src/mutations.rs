@@ -441,7 +441,13 @@ pub fn realize_top_of_deck(
 /// Covenant score zone.
 ///
 /// Does not spend mana/actions etc.
-pub fn progress_room(game: &mut GameState, room_id: RoomId) -> Result<()> {
+pub fn progress_room(
+    game: &mut GameState,
+    room_id: RoomId,
+    initiated_by: InitiatedBy,
+) -> Result<()> {
+    game.add_animation(|| GameAnimation::ProgressRoom(room_id, initiated_by));
+
     let can_progress = game
         .occupants(room_id)
         .map(|c| c.id)

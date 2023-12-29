@@ -90,6 +90,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::chapters_beryl::the_starseers);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::rivers_eye);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::the_conjurers_circle);
+    DEFINITIONS.insert(cards_beryl::chapters_beryl::the_honorbound);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::empyreal_chorus);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::starfield_omen);
     DEFINITIONS.insert(cards_beryl::evocations_beryl::visitation);

@@ -263,12 +263,14 @@ pub struct ButtonPrompt {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum RoomSelectorPromptContext {
     Access,
+    RemoveCurseToProgressRoom,
 }
 
 /// Mutation to apply to the room chosen via a [RoomSelectorPrompt].
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub enum RoomSelectorPromptEffect {
     ChangeRaidTarget,
+    RemoveCurseToProgressRoom,
 }
 
 /// Shows a prompt to pick a target room.
@@ -278,6 +280,9 @@ pub struct RoomSelectorPrompt {
     pub effect: RoomSelectorPromptEffect,
     pub valid_rooms: Vec<RoomId>,
     pub context: Option<RoomSelectorPromptContext>,
+
+    /// Can the player skip picking a room?
+    pub can_skip: bool,
 }
 
 /// Possible types of prompt_ui which might be displayed to a user during the
@@ -308,4 +313,6 @@ pub enum PromptAction {
     SkipPlayingCard,
     /// Select a room via a [RoomSelectorPrompt].
     RoomPromptSelect(RoomId),
+    /// Do not select a room for a [RoomSelectorPrompt].
+    SkipSelectingRoom,
 }

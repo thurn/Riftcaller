@@ -184,9 +184,15 @@ impl CardPosition {
     /// Returns the [RoomId] this card is currently a defender of, if any
     pub fn defending_room(&self) -> Option<RoomId> {
         match self {
-            Self::Room(_, room_id, location) if *location == RoomLocation::Defender => {
-                Some(*room_id)
-            }
+            Self::Room(_, room_id, RoomLocation::Defender) => Some(*room_id),
+            _ => None,
+        }
+    }
+
+    /// Returns the [RoomId] this card is currently an occupant of, if any
+    pub fn occupying_room(&self) -> Option<RoomId> {
+        match self {
+            Self::Room(_, room_id, RoomLocation::Occupant) => Some(*room_id),
             _ => None,
         }
     }

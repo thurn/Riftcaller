@@ -13,13 +13,16 @@
 // limitations under the License.
 
 use core_ui::prelude::*;
-use game_data::prompt_data::{RoomSelectorPrompt, RoomSelectorPromptContext};
+use game_data::game_actions::GameAction;
+use game_data::prompt_data::{PromptAction, RoomSelectorPrompt, RoomSelectorPromptContext};
 use prompt_ui::game_instructions::GameInstructions;
+use prompt_ui::prompt_container::PromptContainer;
+use prompt_ui::response_button::ResponseButton;
 use protos::riftcaller::InterfaceMainControls;
 
 pub fn controls(prompt: &RoomSelectorPrompt) -> Option<InterfaceMainControls> {
     Some(InterfaceMainControls {
-        node: None,
+        node: if prompt.can_skip { buttons() } else { None },
         overlay: instructions(prompt.context).and_then(|text| {
             GameInstructions::new(text).metatext("<i>(Drag card to target room)</i>").build()
         }),
@@ -28,8 +31,20 @@ pub fn controls(prompt: &RoomSelectorPrompt) -> Option<InterfaceMainControls> {
 }
 
 fn instructions(context: Option<RoomSelectorPromptContext>) -> Option<String> {
-    match context {
-        Some(RoomSelectorPromptContext::Access) => Some("Select a room to access".to_string()),
-        _ => None,
-    }
+    Some(match context? {
+        RoomSelectorPromptContext::Access => "Select a room to access".to_string(),
+        RoomSelectorPromptContext::RemoveCurseToProgressRoom => {
+            "Remove curse to progress a room?".to_string()
+        }
+    })
+}
+
+fn buttons() -> Option<Node> {
+    PromptContainer::new()
+        .child(
+            ResponseButton::new("Skip")
+                .primary(false)
+                .action(GameAction::PromptAction(PromptAction::SkipSelectingRoom)),
+        )
+        .build()
 }

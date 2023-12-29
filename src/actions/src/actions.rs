@@ -19,7 +19,7 @@
 use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
-use game_data::animation_tracker::{AnimationState, GameAnimation};
+use game_data::animation_tracker::AnimationState;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     CardSelectorSubmittedEvent, DrawCardActionEvent, GainManaActionEvent, ProgressCardActionEvent,
@@ -216,8 +216,7 @@ fn progress_card_action(game: &mut GameState, user_side: Side, room_id: RoomId) 
     game.current_history_counters(user_side).progress_card_actions += 1;
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, InitiatedBy::GameAction, ManaPurpose::ProgressRoom(room_id), 1)?;
-    game.add_animation(|| GameAnimation::ProgressRoom(room_id, InitiatedBy::GameAction));
-    mutations::progress_room(game, room_id)?;
+    mutations::progress_room(game, room_id, InitiatedBy::GameAction)?;
     dispatch::invoke_event(game, ProgressCardActionEvent(&room_id))?;
     Ok(())
 }
@@ -486,7 +485,18 @@ fn handle_prompt_action(game: &mut GameState, user_side: Side, action: PromptAct
         }
         (GamePrompt::RoomSelector(room_prompt), PromptAction::RoomPromptSelect(room_id)) => {
             verify!(room_prompt.valid_rooms.contains(&room_id), "Invalid room selected");
-            handle_room_selector_submit(game, user_side, room_prompt.effect, room_id)?;
+            handle_room_selector_submit(
+                game,
+                user_side,
+                room_prompt.effect,
+                room_prompt.initiated_by,
+                room_id,
+            )?;
+        }
+        (GamePrompt::RoomSelector(room_prompt), PromptAction::SkipSelectingRoom) => {
+            verify!(room_prompt.can_skip, "Cannot skip selection");
+            prompts::pop(game, user_side);
+            check_start_next_turn(game)?;
         }
         _ => fail!("Mismatch between active prompt {prompt:?} and action {action:?}"),
     }
@@ -551,11 +561,16 @@ fn handle_room_selector_submit(
     game: &mut GameState,
     user_side: Side,
     effect: RoomSelectorPromptEffect,
+    initiated_by: AbilityId,
     room_id: RoomId,
 ) -> Result<()> {
     match effect {
         RoomSelectorPromptEffect::ChangeRaidTarget => {
             mutations::apply_raid_jump(game, RaidJumpRequest::ChangeTarget(room_id));
+        }
+        RoomSelectorPromptEffect::RemoveCurseToProgressRoom => {
+            curses::remove_curses(game, 1)?;
+            mutations::progress_room(game, room_id, InitiatedBy::Ability(initiated_by))?;
         }
     }
 

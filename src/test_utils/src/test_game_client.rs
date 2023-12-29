@@ -628,6 +628,10 @@ impl ClientCard {
         self.arena_icon.clone().expect("arena_icon")
     }
 
+    pub fn arena_icon_option(&self) -> Option<String> {
+        self.arena_icon.clone()
+    }
+
     pub fn top_left_icon(&self) -> String {
         self.top_left_icon.clone().expect("top_left_icon")
     }

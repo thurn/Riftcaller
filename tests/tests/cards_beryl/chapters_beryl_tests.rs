@@ -228,3 +228,44 @@ fn the_conjurers_circle_does_not_trigger_twice() {
         .arena_icon()
         .contains('1'));
 }
+
+#[test]
+fn the_honorbound() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::TheHonorbound)).build();
+    let scheme = g.create_and_play(CardName::TestScheme3_10);
+    g.create_and_play(CardName::TestRitualGiveCurse);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::TheHonorbound);
+    g.play_card(room_selector, g.user_id(), Some(test_constants::ROOM_ID));
+    assert!(g.client.cards.get(scheme).arena_icon().contains("1"));
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 0)
+}
+
+#[test]
+fn the_honorbound_skip() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::TheHonorbound)).build();
+    let scheme = g.create_and_play(CardName::TestScheme3_10);
+    g.create_and_play(CardName::TestRitualGiveCurse);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
+    g.click(Button::SkipSelectingRoom);
+    assert!(g.client.cards.get(scheme).arena_icon_option().is_none());
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 1)
+}
+
+#[test]
+fn the_honorbound_score() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Covenant).identity(CardName::TheHonorbound)).build();
+    g.create_and_play(CardName::TestScheme1_10);
+    g.create_and_play(CardName::TestRitualGiveCurse);
+    g.pass_turn(Side::Covenant);
+    g.pass_turn(Side::Riftcaller);
+    let room_selector = g.client.cards.hand().find_card_id(CardName::TheHonorbound);
+    g.play_card(room_selector, g.user_id(), Some(test_constants::ROOM_ID));
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 0);
+    assert_eq!(g.me().score(), 10);
+}

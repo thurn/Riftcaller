@@ -372,8 +372,8 @@ pub fn can_take_progress_action(game: &GameState, side: Side, room_id: RoomId) -
     dispatch::perform_query(game, CanProgressRoomQuery(&room_id), Flag::new(can_progress)).into()
 }
 
-/// Whether the indicated card can be progressed up when the 'progress' action
-/// is taken for its room.
+/// Whether the indicated card can be progressed when the 'progress' action
+/// is taken for its room or via a card ability.
 pub fn can_progress_card(game: &GameState, card_id: CardId) -> bool {
     let can_progress = game.card(card_id).definition().card_type == CardType::Scheme;
     dispatch::perform_query(game, CanProgressCardQuery(&card_id), Flag::new(can_progress)).into()

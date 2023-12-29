@@ -373,6 +373,7 @@ pub enum CardName {
     UsilynaMasterArtificer,
     PotentialityStorm,
     AmarasDecree,
+    TheHonorbound,
 }
 
 impl CardName {
