@@ -175,6 +175,24 @@ pub struct TurnData {
     pub turn_number: TurnNumber,
 }
 
+impl TurnData {
+    /// Returns the [TurnData] for the opponent's turn immediately prior to this
+    /// one. Returns None if this represents the Covenant's first turn of the
+    /// game.
+    pub fn previous(&self) -> Option<TurnData> {
+        match self.side {
+            Side::Covenant => {
+                if self.turn_number == 0 {
+                    None
+                } else {
+                    Some(Self { side: Side::Riftcaller, turn_number: self.turn_number - 1 })
+                }
+            }
+            Side::Riftcaller => Some(Self { side: Side::Covenant, turn_number: self.turn_number }),
+        }
+    }
+}
+
 /// High level status of a game
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub enum GamePhase {

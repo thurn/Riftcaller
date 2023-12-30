@@ -612,7 +612,7 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
             abilities::encounter_boost(),
         ],
         config: CardConfigBuilder::new()
-            .custom_targeting(requirements::any_room_with_defenders())
+            .custom_targeting(requirements::defended_room())
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(meta.upgrade(1, 2)))
             .resonance(Resonance::infernal())

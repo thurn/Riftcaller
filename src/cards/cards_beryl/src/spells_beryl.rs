@@ -517,7 +517,7 @@ pub fn chains_of_binding(meta: CardMetadata) -> CardDefinition {
             )),
         ],
         config: CardConfigBuilder::new()
-            .custom_targeting(requirements::any_room_with_defenders_or_occupants())
+            .custom_targeting(requirements::defended_or_occupied())
             .visual_effect(TimedEffectData::new(TimedEffect::MagicCircles1(8)).scale(2.0))
             .build(),
     }

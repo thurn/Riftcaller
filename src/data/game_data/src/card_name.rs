@@ -374,6 +374,7 @@ pub enum CardName {
     PotentialityStorm,
     AmarasDecree,
     TheHonorbound,
+    DusksAscension,
 }
 
 impl CardName {
@@ -399,6 +400,7 @@ impl CardName {
             Self::EriaTheGhostOfVasilor => "Eria, the Ghost of Vasilor",
             Self::UsilynaMasterArtificer => "Usilyna, Master Artificer",
             Self::AmarasDecree => "Amara's Decree",
+            Self::DusksAscension => "Dusk's Ascension",
             _ => "",
         };
 

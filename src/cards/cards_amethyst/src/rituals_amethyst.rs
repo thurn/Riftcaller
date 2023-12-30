@@ -14,15 +14,14 @@
 
 //! Card definitions for the Spell card type & Covenant player
 
+use assets::rexard_images;
+use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-
-use assets::rexard_images;
-use card_helpers::{*};
 use rules::{flags, mana, mutations};
 
 pub fn overwhelming_power(_: CardMetadata) -> CardDefinition {
@@ -62,20 +61,12 @@ pub fn forced_march(_: CardMetadata) -> CardDefinition {
             text![
                 "Place 2 progress counters on each card in target room which didn't enter play this turn"
             ],
-            this::on_played(|g, _, played| {
-                let targets = g
-                    .defenders_and_occupants(played.target.room_id()?)
-                    .filter(|card| {
-                        flags::can_progress_card(g, card.id)
-                            && !history::played_this_turn(g, card.id)
-                    })
-                    .map(|card| card.id)
-                    .collect::<Vec<_>>();
-                for card_id in targets {
-                    mutations::add_progress_counters(g, card_id, 2)?;
-                }
-
-                Ok(())
+            this::on_played(|g, s, played| {
+                mutations::progress_card_occupying_room(
+                    g,
+                    played.target.room_id()?,
+                    s.initiated_by(),
+                    2)
             }),
         )],
         config: CardConfigBuilder::new().custom_targeting(

@@ -218,3 +218,30 @@ fn foresee_must_submit_all() {
     g.move_card_to_index(id, 4);
     assert!(g.click_with_result(Button::SubmitCardSelector).is_err());
 }
+
+#[test]
+fn dusks_ascension() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let scheme = g.create_and_play_with_target(CardName::TestScheme3_10, RoomId::RoomA);
+    g.create_and_play_with_target(CardName::DusksAscension, RoomId::RoomA);
+    assert_eq!(g.client.cards.get(scheme).arena_icon(), "3");
+    assert!(g.opponent.cards.get(scheme).is_face_up());
+    g.pass_turn(Side::Covenant);
+    assert_eq!(g.me().score(), 0);
+    g.pass_turn(Side::Riftcaller);
+    assert_eq!(g.me().score(), 10);
+}
+
+#[test]
+fn dusks_ascension_progress_again() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let scheme = g.create_and_play_with_target(CardName::TestScheme4_20, RoomId::RoomA);
+    g.progress_room(RoomId::RoomA);
+    g.create_and_play_with_target(CardName::DusksAscension, RoomId::RoomA);
+    assert_eq!(g.client.cards.get(scheme).arena_icon(), "4");
+    assert!(g.opponent.cards.get(scheme).is_face_up());
+    g.pass_turn(Side::Covenant);
+    assert_eq!(g.me().score(), 0);
+    g.pass_turn(Side::Riftcaller);
+    assert_eq!(g.me().score(), 20);
+}

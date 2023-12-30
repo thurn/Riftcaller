@@ -216,7 +216,7 @@ fn progress_card_action(game: &mut GameState, user_side: Side, room_id: RoomId) 
     game.current_history_counters(user_side).progress_card_actions += 1;
     mutations::spend_action_points(game, user_side, 1)?;
     mana::spend(game, user_side, InitiatedBy::GameAction, ManaPurpose::ProgressRoom(room_id), 1)?;
-    mutations::progress_room(game, room_id, InitiatedBy::GameAction)?;
+    mutations::progress_card_occupying_room(game, room_id, InitiatedBy::GameAction, 1)?;
     dispatch::invoke_event(game, ProgressCardActionEvent(&room_id))?;
     Ok(())
 }
@@ -570,7 +570,12 @@ fn handle_room_selector_submit(
         }
         RoomSelectorPromptEffect::RemoveCurseToProgressRoom => {
             curses::remove_curses(game, 1)?;
-            mutations::progress_room(game, room_id, InitiatedBy::Ability(initiated_by))?;
+            mutations::progress_card_occupying_room(
+                game,
+                room_id,
+                InitiatedBy::Ability(initiated_by),
+                1,
+            )?;
         }
     }
 

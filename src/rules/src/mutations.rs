@@ -24,8 +24,8 @@ use std::cmp;
 use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{
-    ActionCount, CardId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue, RoomId, Side,
-    TurnNumber,
+    ActionCount, CardId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue, ProgressValue,
+    RoomId, Side, TurnNumber,
 };
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_name::CardVariant;
@@ -435,16 +435,17 @@ pub fn realize_top_of_deck(
     Ok(result)
 }
 
-/// Increases the progress level of all `can_progress_card` Covenant cards in a
-/// room by one. If a Scheme card's progress level reaches its
-/// `progress_requirement`, that card is immediately scored and moved to the
-/// Covenant score zone.
+/// Increases the progress level of all `can_progress_card` Covenant cards
+/// occupying room by the provided `amount`. If a Scheme card's progress level
+/// reaches its `progress_requirement`, that card is immediately scored and
+/// moved to the Covenant score zone.
 ///
 /// Does not spend mana/actions etc.
-pub fn progress_room(
+pub fn progress_card_occupying_room(
     game: &mut GameState,
     room_id: RoomId,
     initiated_by: InitiatedBy,
+    amount: ProgressValue,
 ) -> Result<()> {
     game.add_animation(|| GameAnimation::ProgressRoom(room_id, initiated_by));
 
@@ -454,26 +455,12 @@ pub fn progress_room(
         .filter(|id| flags::can_progress_card(game, *id))
         .collect::<Vec<_>>();
 
-    for occupant_id in can_progress {
-        add_progress_counters(game, occupant_id, 1)?;
-    }
-
-    Ok(())
-}
-
-/// Adds `amount` progress counters to the provided card.
-///
-/// If the card has scheme points and the progress requirement is met, the card
-/// is immediately scored and moved to the Covenant's score zone.
-///
-/// Returns an error if this card cannot be progressed.
-pub fn add_progress_counters(game: &mut GameState, card_id: CardId, amount: u32) -> Result<()> {
-    verify!(flags::can_progress_card(game, card_id));
-    game.card_mut(card_id).add_counters(CardCounter::Progress, amount);
-    let card = game.card(card_id);
-    if let Some(scheme_points) = crate::get(card.variant).config.stats.scheme_points {
-        if card.counters(CardCounter::Progress) >= scheme_points.progress_requirement {
-            covenant_score_scheme(game, card_id)?;
+    for card_id in can_progress {
+        game.card_mut(card_id).add_counters(CardCounter::Progress, amount);
+        if let Some(points) = game.card(card_id).definition().config.stats.scheme_points {
+            if game.card(card_id).counters(CardCounter::Progress) >= points.progress_requirement {
+                covenant_score_scheme(game, card_id)?;
+            }
         }
     }
 

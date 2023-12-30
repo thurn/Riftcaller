@@ -387,8 +387,5 @@ pub fn can_win_by_scoring_points(transformation: TransformationFn<Side, AbilityF
 pub fn can_covenant_score_scheme(
     transformation: TransformationFn<CardId, AbilityFlag>,
 ) -> Delegate {
-    Delegate::CanCovenantScoreScheme(QueryDelegate {
-        requirement: requirements::face_up_in_play,
-        transformation,
-    })
+    delegates::can_covenant_score_scheme(requirements::face_up_in_play, transformation)
 }

@@ -156,6 +156,20 @@ pub fn card_targeted_for_this_turn(
         .any(|id| id == card_id.card_id())
 }
 
+/// A [RequirementFn] which matches if the indicated `card_id` was targeted by
+/// the parent card for the current turn or in the immediate prior turn via
+/// `CustomCardState::TargetCardForTurn`.
+pub fn card_targeted_for_this_turn_cycle(
+    game: &GameState,
+    source: impl HasCardId,
+    card_id: &impl HasCardId,
+) -> bool {
+    game.card(source)
+        .custom_state
+        .targets_for_turn_cycle(game.info.turn)
+        .any(|id| id == card_id.card_id())
+}
+
 /// A [RequirementFn] which matches if the `source` card has been marked as
 /// active during the current raid encounter.
 pub fn active_this_encounter<T>(game: &GameState, source: impl HasCardId, _: &T) -> bool {
@@ -182,15 +196,20 @@ pub fn any_outer_room_raid_target<T>() -> TargetRequirement<T> {
     })
 }
 
+/// A [TargetRequirement] targeting rooms with occupants.
+pub fn occupied_room<T>() -> TargetRequirement<T> {
+    TargetRequirement::TargetRoom(|game, _, room_id| game.occupants(room_id).next().is_some())
+}
+
 /// A [TargetRequirement] targeting rooms with defenders.
-pub fn any_room_with_defenders<T>() -> TargetRequirement<T> {
+pub fn defended_room<T>() -> TargetRequirement<T> {
     TargetRequirement::TargetRoom(|game, _, room_id| {
         game.defenders_unordered(room_id).next().is_some()
     })
 }
 
 /// A [TargetRequirement] targeting rooms with defenders or occupants.
-pub fn any_room_with_defenders_or_occupants<T>() -> TargetRequirement<T> {
+pub fn defended_or_occupied<T>() -> TargetRequirement<T> {
     TargetRequirement::TargetRoom(|game, _, room_id| {
         game.defenders_and_occupants(room_id).next().is_some()
     })

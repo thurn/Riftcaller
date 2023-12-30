@@ -20,7 +20,7 @@ use game_data::delegate_data::{
     AccessEvent, CardPlayed, CardStatusMarker, Delegate, EventDelegate, MutationFn, QueryDelegate,
     RaidEvent, RaidOutcome, RequirementFn, Scope, ShieldCardInfo, TransformationFn,
 };
-use game_data::flag_data::Flag;
+use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_state::GameState;
 use game_data::raid_data::PopulateAccessPromptSource;
 
@@ -32,6 +32,12 @@ pub fn allow<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
 /// A [TransformationFn] which invokes [Flag::disallow] to prevent an action.
 pub fn disallow<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
     flag.disallow()
+}
+
+/// A [TransformationFn] which invokes [AbilityFlag::disallow] to prevent an
+/// action.
+pub fn disallow_ability<T>(_: &GameState, s: Scope, _: &T, flag: AbilityFlag) -> AbilityFlag {
+    flag.disallow(s.ability_id())
 }
 
 pub fn mana_cost(
@@ -179,6 +185,13 @@ pub fn can_score_accessed_card(
     transformation: TransformationFn<AccessEvent<CardId>, Flag>,
 ) -> Delegate {
     Delegate::CanScoreAccessedCard(QueryDelegate { requirement, transformation })
+}
+
+pub fn can_covenant_score_scheme(
+    requirement: RequirementFn<CardId>,
+    transformation: TransformationFn<CardId, AbilityFlag>,
+) -> Delegate {
+    Delegate::CanCovenantScoreScheme(QueryDelegate { requirement, transformation })
 }
 
 pub fn status_markers(

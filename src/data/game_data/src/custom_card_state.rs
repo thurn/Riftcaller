@@ -91,6 +91,21 @@ impl CustomCardStateList {
         })
     }
 
+    /// Returns an iterator over [CustomCardState::TargetCardForTurn] targets
+    /// which have been recorded for a given [TurnData] or the turn immediately
+    /// prior to it.
+    pub fn targets_for_turn_cycle(&self, t: TurnData) -> impl Iterator<Item = CardId> + '_ {
+        let previous = t.previous();
+        self.list.iter().filter_map(move |state| match state {
+            CustomCardState::TargetCardForTurn { target_card, turn }
+                if *turn == t || Some(*turn) == previous =>
+            {
+                Some(*target_card)
+            }
+            _ => None,
+        })
+    }
+
     /// Checks if the provided [CardId] is registered as a target for the given
     /// [CardPlayId].
     ///

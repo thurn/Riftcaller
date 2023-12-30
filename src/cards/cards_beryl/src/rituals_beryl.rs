@@ -16,7 +16,7 @@ use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{abilities, costs, delegates, requirements, show_prompt, text, this};
 use core_data::game_primitives::{CardSubtype, CardType, HasCardId, Rarity, School, Side};
-use game_data::card_definition::{Ability, CardConfig, CardDefinition};
+use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;
@@ -225,5 +225,57 @@ pub fn foresee(meta: CardMetadata) -> CardDefinition {
             Ok(())
         }))],
         config: CardConfig::default(),
+    }
+}
+
+pub fn dusks_ascension(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::DusksAscension,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::covenant_card(meta, "dusks_ascension"),
+        card_type: CardType::Ritual,
+        subtypes: vec![CardSubtype::Fabrication],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![Ability::new(text![
+            text![
+                "Place",
+                meta.upgrade(3, 4),
+                "progress counters on the card occupying target room"
+            ],
+            text!["Turn that card face up"],
+            text!["You cannot score it until your next turn"]
+        ])
+        .delegate(this::on_played(|g, s, played| {
+            let turn = g.info.turn;
+            let room_id = played.target.room_id()?;
+            for card_id in g.occupants(room_id).card_ids() {
+                mutations::turn_face_up(g, card_id);
+                g.card_mut(s)
+                    .custom_state
+                    .push(CustomCardState::TargetCardForTurn { target_card: card_id, turn });
+            }
+            mutations::progress_card_occupying_room(g, room_id, s.initiated_by(), s.upgrade(3, 4))?;
+            Ok(())
+        }))
+        .delegate(delegates::can_covenant_score_scheme(
+            requirements::card_targeted_for_this_turn_cycle,
+            delegates::disallow_ability,
+        ))
+        .delegate(this::at_dusk(|g, _, _| mutations::check_for_covenant_scoring_schemes(g)))
+        .delegate(delegates::status_markers(
+            requirements::card_targeted_for_this_turn_cycle,
+            |_, s, _, mut markers| {
+                markers.push(CardStatusMarker {
+                    source: s.ability_id(),
+                    marker_kind: CardInfoElementKind::NegativeEffect,
+                    text: text!["Cannot be scored"],
+                });
+                markers
+            },
+        ))],
+        config: CardConfigBuilder::new().custom_targeting(requirements::occupied_room()).build(),
     }
 }
