@@ -195,6 +195,8 @@ pub enum PromptChoiceLabel {
     PayActionAccessAnother,
     CardType(CardType),
     Select,
+    RaidVault,
+    RaidSanctum,
 }
 
 /// A specific card choice shown in a [ButtonPrompt].

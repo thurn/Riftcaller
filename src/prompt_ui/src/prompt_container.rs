@@ -50,7 +50,7 @@ impl Component for PromptContainer {
                     .wrap(FlexWrap::WrapReverse)
                     .margin(Edge::Horizontal, 16.px()),
             )
-            .children_boxed(self.children)
+            .child(Row::new("PromptContainerInner").children_boxed(self.children))
             .build()
     }
 }

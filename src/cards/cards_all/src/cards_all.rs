@@ -121,6 +121,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::rolant_the_restorer);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::eria_the_ghost_of_vasilor);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::usilyna_master_artificer);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::sariandi_phase_walker);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::foresee);

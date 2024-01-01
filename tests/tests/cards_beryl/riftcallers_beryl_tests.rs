@@ -287,3 +287,52 @@ fn usilyna_no_targets() {
     g.initiate_raid(RoomId::Vault);
     assert!(!g.has(Button::AddPowerCharges));
 }
+
+#[test]
+fn sariandi() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::SariandiPhaseWalker))
+            .opponent(
+                TestSide::new(Side::Covenant)
+                    .face_up_defender(RoomId::Vault, CardName::TestMinionEndRaid)
+                    .deck_top(CardName::TestScheme3_10),
+            )
+            .build();
+    let id = g.client.cards.hand().find_ability_card(CardName::SariandiPhaseWalker).id();
+    g.activate_ability(id, 0);
+    g.click(Button::AccessVault);
+    g.click(Button::Score);
+    assert_eq!(g.me().score(), 10);
+}
+
+#[test]
+fn sariandi_once_per_turn() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::SariandiPhaseWalker))
+            .opponent(
+                TestSide::new(Side::Covenant)
+                    .face_up_defender(RoomId::Vault, CardName::TestMinionEndRaid)
+                    .deck_top(CardName::TestScheme3_10),
+            )
+            .build();
+    let id = g.client.cards.hand().find_ability_card(CardName::SariandiPhaseWalker).id();
+    g.activate_ability(id, 0);
+    g.click(Button::AccessVault);
+    g.click(Button::EndRaid);
+    assert!(g.activate_ability_with_result(id, 0).is_err());
+}
+
+#[test]
+fn sariandi_raid_sanctum() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::SariandiPhaseWalker))
+            .opponent(
+                TestSide::new(Side::Covenant)
+                    .face_up_defender(RoomId::Sanctum, CardName::TestMinionEndRaid),
+            )
+            .build();
+    let id = g.client.cards.hand().find_ability_card(CardName::SariandiPhaseWalker).id();
+    g.activate_ability(id, 0);
+    g.click(Button::AccessSanctum);
+    g.click(Button::EndRaid);
+}

@@ -376,6 +376,7 @@ pub enum CardName {
     TheHonorbound,
     DusksAscension,
     NobleMartyr,
+    SariandiPhaseWalker,
 }
 
 impl CardName {
@@ -402,6 +403,7 @@ impl CardName {
             Self::UsilynaMasterArtificer => "Usilyna, Master Artificer",
             Self::AmarasDecree => "Amara's Decree",
             Self::DusksAscension => "Dusk's Ascension",
+            Self::SariandiPhaseWalker => "Sariandi, Phase Walker",
             _ => "",
         };
 

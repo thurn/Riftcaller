@@ -80,6 +80,7 @@ fn effect_label(user_side: Side, effect: &GameEffect) -> String {
         GameEffect::EvadeCurrentEncounter => "Evade".to_string(),
         GameEffect::PlayCardForNoMana(..) => "Play".to_string(),
         GameEffect::PreventRaidCardAccess => "Don't Access".to_string(),
+        GameEffect::ChangeRaidTarget(..) => "Change Target".to_string(),
         GameEffect::RevealCard(..) => "Reveal".to_string(),
         GameEffect::AddPowerCharges(_, count) => {
             if *count == 1 {
@@ -105,6 +106,8 @@ fn custom_label(label: PromptChoiceLabel) -> String {
         PromptChoiceLabel::PayActionAccessAnother => format!("Access Another? ({})", icons::ACTION),
         PromptChoiceLabel::CardType(card_type) => card_type.to_string(),
         PromptChoiceLabel::Select => "Select".to_string(),
+        PromptChoiceLabel::RaidVault => "Access Vault".to_string(),
+        PromptChoiceLabel::RaidSanctum => "Access Sanctum".to_string(),
     }
 }
 

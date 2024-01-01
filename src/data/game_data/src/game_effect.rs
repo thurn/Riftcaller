@@ -86,6 +86,8 @@ pub enum GameEffect {
     PlayCardForNoMana(CardId, CardTarget, FromZone, InitiatedBy),
     /// Prevent the current raid, if any, from accessing cards
     PreventRaidCardAccess,
+    /// Change the current raid target to the indicated room.
+    ChangeRaidTarget(RoomId, InitiatedBy),
     /// Reveal the indicated card. This is an explicit game event which must use
     /// the word "reveal" in card text.
     RevealCard(CardId),

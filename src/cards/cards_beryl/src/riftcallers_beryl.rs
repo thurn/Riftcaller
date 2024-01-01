@@ -12,20 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{costs, history, in_play, show_prompt, text, this};
+use card_helpers::{
+    costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
+};
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, InitiatedBy, Rarity, RoomId, School, Side,
 };
 use core_ui::design::{self, TimedEffectDataExt};
-use game_data::card_definition::{Ability, CardConfigBuilder, CardDefinition, IdentityConfig};
+use game_data::card_definition::{
+    Ability, ActivatedAbility, CardConfigBuilder, CardDefinition, IdentityConfig,
+};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
-use game_data::prompt_data::{FromZone, PromptChoice, PromptData};
+use game_data::prompt_data::{FromZone, PromptChoice, PromptChoiceLabel, PromptData};
 use game_data::random;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
@@ -521,6 +525,66 @@ pub fn usilyna_master_artificer(meta: CardMetadata) -> CardDefinition {
                     .scale(1.5)
                     .sound(SoundEffect::LightMagic("RPG3_LightMagic_Cast02"))
                     .effect_color(design::YELLOW_900),
+            )
+            .build(),
+    }
+}
+
+pub fn sariandi_phase_walker(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SariandiPhaseWalker,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::riftcaller_card(meta, "Riptaid/sariandi"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Identity,
+        abilities: vec![ActivatedAbility::new(
+            costs::actions(1),
+            text![
+                text!["Raid the", Crypt],
+                text!["If successful, access the", Sanctum, "or", Vault, "instead"],
+                text!["Activate only once per turn"]
+            ],
+        )
+        .delegate(this::once_per_turn())
+        .delegate(this::on_activated(|g, s, _| raids::initiate(g, s, RoomId::Crypt)))
+        .delegate(delegates::on_raid_access_start(requirements::matching_raid, |g, s, _| {
+            visual_effects::show(g, s, s.card_id(), ShowAlert::No);
+            prompts::push(g, Side::Riftcaller, s.ability_id());
+            Ok(())
+        }))
+        .delegate(this::prompt(|_, s, _, _| {
+            show_prompt::with_context_and_choices(
+                ButtonPromptContext::Card(s.card_id()),
+                vec![
+                    PromptChoice::new()
+                        .effect(GameEffect::ChangeRaidTarget(RoomId::Sanctum, s.initiated_by()))
+                        .custom_label(PromptChoiceLabel::RaidSanctum),
+                    PromptChoice::new()
+                        .effect(GameEffect::ChangeRaidTarget(RoomId::Vault, s.initiated_by()))
+                        .custom_label(PromptChoiceLabel::RaidVault),
+                ],
+            )
+        }))
+        .build()],
+        config: CardConfigBuilder::new()
+            .identity(IdentityConfig {
+                starting_coins: Coins(500),
+                secondary_schools: vec![School::Law],
+                skills: vec![Skill::Stealth, Skill::Lore],
+                bio: "In the mirage-laden expanse of the Thylen Dominion, Sariandi learned to \
+                walk between the folds of reality. Her steps weave through the fabric of \
+                existence, a dance of presence and absence, leaving trails of shimmering \
+                afterimages in the sands of time.",
+            })
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(15))
+                    .scale(1.5)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Buff01"))
+                    .effect_color(design::BLUE_500),
             )
             .build(),
     }

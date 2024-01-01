@@ -18,7 +18,7 @@ use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_effect::GameEffect;
-use game_data::game_state::GameState;
+use game_data::game_state::{GameState, RaidJumpRequest};
 use game_data::prompt_data::PromptData;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
@@ -123,6 +123,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
                     ignore_position: true,
                 },
             )?;
+        }
+        GameEffect::ChangeRaidTarget(room_id, _) => {
+            mutations::apply_raid_jump(game, RaidJumpRequest::ChangeTarget(room_id));
         }
         GameEffect::PreventRaidCardAccess => {
             if let Some(raid) = game.raid.as_mut() {

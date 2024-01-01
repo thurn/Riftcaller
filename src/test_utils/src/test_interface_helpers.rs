@@ -68,6 +68,8 @@ pub enum Button {
     ChooseCardTypeSpell,
     Prevent,
     AddPowerCharges,
+    AccessVault,
+    AccessSanctum,
 }
 
 pub trait TestInterfaceHelpers {
@@ -288,6 +290,8 @@ fn resolve_button(button: Button) -> String {
         Button::ChooseCardTypeSpell => "Spell",
         Button::Prevent => "Prevent",
         Button::AddPowerCharges => "Add",
+        Button::AccessVault => "Access Vault",
+        Button::AccessSanctum => "Access Sanctum",
     }
     .to_string()
 }

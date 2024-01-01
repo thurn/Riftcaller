@@ -24,7 +24,7 @@ use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{AbilityPromptSource, GamePrompt};
 
-use crate::{delegates, requirements};
+use crate::{delegates, history, requirements};
 
 /// A RequirementFn which restricts delegates to only listen to events for their
 /// own card.
@@ -64,6 +64,18 @@ pub fn on_activated(mutation: MutationFn<AbilityActivated>) -> Delegate {
 /// A [Delegate] which controls whether an ability can be activated.
 pub fn can_activate(transformation: TransformationFn<CanActivateAbility, Flag>) -> Delegate {
     Delegate::CanActivateAbility(QueryDelegate { requirement: ability, transformation })
+}
+
+/// A [Delegate] which allows an ability to be activated once per turn.
+pub fn once_per_turn() -> Delegate {
+    Delegate::CanActivateAbility(QueryDelegate {
+        requirement: ability,
+        transformation: |g, s, _, flag| {
+            flag.add_constraint(
+                history::ability_activations_this_turn(g, s.ability_id()).next().is_none(),
+            )
+        },
+    })
 }
 
 /// A minion combat delegate
