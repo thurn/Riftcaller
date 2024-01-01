@@ -202,6 +202,12 @@ fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
             debug!("Handling RaidJumpRequest::EvadeCurrentMinion");
             game.raid_mut()?.state = RaidState::Step(RaidStep::NextEncounter)
         }
+        RaidJumpRequest::DefeatCurrentMinion => {
+            debug!("Handling RaidJumpRequest::DefeatCurrentMinion");
+            if let Some(current) = game.current_raid_defender() {
+                game.raid_mut()?.state = RaidState::Step(RaidStep::MinionDefeated(current))
+            }
+        }
     }
 
     game.raid_mut()?.jump_request = None;
@@ -225,7 +231,7 @@ fn evaluate_raid_step(game: &mut GameState, info: RaidInfo, step: RaidStep) -> R
         RaidStep::EncounterMinion(minion_id) => encounter_minion(game, minion_id),
         RaidStep::PopulateEncounterPrompt(minion_id) => populate_encounter_prompt(game, minion_id),
         RaidStep::UseWeapon(interaction) => use_weapon(game, info, interaction),
-        RaidStep::MinionDefeated(interaction) => minion_defeated(game, interaction),
+        RaidStep::MinionDefeated(minion_id) => minion_defeated(game, minion_id),
         RaidStep::FireMinionCombatAbility(minion_id) => {
             fire_minion_combat_ability(game, info, minion_id)
         }
@@ -393,11 +399,11 @@ fn use_weapon(
 
     dispatch::invoke_event(game, UsedWeaponEvent(&info.event(used_weapon)))?;
 
-    RaidState::step(RaidStep::MinionDefeated(interaction))
+    RaidState::step(RaidStep::MinionDefeated(interaction.defender_id))
 }
 
-fn minion_defeated(game: &mut GameState, interaction: WeaponInteraction) -> Result<RaidState> {
-    dispatch::invoke_event(game, MinionDefeatedEvent(&interaction.defender_id))?;
+fn minion_defeated(game: &mut GameState, card_id: CardId) -> Result<RaidState> {
+    dispatch::invoke_event(game, MinionDefeatedEvent(&card_id))?;
     RaidState::step(RaidStep::NextEncounter)
 }
 

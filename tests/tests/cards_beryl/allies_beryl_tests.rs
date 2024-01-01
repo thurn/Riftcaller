@@ -14,6 +14,7 @@
 
 use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::CardName;
+use protos::riftcaller::object_position::Position;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::*;
 
@@ -172,4 +173,33 @@ fn blue_warden_activate_after_damage() {
     g.activate_ability(id, 0);
     assert_eq!(g.client.cards.hand().real_cards().len(), 3);
     g.click(Button::ClosePriorityPrompt);
+}
+
+#[test]
+fn noble_martyr() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionShield2Astral),
+        )
+        .build();
+    let id = g.create_and_play_with_target(CardName::NobleMartyr, RoomId::Vault);
+    g.click(Button::ChooseForPrompt);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 1);
+    assert!(g.client.data.raid_active());
+    assert!(matches!(g.client.cards.get(id).position(), Position::DiscardPile(..)));
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn noble_martyr_shield_3() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionShield3Mortal),
+        )
+        .build();
+    let id = g.add_to_hand(CardName::NobleMartyr);
+    assert!(g.play_card_with_result(id, g.user_id(), Some(RoomId::Vault)).is_err());
 }

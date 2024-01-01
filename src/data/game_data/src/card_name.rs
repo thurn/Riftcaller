@@ -375,6 +375,7 @@ pub enum CardName {
     AmarasDecree,
     TheHonorbound,
     DusksAscension,
+    NobleMartyr,
 }
 
 impl CardName {

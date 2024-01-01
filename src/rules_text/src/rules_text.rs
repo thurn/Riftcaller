@@ -279,6 +279,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::RazeAbility => format!("{} ability", icons::RAZE),
         TextToken::Banish => "banish".to_string(),
         TextToken::Permanent => "permanent".to_string(),
+        TextToken::ShieldPoints => "shield points".to_string(),
     }
 }
 

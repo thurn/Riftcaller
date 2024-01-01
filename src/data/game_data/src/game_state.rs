@@ -120,6 +120,10 @@ pub enum RaidJumpRequest {
     /// Evades a minion during a raid. Use `mutations::evade_current_minion`
     /// instead of applying this directly.
     EvadeCurrentMinion,
+
+    /// Defeats a minion during a raid. This is similar to evading a minion
+    /// but triggers any "on defeated" effects.
+    DefeatCurrentMinion,
 }
 
 /// Describes options for this game & the set of rules it is using.

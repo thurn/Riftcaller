@@ -67,7 +67,7 @@ pub enum RaidStep {
     EncounterMinion(CardId),
     PopulateEncounterPrompt(CardId),
     UseWeapon(WeaponInteraction),
-    MinionDefeated(WeaponInteraction),
+    MinionDefeated(CardId),
     FireMinionCombatAbility(CardId),
     PopulateApproachPrompt,
     AccessStart,

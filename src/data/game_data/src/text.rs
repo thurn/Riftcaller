@@ -92,6 +92,7 @@ pub enum TextToken {
     RazeAbility,
     Banish,
     Permanent,
+    ShieldPoints,
 }
 
 impl TextToken {

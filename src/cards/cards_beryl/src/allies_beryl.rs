@@ -12,26 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use card_helpers::{costs, history, in_play, show_prompt, text, this};
+use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{Ability, ActivatedAbility, CardConfig, CardDefinition};
+use game_data::card_definition::{
+    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
+};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;
-use game_data::game_actions::ButtonPromptContext;
+use game_data::custom_card_state::CustomCardState;
+use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
+use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
-use game_data::game_state::GameState;
-use game_data::prompt_data::PromptChoice;
+use game_data::game_state::{GameState, RaidJumpRequest};
+use game_data::prompt_data::{PromptChoice, PromptData};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
+use game_data::utils;
 use rules::mutations::OnZeroStored;
 use rules::visual_effects::VisualEffects;
-use rules::{curses, draw_cards, mana, mutations, prompts, wounds, CardDefinitionExt};
+use rules::{curses, draw_cards, mana, mutations, prompts, queries, wounds, CardDefinitionExt};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -280,5 +285,81 @@ pub fn blue_warden(meta: CardMetadata) -> CardDefinition {
                 .delegate(this::prompt(|_, _, _, _| show_prompt::priority_window())),
         ],
         config: CardConfig::default(),
+    }
+}
+
+pub fn noble_martyr(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::NobleMartyr,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(2, 0)),
+        image: assets::riftcaller_card(meta, "noble_martyr"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Cleric],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            Ability::new(text_helpers::named_trigger(
+                Play,
+                text!["Choose a minion in target room with", 2, "or fewer", ShieldPoints],
+            ))
+            .delegate(this::on_played(|g, s, played| {
+                prompts::push_with_data(g, s.side(), s, PromptData::CardPlay(*played));
+                Ok(())
+            }))
+            .delegate(this::prompt(|g, s, source, _| {
+                let PromptData::CardPlay(played) = source.data else {
+                    return None;
+                };
+                let CardTarget::Room(room_id) = played.target else {
+                    return None;
+                };
+                show_prompt::with_choices(
+                    g.defenders_unordered(room_id)
+                        .filter(|card| queries::shield(g, card.id, None) <= 2)
+                        .map(|card| {
+                            PromptChoice::new()
+                                .effect(GameEffect::AppendCustomCardState(
+                                    s.card_id(),
+                                    CustomCardState::TargetCard {
+                                        target_card: card.id,
+                                        play_id: played.card_play_id,
+                                    },
+                                ))
+                                .anchor_card(card.id)
+                        })
+                        .collect(),
+                )
+            }))
+            .delegate(in_play::on_query_card_status_markers(
+                |g, s, card_id, mut markers| {
+                    if g.card(s).is_last_target(*card_id) {
+                        markers.push(CardStatusMarker {
+                            source: s.ability_id(),
+                            marker_kind: CardInfoElementKind::NegativeEffect,
+                            text: text!["Can defeat by sacrificing"],
+                        });
+                    }
+                    markers
+                },
+            )),
+            ActivatedAbility::new(costs::sacrifice(), text!["Defeat the chosen minion"])
+                .delegate(this::on_activated(|g, _, _| {
+                    mutations::apply_raid_jump(g, RaidJumpRequest::DefeatCurrentMinion);
+                    Ok(())
+                }))
+                .delegate(this::can_activate(|g, s, _, flag| {
+                    flag.add_constraint(utils::is_true(|| {
+                        Some(g.card(s).is_last_target(g.current_raid_defender()?))
+                    }))
+                }))
+                .build(),
+        ],
+        config: CardConfigBuilder::new()
+            .custom_targeting(TargetRequirement::TargetRoom(|g, _, room_id| {
+                g.defenders_unordered(room_id).any(|card| queries::shield(g, card.id, None) <= 2)
+            }))
+            .build(),
     }
 }
