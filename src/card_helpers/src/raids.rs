@@ -14,7 +14,7 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{CardId, InitiatedBy, RaidId};
-use game_data::delegate_data::{Delegate, QueryDelegate, RequirementFn, Scope};
+use game_data::delegate_data::{GameDelegate, QueryDelegate, RequirementFn, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidState, RaidStatus};
@@ -43,15 +43,15 @@ pub fn initiate_with_options(
     )
 }
 
-pub fn add_vault_access<const N: u32>(requirement: RequirementFn<RaidId>) -> Delegate {
-    Delegate::VaultAccessCount(QueryDelegate {
+pub fn add_vault_access<const N: u32>(requirement: RequirementFn<RaidId>) -> GameDelegate {
+    GameDelegate::VaultAccessCount(QueryDelegate {
         requirement,
         transformation: |_, _, _, current| current + N,
     })
 }
 
-pub fn add_sanctum_access<const N: u32>(requirement: RequirementFn<RaidId>) -> Delegate {
-    Delegate::SanctumAccessCount(QueryDelegate {
+pub fn add_sanctum_access<const N: u32>(requirement: RequirementFn<RaidId>) -> GameDelegate {
+    GameDelegate::SanctumAccessCount(QueryDelegate {
         requirement,
         transformation: |_, _, _, current| current + N,
     })

@@ -27,7 +27,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegate_data::{Delegate, EventDelegate};
+use game_data::delegate_data::{EventDelegate, GameDelegate};
 use rules::mutations::{add_stored_mana, OnZeroStored};
 use rules::visual_effects::VisualEffects;
 use rules::{draw_cards, mutations};
@@ -182,7 +182,7 @@ pub fn dark_grimoire(_: CardMetadata) -> CardDefinition {
                 "The first time each turn you take the 'draw card' action,
 draw another card"
             ],
-            Delegate::DrawCardAction(EventDelegate {
+            GameDelegate::DrawCardAction(EventDelegate {
                 requirement: requirements::no_card_draw_actions::<FaceUpInPlay>,
                 mutation: |g, s, _| {
                     draw_cards::run(g, s.side(), 1, s.initiated_by())?;

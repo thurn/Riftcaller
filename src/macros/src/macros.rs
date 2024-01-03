@@ -141,13 +141,13 @@ fn generate_variant(variant: &ParsedVariant) -> impl ToTokens {
                 &self.0
             }
 
-            fn kind(&self) -> DelegateKind {
-                DelegateKind::#name
+            fn kind(&self) -> GameDelegateKind {
+                GameDelegateKind::#name
             }
 
-            fn extract(delegate: &Delegate) -> #return_value {
+            fn extract(delegate: &GameDelegate) -> #return_value {
                 match delegate {
-                    Delegate::#name(d) => Some(d),
+                    GameDelegate::#name(d) => Some(d),
                     _ => None,
                 }
             }

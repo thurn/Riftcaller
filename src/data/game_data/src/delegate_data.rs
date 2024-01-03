@@ -442,8 +442,8 @@ pub struct ManaLostToOpponentAbility {
 /// [DelegateEnum] macro -- see module-level documentation for an example of
 /// what this code looks like.
 #[derive(EnumKind, DelegateEnum, Clone)]
-#[enum_kind(DelegateKind, derive(Hash))]
-pub enum Delegate {
+#[enum_kind(GameDelegateKind, derive(Hash))]
+pub enum GameDelegate {
     /// The Riftcaller's turn begins
     Dawn(EventDelegate<TurnNumber>),
     /// The Covenant's turn begins
@@ -683,15 +683,15 @@ pub enum Delegate {
     CardStatusMarkers(QueryDelegate<CardId, Vec<CardStatusMarker>>),
 }
 
-impl Delegate {
-    pub fn kind(&self) -> DelegateKind {
+impl GameDelegate {
+    pub fn kind(&self) -> GameDelegateKind {
         self.into()
     }
 }
 
-impl fmt::Debug for Delegate {
+impl fmt::Debug for GameDelegate {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "Delegate::{:?}", DelegateKind::from(self))
+        write!(f, "Delegate::{:?}", GameDelegateKind::from(self))
     }
 }
 
@@ -699,25 +699,25 @@ impl fmt::Debug for Delegate {
 /// specific game.
 #[derive(Clone, Debug)]
 pub struct DelegateContext {
-    pub delegate: Delegate,
+    pub delegate: GameDelegate,
     pub scope: Scope,
 }
 
 /// Stores delegates in a given game for faster lookup
 #[derive(Clone, Debug, Default)]
 pub struct DelegateMap {
-    pub lookup: HashMap<DelegateKind, Vec<DelegateContext>>,
+    pub lookup: HashMap<GameDelegateKind, Vec<DelegateContext>>,
 }
 
 impl DelegateMap {
-    pub fn delegate_count(&self, kind: DelegateKind) -> usize {
+    pub fn delegate_count(&self, kind: GameDelegateKind) -> usize {
         self.lookup.get(&kind).map_or(0, Vec::len)
     }
 
-    /// Gets the [DelegateContext] for a given [DelegateKind] and index.
+    /// Gets the [DelegateContext] for a given [GameDelegateKind] and index.
     ///
     /// Panics if no such delegate exists.
-    pub fn get(&self, kind: DelegateKind, index: usize) -> &DelegateContext {
+    pub fn get(&self, kind: GameDelegateKind, index: usize) -> &DelegateContext {
         &self.lookup.get(&kind).expect("Delegate")[index]
     }
 }
@@ -728,11 +728,11 @@ pub trait EventData<T: fmt::Debug>: fmt::Debug {
     /// Get the underlying data for this event
     fn data(&self) -> &T;
 
-    fn kind(&self) -> DelegateKind;
+    fn kind(&self) -> GameDelegateKind;
 
-    /// Return the wrapped [EventDelegate] if the provided [Delegate] is of the
-    /// matching type.
-    fn extract(delegate: &Delegate) -> Option<&EventDelegate<T>>;
+    /// Return the wrapped [EventDelegate] if the provided [GameDelegate] is of
+    /// the matching type.
+    fn extract(delegate: &GameDelegate) -> Option<&EventDelegate<T>>;
 }
 
 /// Functions implemented by a Query struct, automatically implemented by
@@ -741,9 +741,9 @@ pub trait QueryData<TData: fmt::Debug, TResult: fmt::Debug>: fmt::Debug {
     /// Get the underlying data for this query
     fn data(&self) -> &TData;
 
-    fn kind(&self) -> DelegateKind;
+    fn kind(&self) -> GameDelegateKind;
 
-    /// Return the wrapped [QueryDelegate] if the provided [Delegate] is of the
-    /// matching type.
-    fn extract(delegate: &Delegate) -> Option<&QueryDelegate<TData, TResult>>;
+    /// Return the wrapped [QueryDelegate] if the provided [GameDelegate] is of
+    /// the matching type.
+    fn extract(delegate: &GameDelegate) -> Option<&QueryDelegate<TData, TResult>>;
 }

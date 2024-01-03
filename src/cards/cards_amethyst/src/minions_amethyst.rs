@@ -26,7 +26,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
-use game_data::delegate_data::{Delegate, EventDelegate, RaidOutcome};
+use game_data::delegate_data::{EventDelegate, GameDelegate, RaidOutcome};
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::PromptChoice;
 use rules::mana::ManaPurpose;
@@ -115,7 +115,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
             ),
             delegates: vec![
                 combat(|g, s, _| damage::deal(g, s, 1)),
-                Delegate::DealtDamage(EventDelegate {
+                GameDelegate::DealtDamage(EventDelegate {
                     requirement: |g, s, data| {
                         let discarded = damage::discarded_to_current_event(g);
                         s.ability_id() == data.source

@@ -14,19 +14,18 @@
 
 //! Card definitions for the Weapon card type
 
+use assets::rexard_images;
+use assets::rexard_images::RexardWeaponType;
+use card_helpers::abilities::encounter_ability_text;
+use card_helpers::{abilities, *};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
 use game_data::card_definition::{
     Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegate_data::{Delegate, QueryDelegate};
+use game_data::delegate_data::{GameDelegate, QueryDelegate};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
-
-use assets::rexard_images;
-use assets::rexard_images::RexardWeaponType;
-use card_helpers::{*, abilities};
-use card_helpers::abilities::encounter_ability_text;
 
 pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -47,7 +46,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
                     ManaMinus(2),
                     "to play this turn"
                 ],
-                delegates: vec![Delegate::ManaCost(QueryDelegate {
+                delegates: vec![GameDelegate::ManaCost(QueryDelegate {
                     requirement: this_card,
                     transformation: |g, _, _, value| {
                         if history::rooms_accessed_this_turn(g).count() > 0 {
@@ -110,7 +109,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
                 text![EncounterBoostCost],
                 text![Plus(1), Attack, "per weapon you control"],
             ),
-            Delegate::AttackBoostBonus(QueryDelegate {
+            GameDelegate::AttackBoostBonus(QueryDelegate {
                 requirement: this_card,
                 transformation: |g, _s, _, current| current + g.artifacts().count() as u32,
             }),

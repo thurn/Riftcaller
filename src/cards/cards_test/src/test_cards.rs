@@ -28,7 +28,7 @@ use game_data::card_definition::{
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardIdsExt, CardPosition};
-use game_data::delegate_data::{Delegate, QueryDelegate, RaidOutcome};
+use game_data::delegate_data::{GameDelegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::{OnZeroStored, SummonMinion};
 use rules::{curses, damage, destroy, draw_cards, end_raid, mutations, CardDefinitionExt};
@@ -601,7 +601,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
                     ManaMinus(2),
                     "to play this turn"
                 ],
-                delegates: vec![Delegate::ManaCost(QueryDelegate {
+                delegates: vec![GameDelegate::ManaCost(QueryDelegate {
                     requirement: this_card,
                     transformation: |g, _, _, value| {
                         if history::rooms_accessed_this_turn(g).count() > 0 {

@@ -19,7 +19,7 @@ use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::custom_card_state::CustomCardState;
-use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate};
+use game_data::delegate_data::{EventDelegate, GameDelegate, QueryDelegate};
 use game_data::flag_data::Flag;
 use game_data::game_actions::CardTarget;
 use game_data::history_data::{AbilityActivationType, HistoryEvent};
@@ -77,7 +77,7 @@ pub fn gain_mana_on_play<const N: ManaValue>() -> Ability {
 pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
     Ability::new_with_delegate(
         text_helpers::named_trigger(Play, text![StoreMana(N)]),
-        Delegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
+        GameDelegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
             g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);
             Ok(())
         })),
@@ -91,11 +91,11 @@ pub fn store_mana_on_play_discard_on_empty<const N: ManaValue>() -> Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Play, text![StoreMana(N)]),
         delegates: vec![
-            Delegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
+            GameDelegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
                 g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);
                 Ok(())
             })),
-            Delegate::StoredManaTaken(EventDelegate::new(this_card, |g, s, card_id| {
+            GameDelegate::StoredManaTaken(EventDelegate::new(this_card, |g, s, card_id| {
                 if g.card(*card_id).counters(CardCounter::StoredMana) == 0 {
                     mutations::move_card(g, *card_id, CardPosition::DiscardPile(s.side()))
                 } else {
@@ -123,7 +123,7 @@ pub fn can_progress() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text![CanProgress],
-        delegates: vec![Delegate::CanProgressCard(QueryDelegate {
+        delegates: vec![GameDelegate::CanProgressCard(QueryDelegate {
             requirement: this_card,
             transformation: delegates::allow,
         })],

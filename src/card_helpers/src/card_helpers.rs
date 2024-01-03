@@ -19,7 +19,7 @@ use core_data::game_primitives::{CardId, HasCardId, HealthValue, ManaValue, Room
 use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    AccessEvent, Delegate, EventDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
+    AccessEvent, EventDelegate, GameDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,
     RequirementFn, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::game_effect::GameEffect;
@@ -93,26 +93,26 @@ pub fn this_card(_game: &GameState, scope: Scope, card_id: &impl HasCardId) -> b
     scope.card_id() == card_id.card_id()
 }
 
-pub fn when_project_summoned(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::SummonProject(EventDelegate { requirement: this_card, mutation })
+pub fn when_project_summoned(mutation: MutationFn<CardId>) -> GameDelegate {
+    GameDelegate::SummonProject(EventDelegate { requirement: this_card, mutation })
 }
 
 /// A minion delegate which triggers when it is encountered
-pub fn on_encountered(mutation: MutationFn<CardId>) -> Delegate {
-    Delegate::EncounterMinion(EventDelegate { requirement: this_card, mutation })
+pub fn on_encountered(mutation: MutationFn<CardId>) -> GameDelegate {
+    GameDelegate::EncounterMinion(EventDelegate { requirement: this_card, mutation })
 }
 
 /// Delegate which fires when a weapon is used
 pub fn on_weapon_used(
     requirement: RequirementFn<RaidEvent<UsedWeapon>>,
     mutation: MutationFn<RaidEvent<UsedWeapon>>,
-) -> Delegate {
-    Delegate::UsedWeapon(EventDelegate { requirement, mutation })
+) -> GameDelegate {
+    GameDelegate::UsedWeapon(EventDelegate { requirement, mutation })
 }
 
 /// Delegate which fires when its card is accessed
-pub fn on_accessed(mutation: MutationFn<AccessEvent<CardId>>) -> Delegate {
-    Delegate::CardAccess(EventDelegate {
+pub fn on_accessed(mutation: MutationFn<AccessEvent<CardId>>) -> GameDelegate {
+    GameDelegate::CardAccess(EventDelegate {
         requirement: |_, s, event| *event.data() == s.card_id(),
         mutation,
     })
@@ -122,19 +122,19 @@ pub fn on_accessed(mutation: MutationFn<AccessEvent<CardId>>) -> Delegate {
 pub fn on_raid_ended(
     requirement: RequirementFn<RaidEvent<RaidOutcome>>,
     mutation: MutationFn<RaidEvent<RaidOutcome>>,
-) -> Delegate {
-    Delegate::RaidEnd(EventDelegate { requirement, mutation })
+) -> GameDelegate {
+    GameDelegate::RaidEnd(EventDelegate { requirement, mutation })
 }
 
 /// A delegate which fires when a raid ends in success
 pub fn on_raid_success(
     requirement: RequirementFn<RaidEvent<()>>,
     mutation: MutationFn<RaidEvent<()>>,
-) -> Delegate {
-    Delegate::RaidSuccess(EventDelegate { requirement, mutation })
+) -> GameDelegate {
+    GameDelegate::RaidSuccess(EventDelegate { requirement, mutation })
 }
 
 /// Delegate which transforms how a minion's health is calculated
-pub fn on_calculate_health(transformation: TransformationFn<CardId, HealthValue>) -> Delegate {
-    Delegate::HealthValue(QueryDelegate { requirement: this_card, transformation })
+pub fn on_calculate_health(transformation: TransformationFn<CardId, HealthValue>) -> GameDelegate {
+    GameDelegate::HealthValue(QueryDelegate { requirement: this_card, transformation })
 }

@@ -32,7 +32,7 @@ use enum_kinds::EnumKind;
 
 use crate::card_name::{CardMetadata, CardName, CardVariant};
 use crate::card_set_name::CardSetName;
-use crate::delegate_data::Delegate;
+use crate::delegate_data::GameDelegate;
 use crate::game_state::GameState;
 use crate::special_effects::{ProjectileData, TimedEffectData};
 use crate::text::TextElement;
@@ -226,7 +226,7 @@ pub enum AbilityType {
 pub struct Ability {
     pub ability_type: AbilityType,
     pub text: Vec<TextElement>,
-    pub delegates: Vec<Delegate>,
+    pub delegates: Vec<GameDelegate>,
 }
 
 impl Ability {
@@ -234,11 +234,11 @@ impl Ability {
         Self { ability_type: AbilityType::Standard, text, delegates: vec![] }
     }
 
-    pub fn new_with_delegate(text: Vec<TextElement>, delegate: Delegate) -> Self {
+    pub fn new_with_delegate(text: Vec<TextElement>, delegate: GameDelegate) -> Self {
         Self { ability_type: AbilityType::Standard, text, delegates: vec![delegate] }
     }
 
-    pub fn delegate(mut self, delegate: Delegate) -> Self {
+    pub fn delegate(mut self, delegate: GameDelegate) -> Self {
         self.delegates.push(delegate);
         self
     }
@@ -250,7 +250,7 @@ pub struct ActivatedAbility {
     cost: Cost<AbilityId>,
     text: Vec<TextElement>,
     target_requirement: TargetRequirement<AbilityId>,
-    delegates: Vec<Delegate>,
+    delegates: Vec<GameDelegate>,
 }
 
 impl ActivatedAbility {
@@ -263,7 +263,7 @@ impl ActivatedAbility {
         self
     }
 
-    pub fn delegate(mut self, delegate: Delegate) -> Self {
+    pub fn delegate(mut self, delegate: GameDelegate) -> Self {
         self.delegates.push(delegate);
         self
     }

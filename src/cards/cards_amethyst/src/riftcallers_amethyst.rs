@@ -20,7 +20,7 @@ use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_definition::{Ability, CardConfig, CardDefinition};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegate_data::{Delegate, EventDelegate};
+use game_data::delegate_data::{EventDelegate, GameDelegate};
 use rules::mutations::RealizeCards;
 use rules::visual_effects::VisualEffects;
 use rules::{draw_cards, mana, mutations, CardDefinitionExt};
@@ -63,7 +63,7 @@ pub fn aris_fey(_: CardMetadata) -> CardDefinition {
         rarity: Rarity::Identity,
         abilities: vec![Ability::new_with_delegate(
             text!["The first time you take damage each turn, draw a card"],
-            Delegate::DealtDamage(EventDelegate {
+            GameDelegate::DealtDamage(EventDelegate {
                 requirement: requirements::no_damage_dealt::<FaceUpInPlay>,
                 mutation: |g, s, _| {
                     VisualEffects::new().ability_alert(s).apply(g);

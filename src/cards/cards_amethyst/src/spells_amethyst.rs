@@ -23,7 +23,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegate_data::{Delegate, QueryDelegate};
+use game_data::delegate_data::{GameDelegate, QueryDelegate};
 use raid_state::InitiateRaidOptions;
 use rules::{draw_cards, flags, mana, mutations, CardDefinitionExt};
 
@@ -134,7 +134,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                 this::on_played(|g, s, play_card| {
                     card_helpers::raids::initiate(g, s, play_card.target)
                 }),
-                Delegate::ManaCost(QueryDelegate {
+                GameDelegate::ManaCost(QueryDelegate {
                     requirement: requirements::matching_raid,
                     transformation: |g, _s, card_id, current| {
                         if g.card(*card_id).definition().card_type == CardType::Minion {

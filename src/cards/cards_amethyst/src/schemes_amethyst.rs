@@ -26,7 +26,7 @@ use game_data::card_definition::{
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::delegate_data::{Delegate, EventDelegate, QueryDelegate};
+use game_data::delegate_data::{EventDelegate, GameDelegate, QueryDelegate};
 use rules::mutations::SummonMinion;
 use rules::{draw_cards, mana, mutations, queries};
 
@@ -71,7 +71,7 @@ pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
             text: text![
                 "When this scheme is scored by either player, summon a face-down minion for free"
             ],
-            delegates: vec![Delegate::ScoreCard(EventDelegate {
+            delegates: vec![GameDelegate::ScoreCard(EventDelegate {
                 requirement: this_card,
                 mutation: |g, s, _| {
                     if let Some(minion_id) =
@@ -115,7 +115,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
                 on_scored_by_covenant(|g, s, _| {
                     draw_cards::run(g, s.side(), 2, s.initiated_by()).map(|_| ())
                 }),
-                Delegate::MaximumHandSize(QueryDelegate {
+                GameDelegate::MaximumHandSize(QueryDelegate {
                     requirement: scored_by_owner,
                     transformation: |_, s, side, current| {
                         if s.side() == *side {
