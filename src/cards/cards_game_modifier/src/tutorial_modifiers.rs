@@ -13,11 +13,12 @@
 // limitations under the License.
 
 use assets::rexard_images;
+use card_definition_data::ability_data::Ability;
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::requirements::always;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, RoomId, School, Side};
-use game_data::card_configuration::{Ability, CardConfig, Cost};
+use game_data::card_configuration::{CardConfig, Cost};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{EventDelegate, GameDelegate, QueryDelegate};

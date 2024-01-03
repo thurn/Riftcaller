@@ -24,13 +24,12 @@ use anyhow::Result;
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives;
 use core_data::game_primitives::{
-    AbilityId, ActionCount, AttackValue, BreachValue, CardId, HealthValue, ManaValue, PointsValue,
+    ActionCount, AttackValue, BreachValue, CardId, HealthValue, ManaValue, PointsValue,
     PowerChargeValue, ProgressValue, RazeCost, RoomId, School, ShieldValue, Sprite,
 };
 use enum_kinds::EnumKind;
 
 use crate::card_name::CardMetadata;
-use crate::delegate_data::GameDelegate;
 use crate::game_state::GameState;
 use crate::special_effects::{ProjectileData, TimedEffectData};
 use crate::text::TextElement;
@@ -204,77 +203,6 @@ impl<T> Debug for TargetRequirement<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let kind: TargetRequirementKind = self.into();
         write!(f, "{kind:?}")
-    }
-}
-
-/// Possible types of ability
-#[derive(Debug, Clone, EnumKind)]
-#[enum_kind(AbilityTypeKind)]
-pub enum AbilityType {
-    /// Standard abilities function at all times without requiring activation.
-    Standard,
-
-    /// Activated abilities have an associated cost in order to be used.
-    Activated { cost: Cost<AbilityId>, target_requirement: TargetRequirement<AbilityId> },
-}
-
-/// Abilities are the unit of action in Riftcaller. Their behavior is provided
-/// by the Delegate system, see delegate_data for more information.
-#[derive(Debug)]
-pub struct Ability {
-    pub ability_type: AbilityType,
-    pub text: Vec<TextElement>,
-    pub delegates: Vec<GameDelegate>,
-}
-
-impl Ability {
-    pub fn new(text: Vec<TextElement>) -> Self {
-        Self { ability_type: AbilityType::Standard, text, delegates: vec![] }
-    }
-
-    pub fn new_with_delegate(text: Vec<TextElement>, delegate: GameDelegate) -> Self {
-        Self { ability_type: AbilityType::Standard, text, delegates: vec![delegate] }
-    }
-
-    pub fn delegate(mut self, delegate: GameDelegate) -> Self {
-        self.delegates.push(delegate);
-        self
-    }
-}
-
-/// Builder helper for activated abilities
-#[derive(Debug)]
-pub struct ActivatedAbility {
-    cost: Cost<AbilityId>,
-    text: Vec<TextElement>,
-    target_requirement: TargetRequirement<AbilityId>,
-    delegates: Vec<GameDelegate>,
-}
-
-impl ActivatedAbility {
-    pub fn new(cost: Cost<AbilityId>, text: Vec<TextElement>) -> Self {
-        Self { cost, text, target_requirement: TargetRequirement::None, delegates: vec![] }
-    }
-
-    pub fn target_requirement(mut self, requirement: TargetRequirement<AbilityId>) -> Self {
-        self.target_requirement = requirement;
-        self
-    }
-
-    pub fn delegate(mut self, delegate: GameDelegate) -> Self {
-        self.delegates.push(delegate);
-        self
-    }
-
-    pub fn build(self) -> Ability {
-        Ability {
-            ability_type: AbilityType::Activated {
-                cost: self.cost,
-                target_requirement: self.target_requirement,
-            },
-            text: self.text,
-            delegates: self.delegates,
-        }
     }
 }
 

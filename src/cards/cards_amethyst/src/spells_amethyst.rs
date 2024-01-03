@@ -15,13 +15,12 @@
 //! Card definitions for the Spell card type & Riftcaller player
 
 use assets::rexard_images;
+use card_definition_data::ability_data::{Ability, AbilityType};
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::raids::{add_sanctum_access, add_vault_access};
 use card_helpers::*;
 use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomId, School, Side};
-use game_data::card_configuration::{
-    Ability, AbilityType, CardConfig, CardConfigBuilder, TargetRequirement,
-};
+use game_data::card_configuration::{CardConfig, CardConfigBuilder, TargetRequirement};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{GameDelegate, QueryDelegate};

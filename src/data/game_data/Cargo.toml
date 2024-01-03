@@ -9,6 +9,10 @@ edition = "2021"
 doctest = false
 
 [dependencies]
+macros = { path = "../../macros", version = "0.0.0" }
+core_data = { path = "../core_data", version = "0.0.0" }
+with_error = { path = "../../with_error", version = "0.0.0" }
+
 anyhow = "1.0.58"
 clap = {version = "3.2.16", features = ["derive"]}
 convert_case = "0.5.0"
@@ -22,7 +26,3 @@ serde_with = "1.14.0"
 strum = "0.24.1"
 strum_macros = "0.24.2"
 ulid = { version = "1.0.0", features = ["serde"] }
-
-macros = { path = "../../macros", version = "0.0.0" }
-core_data = { path = "../core_data", version = "0.0.0" }
-with_error = { path = "../../with_error", version = "0.0.0" }

@@ -17,8 +17,9 @@
 use std::iter;
 
 use anyhow::Result;
+use card_definition_data::ability_data::AbilityType;
 use core_data::game_primitives::{AbilityId, CardId, RoomId, Side};
-use game_data::card_configuration::{AbilityType, TargetRequirement};
+use game_data::card_configuration::TargetRequirement;
 use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, GameStateAction};
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{GamePrompt, PromptAction};

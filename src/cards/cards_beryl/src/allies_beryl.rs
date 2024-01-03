@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
 use core_data::game_primitives::{
@@ -19,9 +20,7 @@ use core_data::game_primitives::{
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_configuration::{
-    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, TargetRequirement,
-};
+use game_data::card_configuration::{CardConfig, CardConfigBuilder, TargetRequirement};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardCounter;

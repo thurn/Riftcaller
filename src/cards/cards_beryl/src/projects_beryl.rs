@@ -15,13 +15,14 @@
 use std::cmp;
 
 use anyhow::Result;
+use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::{costs, delegates, history, in_play, requirements, text, this};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_configuration::{Ability, ActivatedAbility, CardConfigBuilder};
+use game_data::card_configuration::CardConfigBuilder;
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;

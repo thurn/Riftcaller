@@ -15,14 +15,13 @@
 //! Core functions for querying the current state of a game
 
 use anyhow::Result;
+use card_definition_data::ability_data::AbilityType;
 use constants::game_constants;
 use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CardType, HealthValue,
     ItemLocation, ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
-use game_data::card_configuration::{
-    AbilityType, AttackBoost, CardStats, Cost, Resonance, TargetRequirement,
-};
+use game_data::card_configuration::{AttackBoost, CardStats, Cost, Resonance, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, BaseAttackQuery, BreachValueQuery, HealthValueQuery,

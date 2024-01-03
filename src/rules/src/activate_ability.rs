@@ -13,9 +13,10 @@
 // limitations under the License.
 
 use anyhow::Result;
+use card_definition_data::ability_data::AbilityType;
 use core_data::game_primitives::{AbilityId, InitiatedBy};
 use game_data::animation_tracker::GameAnimation;
-use game_data::card_configuration::{AbilityType, Cost};
+use game_data::card_configuration::Cost;
 use game_data::delegate_data::{AbilityActivated, ActivateAbilityEvent};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;

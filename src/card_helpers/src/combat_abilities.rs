@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_definition_data::ability_data::{Ability, AbilityType};
 use core_data::game_primitives::{ActionCount, DamageAmount, InitiatedBy, ManaValue, Side};
-use game_data::card_configuration::{Ability, AbilityType};
 use game_data::delegate_data::RaidOutcome;
 use game_data::text::TextToken::*;
 use rules::mana::ManaPurpose;

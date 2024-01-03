@@ -15,11 +15,12 @@
 //! Functions to query boolean game information, typically whether some game
 //! action can currently be taken
 
+use card_definition_data::ability_data::AbilityType;
 use constants::game_constants;
 use core_data::game_primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, RoomLocation, Side,
 };
-use game_data::card_configuration::{AbilityType, TargetRequirement};
+use game_data::card_configuration::TargetRequirement;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     CanActivateAbility, CanActivateAbilityQuery, CanCovenantScoreSchemeQuery,

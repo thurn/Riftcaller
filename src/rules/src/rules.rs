@@ -16,10 +16,10 @@
 
 use std::collections::HashMap;
 
+use card_definition_data::ability_data::Ability;
 use card_definition_data::card_definition::CardDefinition;
 use core_data::game_primitives::AbilityId;
 use dashmap::DashSet;
-use game_data::card_configuration::Ability;
 use game_data::card_name::{CardMetadata, CardVariant};
 use game_data::card_state::CardState;
 use game_data::game_state::GameState;

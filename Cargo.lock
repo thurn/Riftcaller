@@ -17,6 +17,7 @@ name = "actions"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "card_definition_data",
  "constants",
  "core_data",
  "enum-iterator",
@@ -418,8 +419,10 @@ checksum = "c4872d67bab6358e59559027aa3b9157c53d9358c51423c17554809a8858e0f8"
 name = "card_definition_data"
 version = "0.0.0"
 dependencies = [
+ "adventure_data",
  "anyhow",
  "core_data",
+ "enum-kinds",
  "game_data",
  "with_error",
 ]
@@ -429,6 +432,7 @@ name = "card_helpers"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "card_definition_data",
  "core_data",
  "game_data",
  "prompt_ui",

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use game_data::card_configuration::Ability;
+use card_definition_data::ability_data::Ability;
 use game_data::delegate_data::Scope;
 use game_data::game_state::GameState;
 use game_data::text::TextToken;

@@ -15,10 +15,11 @@
 //! Card definitions for the Spell card type & Covenant player
 
 use assets::rexard_images;
+use card_definition_data::ability_data::Ability;
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
-use game_data::card_configuration::{Ability, CardConfig, CardConfigBuilder, TargetRequirement};
+use game_data::card_configuration::{CardConfig, CardConfigBuilder, TargetRequirement};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use rules::{flags, mana, mutations};

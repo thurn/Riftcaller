@@ -15,9 +15,11 @@
 use core_data::game_primitives::{
     AbilityId, AbilityIndex, CardId, CardSubtype, CardType, Rarity, School, Side, Sprite,
 };
-use game_data::card_configuration::{Ability, CardConfig, Cost};
+use game_data::card_configuration::{CardConfig, Cost};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_set_name::CardSetName;
+
+use crate::ability_data::Ability;
 
 /// The fundamental object defining the behavior of a given card in Riftcaller
 ///

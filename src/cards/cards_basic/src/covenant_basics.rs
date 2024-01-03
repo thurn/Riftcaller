@@ -14,15 +14,14 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_definition_data::ability_data::{Ability, AbilityType};
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::costs::scheme;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
 use card_helpers::{combat_abilities, *};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::card_configuration::{
-    Ability, AbilityType, CardConfig, CardConfigBuilder, Resonance, SchemePoints,
-};
+use game_data::card_configuration::{CardConfig, CardConfigBuilder, Resonance, SchemePoints};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use rules::mutations::OnZeroStored;
