@@ -217,6 +217,8 @@ pub enum CardName {
     TestSpellReturnAllYourPermanentsToHand,
     /// Destroy all Riftcaller permanents
     TestRitualDestroyAllEnemyPermanents,
+    TestAllyAccessAdditionalSanctumCard,
+    TestAllyAccessAdditionalVaultCard,
 
     // Proof of Concept
     GoldMine,
@@ -377,6 +379,7 @@ pub enum CardName {
     DusksAscension,
     NobleMartyr,
     SariandiPhaseWalker,
+    RiftAdept,
 }
 
 impl CardName {

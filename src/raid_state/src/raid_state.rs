@@ -27,11 +27,11 @@ use game_data::delegate_data::{
     WillPopulateSummonPromptEvent,
 };
 use game_data::game_actions::RaidAction;
-use game_data::game_state::{GamePhase, GameState, RaidJumpRequest};
+use game_data::game_state::{GamePhase, GameState};
 use game_data::history_data::HistoryEvent;
 use game_data::raid_data::{
-    PopulateAccessPromptSource, RaidChoice, RaidData, RaidInfo, RaidLabel, RaidState, RaidStatus,
-    RaidStep, ScoredCard, WeaponInteraction,
+    PopulateAccessPromptSource, RaidChoice, RaidData, RaidInfo, RaidJumpRequest, RaidLabel,
+    RaidState, RaidStatus, RaidStep, ScoredCard, WeaponInteraction,
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
@@ -197,6 +197,11 @@ fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
         RaidJumpRequest::ChangeTarget(target) => {
             debug!(?target, "Handling RaidJumpRequest::ChangeTarget");
             game.raid_mut()?.target = target;
+        }
+        RaidJumpRequest::AddAdditionalTargetRoom(target) => {
+            debug!(?target, "Handling RaidJumpRequest::AddAdditionalTargetRoom");
+            game.raid_mut()?.target = target;
+            game.raid_mut()?.state = RaidState::Step(RaidStep::AccessStart)
         }
         RaidJumpRequest::EvadeCurrentMinion => {
             debug!("Handling RaidJumpRequest::EvadeCurrentMinion");

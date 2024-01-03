@@ -67,6 +67,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::allies_beryl::spellcraft_ritualist);
     DEFINITIONS.insert(cards_beryl::allies_beryl::blue_warden);
     DEFINITIONS.insert(cards_beryl::allies_beryl::noble_martyr);
+    DEFINITIONS.insert(cards_beryl::allies_beryl::rift_adept);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::pathfinder);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::staff_of_the_valiant);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::triumph);
@@ -206,4 +207,6 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_summon_all_minions);
     DEFINITIONS.insert(cards_test::test_cards::test_spell_return_all_your_permanents_to_hand);
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_destroy_all_enemy_permanents);
+    DEFINITIONS.insert(cards_test::test_cards::test_ally_access_additional_sanctum_card);
+    DEFINITIONS.insert(cards_test::test_cards::test_ally_access_additional_vault_card);
 }

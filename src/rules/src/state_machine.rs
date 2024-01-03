@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt::Debug;
+
 use anyhow::Result;
 use core_data::game_primitives::Side;
 use game_data::game_state::{GamePhase, GameState};
 use game_data::prompt_data::GamePrompt;
+use tracing::debug;
 
 use crate::prompts;
 
@@ -38,7 +41,7 @@ use crate::prompts;
 pub trait StateMachine: Sized + Clone {
     /// A named step within the state machine, corresponding to some required
     /// game mutation.
-    type Step;
+    type Step: Debug;
 
     /// Obtain the current state machine stack from an ongoing game
     fn get(game: &GameState) -> &Vec<Self>;
@@ -93,6 +96,7 @@ pub fn run<T: StateMachine>(game: &mut GameState) -> Result<()> {
 
         if let Some(current) = T::get(game).last() {
             let step = current.step();
+            debug!(?step, "Evaluating state machine state");
             if let Some(next_step) = T::evaluate(game, step, current.clone())? {
                 if let Some(current) = T::get_mut(game).last_mut() {
                     *current.step_mut() = next_step;

@@ -792,3 +792,37 @@ pub fn test_ritual_destroy_all_enemy_permanents(metadata: CardMetadata) -> CardD
         ..test_ritual(metadata)
     }
 }
+
+pub fn test_ally_access_additional_sanctum_card(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestAllyAccessAdditionalSanctumCard,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(5),
+        card_type: CardType::Ally,
+        subtypes: vec![],
+        abilities: vec![Ability::new(text![
+            "When you raid the",
+            Sanctum,
+            ", access an additional card"
+        ])
+        .delegate(in_play::on_query_sanctum_access_count(|_, _, _, current| current + 1))],
+        ..test_spell(meta)
+    }
+}
+
+pub fn test_ally_access_additional_vault_card(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestAllyAccessAdditionalVaultCard,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(5),
+        card_type: CardType::Ally,
+        subtypes: vec![],
+        abilities: vec![Ability::new(text![
+            "When you raid the",
+            Vault,
+            ", access an additional card"
+        ])
+        .delegate(in_play::on_query_vault_access_count(|_, _, _, current| current + 1))],
+        ..test_spell(meta)
+    }
+}

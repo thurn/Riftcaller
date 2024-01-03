@@ -20,7 +20,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::delegate_data::{AccessEvent, RaidEvent};
 use crate::game_actions::RazeCardActionType;
-use crate::game_state::RaidJumpRequest;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
 pub struct WeaponInteraction {
@@ -272,4 +271,35 @@ pub enum RaidDisplayState {
     None,
     Defenders(Vec<CardId>),
     Access,
+}
+
+/// Some card abilities completely change the state of a Raid, for example to
+/// target a different room or encounter a different minion. Setting a jump
+/// request on the [RaidData] asks the raid system to execute the related
+/// transformation when possible.
+///
+/// This always happens *after* processing the current raid state and only if
+/// the raid is still active, i.e. it cannot be used to stop the effects of a
+/// user action from happening.
+///
+/// Only one jump request is supported at a time, on a 'last write wins' basis.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum RaidJumpRequest {
+    /// Change the minion currently being encountered to a given minion card
+    EncounterMinion(CardId),
+
+    /// Change the target room of a raid
+    ChangeTarget(RoomId),
+
+    /// Change the target room of this raid and update the state to the
+    /// `AccessStart` step.
+    AddAdditionalTargetRoom(RoomId),
+
+    /// Evades a minion during a raid. Use `mutations::evade_current_minion`
+    /// instead of applying this directly.
+    EvadeCurrentMinion,
+
+    /// Defeats a minion during a raid. This is similar to evading a minion
+    /// but triggers any "on defeated" effects.
+    DefeatCurrentMinion,
 }

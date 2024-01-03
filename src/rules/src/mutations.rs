@@ -40,7 +40,8 @@ use game_data::delegate_data::{
     SummonProjectEvent,
 };
 use game_data::flag_data::AbilityFlag;
-use game_data::game_state::{GamePhase, GameState, RaidJumpRequest, TurnData, TurnState};
+use game_data::game_state::{GamePhase, GameState, TurnData, TurnState};
+use game_data::raid_data::RaidJumpRequest;
 use game_data::random;
 use tracing::{debug, instrument};
 use with_error::{fail, verify};

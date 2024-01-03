@@ -26,12 +26,13 @@ use game_data::delegate_data::{
 };
 use game_data::game_actions::{CardTarget, GameAction, GameStateAction};
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GamePhase, GameState, MulliganDecision, RaidJumpRequest, TurnState};
+use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::history_data::HistoryEvent;
 use game_data::prompt_data::{
     BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, FromZone,
     GamePrompt, PromptAction, PromptChoice, PromptContext, RoomSelectorPromptEffect,
 };
+use game_data::raid_data::RaidJumpRequest;
 use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
 use rules::mana::ManaPurpose;

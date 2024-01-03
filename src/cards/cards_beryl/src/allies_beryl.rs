@@ -28,15 +28,19 @@ use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GameState, RaidJumpRequest};
+use game_data::game_state::GameState;
 use game_data::prompt_data::{PromptChoice, PromptData};
+use game_data::raid_data::RaidJumpRequest;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mutations::OnZeroStored;
-use rules::visual_effects::VisualEffects;
-use rules::{curses, draw_cards, mana, mutations, prompts, queries, wounds, CardDefinitionExt};
+use rules::visual_effects::{ShowAlert, VisualEffects};
+use rules::{
+    curses, draw_cards, mana, mutations, prompts, queries, visual_effects, wounds,
+    CardDefinitionExt,
+};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -52,6 +56,7 @@ pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
         abilities: vec![Ability::new(text![
             "When you raid the",
             Sanctum,
+            ", access",
             meta.upgrade("an additional card", "two additional cards")
         ])
         .delegate(in_play::on_query_sanctum_access_count(|_, s, _, current| {
@@ -360,6 +365,44 @@ pub fn noble_martyr(meta: CardMetadata) -> CardDefinition {
             .custom_targeting(TargetRequirement::TargetRoom(|g, _, room_id| {
                 g.defenders_unordered(room_id).any(|card| queries::shield(g, card.id, None) <= 2)
             }))
+            .build(),
+    }
+}
+
+pub fn rift_adept(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::RiftAdept,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(5, 3)),
+        image: assets::riftcaller_card(meta, "rift_adept"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Mage],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![Ability::new(text![
+            "When you finish accessing the",
+            Crypt,
+            ", access the",
+            Vault
+        ])
+        .delegate(in_play::on_raid_access_end(|g, s, event| {
+            if event.target == RoomId::Crypt {
+                visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                mutations::apply_raid_jump(
+                    g,
+                    RaidJumpRequest::AddAdditionalTargetRoom(RoomId::Vault),
+                );
+            }
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(17))
+                    .scale(2.0)
+                    .effect_color(design::BLUE_500)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic3_TimeStop_Full")),
+            )
             .build(),
     }
 }

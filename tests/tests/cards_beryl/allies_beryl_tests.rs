@@ -203,3 +203,44 @@ fn noble_martyr_shield_3() {
     let id = g.add_to_hand(CardName::NobleMartyr);
     assert!(g.play_card_with_result(id, g.user_id(), Some(RoomId::Vault)).is_err());
 }
+
+#[test]
+fn rift_adept() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(TestSide::new(Side::Covenant).deck_top(CardName::TestScheme3_10))
+        .build();
+    g.create_and_play(CardName::RiftAdept);
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+    g.click(Button::Score);
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().score(), 10);
+}
+
+#[test]
+fn rift_adept_multiaccess() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    g.create_and_play(CardName::TestAllyAccessAdditionalVaultCard);
+    g.create_and_play(CardName::RiftAdept);
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+
+    // Regular multiaccess is allowed
+    assert_eq!(g.client.cards.browser().len(), 2);
+}
+
+#[test]
+fn rift_adept_godmir() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::GodmirSparkOfDefiance))
+            .build();
+    g.create_and_play(CardName::RiftAdept);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Crypt);
+    g.click(Button::EndRaid);
+
+    // This doesn't count as 'having accessed the crypt this turn' because that raid
+    // has not yet ended.
+    assert_eq!(g.client.cards.browser().len(), 1);
+}

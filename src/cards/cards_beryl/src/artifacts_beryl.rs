@@ -32,8 +32,9 @@ use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
 use game_data::game_actions::CardTarget;
 use game_data::game_effect::GameEffect;
-use game_data::game_state::{GameState, RaidJumpRequest};
+use game_data::game_state::GameState;
 use game_data::prompt_data::{PromptChoice, PromptData};
+use game_data::raid_data::RaidJumpRequest;
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
