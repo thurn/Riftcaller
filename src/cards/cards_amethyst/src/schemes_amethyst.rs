@@ -44,10 +44,10 @@ pub fn gold_mine(_: CardMetadata) -> CardDefinition {
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
             text: named_trigger(Score, text![GainMana(7)]),
-            delegates: vec![on_scored_by_covenant(|g, s, _| {
+            delegates: abilities::game(vec![on_scored_by_covenant(|g, s, _| {
                 mana::gain(g, s.side(), 7);
                 Ok(())
-            })],
+            })]),
         }],
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 4, points: 20 })
@@ -71,7 +71,7 @@ pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
             text: text![
                 "When this scheme is scored by either player, summon a face-down minion for free"
             ],
-            delegates: vec![GameDelegate::ScoreCard(EventDelegate {
+            delegates: abilities::game(vec![GameDelegate::ScoreCard(EventDelegate {
                 requirement: this_card,
                 mutation: |g, s, _| {
                     if let Some(minion_id) =
@@ -86,7 +86,7 @@ pub fn activate_reinforcements(_: CardMetadata) -> CardDefinition {
                     }
                     Ok(())
                 },
-            })],
+            })]),
         }],
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 5, points: 30 })
@@ -111,7 +111,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
                 Score,
                 text![text!["Draw", 2, "cards"], text!["You get", Plus(2), "maximum hand size"]],
             ),
-            delegates: vec![
+            delegates: abilities::game(vec![
                 on_scored_by_covenant(|g, s, _| {
                     draw_cards::run(g, s.side(), 2, s.initiated_by()).map(|_| ())
                 }),
@@ -125,7 +125,7 @@ pub fn research_project(_: CardMetadata) -> CardDefinition {
                         }
                     },
                 }),
-            ],
+            ]),
         }],
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 3, points: 10 })

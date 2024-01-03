@@ -14,7 +14,7 @@
 
 //! Helpers for defining common card abilities
 
-use card_definition_data::ability_data::{Ability, AbilityType};
+use card_definition_data::ability_data::{Ability, AbilityType, Delegate};
 use core_data::game_primitives::{AbilityId, InitiatedBy, ManaValue, INNER_ROOMS};
 use game_data::card_configuration::{Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
@@ -35,6 +35,11 @@ use crate::*;
 /// Helper to flatten a list of `Option` and remove `None` values.
 pub fn some(abilities: Vec<Option<Ability>>) -> Vec<Ability> {
     abilities.into_iter().flatten().collect()
+}
+
+/// Wraps a vector of [GameDelegate]s into [Delegate]s
+pub fn game(abilities: Vec<GameDelegate>) -> Vec<Delegate> {
+    abilities.into_iter().map(Delegate::GameDelegate).collect()
 }
 
 /// Returns the provided [Ability] only for upgraded versions of a card.
@@ -88,23 +93,18 @@ pub fn store_mana_on_play<const N: ManaValue>() -> Ability {
 /// Store `N` mana in this card when played. Move it to the discard pile when
 /// the stored mana is depleted.
 pub fn store_mana_on_play_discard_on_empty<const N: ManaValue>() -> Ability {
-    Ability {
-        ability_type: AbilityType::Standard,
-        text: text_helpers::named_trigger(Play, text![StoreMana(N)]),
-        delegates: vec![
-            GameDelegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
-                g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);
+    Ability::new(text_helpers::named_trigger(Play, text![StoreMana(N)]))
+        .delegate(GameDelegate::PlayCard(EventDelegate::new(this_card, |g, _s, played| {
+            g.card_mut(played.card_id).set_counters(CardCounter::StoredMana, N);
+            Ok(())
+        })))
+        .delegate(GameDelegate::StoredManaTaken(EventDelegate::new(this_card, |g, s, card_id| {
+            if g.card(*card_id).counters(CardCounter::StoredMana) == 0 {
+                mutations::move_card(g, *card_id, CardPosition::DiscardPile(s.side()))
+            } else {
                 Ok(())
-            })),
-            GameDelegate::StoredManaTaken(EventDelegate::new(this_card, |g, s, card_id| {
-                if g.card(*card_id).counters(CardCounter::StoredMana) == 0 {
-                    mutations::move_card(g, *card_id, CardPosition::DiscardPile(s.side()))
-                } else {
-                    Ok(())
-                }
-            })),
-        ],
-    }
+            }
+        })))
 }
 
 /// Activated ability to take `N` stored mana from this card by paying a cost
@@ -112,23 +112,19 @@ pub fn activated_take_mana<const N: ManaValue>(cost: Cost<AbilityId>) -> Ability
     Ability {
         ability_type: AbilityType::Activated { cost, target_requirement: TargetRequirement::None },
         text: text![TakeMana(N)],
-        delegates: vec![this::on_activated(|g, _s, activated| {
+        delegates: vec![Delegate::GameDelegate(this::on_activated(|g, _s, activated| {
             mutations::take_stored_mana(g, activated.card_id(), N, OnZeroStored::Sacrifice)
                 .map(|_| ())
-        })],
+        }))],
     }
 }
 
 /// An ability which allows a card to have progress counters placed on it.
 pub fn can_progress() -> Ability {
-    Ability {
-        ability_type: AbilityType::Standard,
-        text: text![CanProgress],
-        delegates: vec![GameDelegate::CanProgressCard(QueryDelegate {
-            requirement: this_card,
-            transformation: delegates::allow,
-        })],
-    }
+    Ability::new(text![CanProgress]).delegate(GameDelegate::CanProgressCard(QueryDelegate {
+        requirement: this_card,
+        transformation: delegates::allow,
+    }))
 }
 
 /// An [AbilityType] for an ability with "Sacrifice:" as its only cost.

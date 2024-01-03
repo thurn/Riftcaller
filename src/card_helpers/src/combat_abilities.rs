@@ -20,7 +20,7 @@ use rules::mana::ManaPurpose;
 use rules::{damage, end_raid, mana, mutations};
 
 use crate::text_macro::text;
-use crate::{text_helpers, this};
+use crate::{abilities, text_helpers, this};
 
 /// Minion combat ability which deals damage to the Riftcaller player during
 /// combat, causing them to discard `N` random cards and lose the game if they
@@ -29,7 +29,7 @@ pub fn deal_damage<const N: DamageAmount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text![DealDamage(N)]),
-        delegates: vec![this::combat(|g, s, _| damage::deal(g, s, N))],
+        delegates: abilities::game(vec![this::combat(|g, s, _| damage::deal(g, s, N))]),
     }
 }
 
@@ -48,9 +48,9 @@ pub fn end_raid() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text!["End the raid"]),
-        delegates: vec![this::combat(|g, s, _| {
+        delegates: abilities::game(vec![this::combat(|g, s, _| {
             end_raid::run(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
-        })],
+        })]),
     }
 }
 
@@ -59,10 +59,10 @@ pub fn gain_mana<const N: ManaValue>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text![GainMana(N)]),
-        delegates: vec![this::combat(|g, _, _| {
+        delegates: abilities::game(vec![this::combat(|g, _, _| {
             mana::gain(g, Side::Covenant, N);
             Ok(())
-        })],
+        })]),
     }
 }
 
@@ -72,8 +72,8 @@ pub fn lose_action_points<const N: ActionCount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text!["Remove", Actions(1)]),
-        delegates: vec![this::combat(|g, _s, _| {
+        delegates: abilities::game(vec![this::combat(|g, _s, _| {
             mutations::lose_action_points_if_able(g, Side::Riftcaller, N)
-        })],
+        })]),
     }
 }

@@ -66,14 +66,14 @@ pub fn coup_de_grace(_: CardMetadata) -> CardDefinition {
                 text!["Raid the", Sanctum, "or", Vault, ", accessing", 1, "additional card"],
                 text!["If successful, draw a card"]
             ],
-            delegates: vec![
+            delegates: abilities::game(vec![
                 this::on_played(|g, s, play_card| raids::initiate(g, s, play_card.target)),
                 add_vault_access::<1>(requirements::matching_raid),
                 add_sanctum_access::<1>(requirements::matching_raid),
                 on_raid_success(requirements::matching_raid, |g, s, _| {
                     draw_cards::run(g, s.side(), 1, s.initiated_by()).map(|_| ())
                 }),
-            ],
+            ]),
         }],
         config: CardConfigBuilder::new()
             .custom_targeting(TargetRequirement::TargetRoom(|g, _, room_id| {
@@ -130,7 +130,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                 text![BeginARaid],
                 text!["During that raid, summon costs are increased by", Mana(3)]
             ],
-            delegates: vec![
+            delegates: abilities::game(vec![
                 this::on_played(|g, s, play_card| {
                     card_helpers::raids::initiate(g, s, play_card.target)
                 }),
@@ -144,7 +144,7 @@ pub fn stealth_mission(_: CardMetadata) -> CardDefinition {
                         }
                     },
                 }),
-            ],
+            ]),
         }],
         config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }

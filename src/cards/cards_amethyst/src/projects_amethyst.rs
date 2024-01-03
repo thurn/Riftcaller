@@ -48,14 +48,14 @@ pub fn gemcarver(_: CardMetadata) -> CardDefinition {
                     Dusk,
                     text![text![TakeMana(3)], text!["When empty, draw a card"]],
                 ),
-                delegates: vec![in_play::at_dusk(|g, s, _| {
+                delegates: abilities::game(vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     if g.card(s.card_id()).counters(CardCounter::StoredMana) == 0 {
                         draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                     }
                     VisualEffects::new().ability_alert(s).apply(g);
                     Ok(())
-                })],
+                })]),
             },
         ],
         config: CardConfigBuilder::new().raze_cost(2).build(),

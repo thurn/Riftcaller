@@ -410,7 +410,7 @@ pub fn triggered_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
             Ability {
                 ability_type: AbilityType::Standard,
                 text: named_trigger(Dusk, text![TakeMana(test_constants::MANA_TAKEN)]),
-                delegates: vec![in_play::at_dusk(|g, s, _| {
+                delegates: abilities::game(vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(
                         g,
                         s.card_id(),
@@ -418,7 +418,7 @@ pub fn triggered_ability_take_mana(metadata: CardMetadata) -> CardDefinition {
                         OnZeroStored::Sacrifice,
                     )?;
                     Ok(())
-                })],
+                })]),
             },
         ],
         config: CardConfigBuilder::new().raze_cost(test_constants::RAZE_COST).build(),
@@ -558,10 +558,10 @@ pub fn test_sacrifice_draw_card_artifact(metadata: CardMetadata) -> CardDefiniti
         abilities: vec![Ability {
             ability_type: abilities::sacrifice_this(),
             text: text!["Draw a card"],
-            delegates: vec![on_activated(|g, s, _| {
+            delegates: abilities::game(vec![on_activated(|g, s, _| {
                 draw_cards::run(g, s.side(), 1, s.initiated_by())?;
                 Ok(())
-            })],
+            })]),
         }],
         config: CardConfig::default(),
         ..test_spell(metadata)
@@ -577,9 +577,9 @@ pub fn test_sacrifice_end_raid_project(metadata: CardMetadata) -> CardDefinition
         abilities: vec![Ability {
             ability_type: abilities::sacrifice_this(),
             text: text!["End the raid"],
-            delegates: vec![on_activated(|g, s, _| {
+            delegates: abilities::game(vec![on_activated(|g, s, _| {
                 end_raid::run(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
-            })],
+            })]),
         }],
         config: CardConfig::default(),
         ..test_ritual(metadata)
@@ -602,7 +602,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
                     ManaMinus(2),
                     "to play this turn"
                 ],
-                delegates: vec![GameDelegate::ManaCost(QueryDelegate {
+                delegates: abilities::game(vec![GameDelegate::ManaCost(QueryDelegate {
                     requirement: this_card,
                     transformation: |g, _, _, value| {
                         if history::rooms_accessed_this_turn(g).count() > 0 {
@@ -611,7 +611,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
                             value
                         }
                     },
-                })],
+                })]),
             },
             abilities::encounter_boost(),
         ],

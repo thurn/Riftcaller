@@ -18,6 +18,7 @@
 use std::fmt::Debug;
 
 use anyhow::Result;
+use card_definition_data::ability_data::Delegate;
 use card_definition_data::card_definition::CardDefinition;
 use core_data::game_primitives::{AbilityId, CardId};
 use game_data::card_name::CardMetadata;
@@ -46,10 +47,12 @@ pub fn add_card_to_delegate_map(
         let ability_id = AbilityId::new(card_id, index);
         let scope = Scope::new(ability_id, metadata);
         for delegate in &ability.delegates {
-            map.lookup
-                .entry(delegate.kind())
-                .or_default()
-                .push(DelegateContext { delegate: delegate.clone(), scope });
+            if let Delegate::GameDelegate(d) = delegate {
+                map.lookup
+                    .entry(d.kind())
+                    .or_default()
+                    .push(DelegateContext { delegate: d.clone(), scope });
+            }
         }
     }
 }
@@ -65,9 +68,11 @@ pub fn remove_card_from_delegate_map(
 ) {
     for (_, ability) in definition.abilities.iter().enumerate() {
         for delegate in &ability.delegates {
-            map.lookup
-                .entry(delegate.kind())
-                .and_modify(|list| list.retain(|context| context.scope.card_id() != card_id));
+            if let Delegate::GameDelegate(d) = delegate {
+                map.lookup
+                    .entry(d.kind())
+                    .and_modify(|list| list.retain(|context| context.scope.card_id() != card_id));
+            }
         }
     }
 }

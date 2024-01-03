@@ -50,9 +50,9 @@ pub fn invisibility_ring(_: CardMetadata) -> CardDefinition {
                 1,
                 "additional card"
             ],
-            delegates: vec![add_sanctum_access::<1>(
+            delegates: abilities::game(vec![add_sanctum_access::<1>(
                 requirements::no_sanctum_access::<FaceUpInPlay>,
-            )],
+            )]),
         }],
         config: CardConfig::default(),
     }
@@ -81,7 +81,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
             Ability {
                 ability_type: activate_for_action(),
                 text: text![StoreMana(1), ", then take all stored", ManaSymbol],
-                delegates: vec![on_activated(|g, s, activated| {
+                delegates: abilities::game(vec![on_activated(|g, s, activated| {
                     let mana = add_stored_mana(g, s.card_id(), 1);
                     mutations::take_stored_mana(
                         g,
@@ -90,7 +90,7 @@ pub fn accumulator(_: CardMetadata) -> CardDefinition {
                         OnZeroStored::Ignore,
                     )?;
                     Ok(())
-                })],
+                })]),
             },
         ],
         config: CardConfig::default(),
@@ -122,7 +122,7 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
                     text!["Raid an", InnerRoom, "you have not raided this turn"],
                     text!["If successful,", TakeMana(3)]
                 ],
-                delegates: vec![
+                delegates: abilities::game(vec![
                     on_activated(|g, s, activated| {
                         card_helpers::raids::initiate(g, s, activated.target)
                     }),
@@ -130,7 +130,7 @@ pub fn mage_gloves(_: CardMetadata) -> CardDefinition {
                         mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                         Ok(())
                     }),
-                ],
+                ]),
             },
         ],
         config: CardConfig::default(),
@@ -156,10 +156,10 @@ pub fn magical_resonator(_: CardMetadata) -> CardDefinition {
                     target_requirement: TargetRequirement::None,
                 },
                 text: text![text![TakeMana(3)], text!["Use this ability once per turn"]],
-                delegates: vec![on_activated(|g, s, _| {
+                delegates: abilities::game(vec![on_activated(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     Ok(())
-                })],
+                })]),
             },
         ],
         config: CardConfig::default(),

@@ -46,7 +46,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
                     ManaMinus(2),
                     "to play this turn"
                 ],
-                delegates: vec![GameDelegate::ManaCost(QueryDelegate {
+                delegates: abilities::game(vec![GameDelegate::ManaCost(QueryDelegate {
                     requirement: this_card,
                     transformation: |g, _, _, value| {
                         if history::rooms_accessed_this_turn(g).count() > 0 {
@@ -55,7 +55,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
                             value
                         }
                     },
-                })],
+                })]),
             },
             abilities::encounter_boost(),
         ],

@@ -119,10 +119,10 @@ pub fn coinery(_: CardMetadata) -> CardDefinition {
             Ability {
                 ability_type: activate_for_action(),
                 text: text![TakeMana(3)],
-                delegates: vec![on_activated(|g, s, _| {
+                delegates: abilities::game(vec![on_activated(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     Ok(())
-                })],
+                })]),
             },
         ],
         config: CardConfigBuilder::new().raze_cost(3).build(),
@@ -143,10 +143,10 @@ pub fn leyline(_: CardMetadata) -> CardDefinition {
         abilities: vec![Ability {
             ability_type: AbilityType::Standard,
             text: named_trigger(Dusk, text!["Gain", Mana(1)]),
-            delegates: vec![in_play::at_dusk(|g, s, _| {
+            delegates: abilities::game(vec![in_play::at_dusk(|g, s, _| {
                 mana::gain(g, s.side(), 1);
                 Ok(())
-            })],
+            })]),
         }],
         config: CardConfigBuilder::new().raze_cost(4).build(),
     }
@@ -168,10 +168,10 @@ pub fn ore_refinery(_: CardMetadata) -> CardDefinition {
             Ability {
                 ability_type: AbilityType::Standard,
                 text: named_trigger(Dusk, text![TakeMana(3)]),
-                delegates: vec![in_play::at_dusk(|g, s, _| {
+                delegates: abilities::game(vec![in_play::at_dusk(|g, s, _| {
                     mutations::take_stored_mana(g, s.card_id(), 3, OnZeroStored::Sacrifice)?;
                     Ok(())
-                })],
+                })]),
             },
         ],
         config: CardConfigBuilder::new().raze_cost(4).build(),

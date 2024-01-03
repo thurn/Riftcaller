@@ -113,7 +113,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                     text!["If a card with an odd mana cost is discarded, end the raid"]
                 ],
             ),
-            delegates: vec![
+            delegates: abilities::game(vec![
                 combat(|g, s, _| damage::deal(g, s, 1)),
                 GameDelegate::DealtDamage(EventDelegate {
                     requirement: |g, s, data| {
@@ -127,7 +127,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                         end_raid::run(g, InitiatedBy::Ability(s.ability_id()), RaidOutcome::Failure)
                     },
                 }),
-            ],
+            ]),
         }],
         config: CardConfigBuilder::new().health(3).shield(1).resonance(Resonance::mortal()).build(),
     }

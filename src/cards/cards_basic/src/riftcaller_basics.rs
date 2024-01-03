@@ -115,10 +115,10 @@ pub fn mana_battery(_: CardMetadata) -> CardDefinition {
             Ability {
                 ability_type: activate_for_action(),
                 text: text![StoreMana(3)],
-                delegates: vec![on_activated(|g, s, _| {
+                delegates: abilities::game(vec![on_activated(|g, s, _| {
                     add_stored_mana(g, s.card_id(), 3);
                     Ok(())
-                })],
+                })]),
             },
         ],
         config: CardConfig::default(),
@@ -315,11 +315,14 @@ pub fn ethereal_blade(_: CardMetadata) -> CardDefinition {
             Ability {
                 ability_type: AbilityType::Standard,
                 text: text!["When you use this weapon, sacrifice it at the end of the raid"],
-                delegates: vec![on_raid_ended(requirements::weapon_used_this_raid, |g, s, _| {
-                    mutations::sacrifice_card(g, s.card_id())?;
-                    VisualEffects::new().ability_alert(s).apply(g);
-                    Ok(())
-                })],
+                delegates: abilities::game(vec![on_raid_ended(
+                    requirements::weapon_used_this_raid,
+                    |g, s, _| {
+                        mutations::sacrifice_card(g, s.card_id())?;
+                        VisualEffects::new().ability_alert(s).apply(g);
+                        Ok(())
+                    },
+                )]),
             },
         ],
         config: CardConfigBuilder::new()

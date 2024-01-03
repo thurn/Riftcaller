@@ -18,6 +18,12 @@ use game_data::card_configuration::{Cost, TargetRequirement};
 use game_data::delegate_data::GameDelegate;
 use game_data::text::TextElement;
 
+#[derive(Debug, Clone)]
+pub enum Delegate {
+    GameDelegate(GameDelegate),
+    AdventureDelegate,
+}
+
 /// Possible types of ability
 #[derive(Debug, Clone, EnumKind)]
 #[enum_kind(AbilityTypeKind)]
@@ -35,7 +41,7 @@ pub enum AbilityType {
 pub struct Ability {
     pub ability_type: AbilityType,
     pub text: Vec<TextElement>,
-    pub delegates: Vec<GameDelegate>,
+    pub delegates: Vec<Delegate>,
 }
 
 impl Ability {
@@ -44,11 +50,15 @@ impl Ability {
     }
 
     pub fn new_with_delegate(text: Vec<TextElement>, delegate: GameDelegate) -> Self {
-        Self { ability_type: AbilityType::Standard, text, delegates: vec![delegate] }
+        Self {
+            ability_type: AbilityType::Standard,
+            text,
+            delegates: vec![Delegate::GameDelegate(delegate)],
+        }
     }
 
     pub fn delegate(mut self, delegate: GameDelegate) -> Self {
-        self.delegates.push(delegate);
+        self.delegates.push(Delegate::GameDelegate(delegate));
         self
     }
 }
@@ -59,7 +69,7 @@ pub struct ActivatedAbility {
     cost: Cost<AbilityId>,
     text: Vec<TextElement>,
     target_requirement: TargetRequirement<AbilityId>,
-    delegates: Vec<GameDelegate>,
+    delegates: Vec<Delegate>,
 }
 
 impl ActivatedAbility {
@@ -73,7 +83,7 @@ impl ActivatedAbility {
     }
 
     pub fn delegate(mut self, delegate: GameDelegate) -> Self {
-        self.delegates.push(delegate);
+        self.delegates.push(Delegate::GameDelegate(delegate));
         self
     }
 
