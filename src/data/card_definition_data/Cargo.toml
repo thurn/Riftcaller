@@ -16,3 +16,5 @@ core_data = { path = "../core_data", version = "0.0.0" }
 
 anyhow = "1.0.58"
 enum-kinds = "0.5.1"
+dashmap = "5.4.0"
+once_cell = "1.17.1"

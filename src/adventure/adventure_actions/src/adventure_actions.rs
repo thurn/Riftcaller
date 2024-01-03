@@ -18,6 +18,7 @@ use adventure_data::adventure::{AdventureScreen, AdventureState};
 use adventure_data::adventure_action::AdventureAction;
 use adventure_data::adventure_effect_data::DeckCardAction;
 use anyhow::Result;
+use card_definition_data::cards;
 use core_data::adventure_primitives::{AdventureOutcome, Coins, TilePosition};
 use core_data::game_primitives::CardType;
 use game_data::card_name::{CardMetadata, CardVariant};
@@ -87,7 +88,7 @@ fn handle_draft_choice(state: &mut AdventureState, index: usize) -> Result<()> {
     verify!(index < data.choices.len(), "Index out of bounds!");
     let choice = data.choices[index];
 
-    let definition = rules::get(choice.card);
+    let definition = cards::get(choice.card);
     if definition.card_type == CardType::Riftcaller {
         if !state.deck.schools.contains(&definition.school) {
             state.deck.schools.push(definition.school);

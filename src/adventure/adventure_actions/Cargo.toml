@@ -15,6 +15,7 @@ anyhow = "1.0.58"
 
 adventure_data = { path = "../../data/adventure_data", version = "0.0.0" }
 adventure_generator = { path = "../adventure_generator", version = "0.0.0" }
+card_definition_data = { path = "../../data/card_definition_data", version = "0.0.0" }
 core_data = { path = "../../data/core_data", version = "0.0.0" }
 game_data = { path = "../../data/game_data", version = "0.0.0" }
 game_tables = { path = "../../game_tables", version = "0.0.0" }

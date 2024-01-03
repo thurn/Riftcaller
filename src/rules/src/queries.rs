@@ -16,6 +16,8 @@
 
 use anyhow::Result;
 use card_definition_data::ability_data::AbilityType;
+use card_definition_data::cards;
+use card_definition_data::cards::CardDefinitionExt;
 use constants::game_constants;
 use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CardType, HealthValue,
@@ -34,11 +36,11 @@ use game_data::game_state::GameState;
 use game_data::prompt_data::GamePrompt;
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
-use crate::{dispatch, prompts, CardDefinitionExt};
+use crate::{dispatch, prompts};
 
 /// Obtain the [CardStats] for a given card
 pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
-    &crate::get(game.card(card_id).variant).config.stats
+    &cards::get(game.card(card_id).variant).config.stats
 }
 
 /// Returns the current score for the `side` player.
@@ -59,7 +61,7 @@ pub fn mana_cost(game: &GameState, card_id: CardId) -> Option<ManaValue> {
     dispatch::perform_query(
         game,
         ManaCostQuery(&card_id),
-        crate::get(game.card(card_id).variant).cost.mana,
+        cards::get(game.card(card_id).variant).cost.mana,
     )
 }
 
@@ -67,7 +69,7 @@ pub fn mana_cost(game: &GameState, card_id: CardId) -> Option<ManaValue> {
 /// card itself if it is currently face-down.
 pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<ManaValue> {
     let mut cost = if let AbilityType::Activated { cost, .. } =
-        &crate::get(game.card(ability_id.card_id).variant).ability(ability_id.index).ability_type
+        &cards::get(game.card(ability_id.card_id).variant).ability(ability_id.index).ability_type
     {
         cost.mana
     } else {
@@ -88,7 +90,7 @@ pub fn ability_mana_cost(game: &GameState, ability_id: AbilityId) -> Option<Mana
 
 /// Returns the action point cost for a given card
 pub fn action_cost(game: &GameState, card_id: CardId) -> ActionCount {
-    let mut actions = crate::get(game.card(card_id).variant).cost.actions;
+    let mut actions = cards::get(game.card(card_id).variant).cost.actions;
     if let Some(GamePrompt::PlayCardBrowser(browser)) = prompts::current(game, card_id.side) {
         if browser.cards.contains(&card_id) {
             // Cards played from play browser implicitly cost 1 action point fewer
@@ -210,9 +212,9 @@ pub fn card_target_kind(game: &GameState, card_id: CardId) -> CardTargetKind {
 /// such card.
 pub fn highest_cost<'a>(card_iterator: impl Iterator<Item = &'a CardState>) -> Option<CardId> {
     let cards = card_iterator.collect::<Vec<_>>();
-    let max = cards.iter().filter_map(|c| crate::get(c.variant).cost.mana).max();
+    let max = cards.iter().filter_map(|c| cards::get(c.variant).cost.mana).max();
     let mut filtered =
-        cards.into_iter().filter(|c| crate::get(c.variant).cost.mana == max).collect::<Vec<_>>();
+        cards.into_iter().filter(|c| cards::get(c.variant).cost.mana == max).collect::<Vec<_>>();
     filtered.sort();
     filtered.first().map(|c| c.id)
 }

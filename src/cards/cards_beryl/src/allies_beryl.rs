@@ -14,6 +14,7 @@
 
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
@@ -37,10 +38,7 @@ use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mutations::OnZeroStored;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{
-    curses, draw_cards, mana, mutations, prompts, queries, visual_effects, wounds,
-    CardDefinitionExt,
-};
+use rules::{curses, draw_cards, mana, mutations, prompts, queries, visual_effects, wounds};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

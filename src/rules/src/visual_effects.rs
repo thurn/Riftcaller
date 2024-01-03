@@ -1,10 +1,9 @@
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{AbilityId, CardId, GameObjectId, HasAbilityId, HasCardId};
 use game_data::animation_tracker::{AnimationState, GameAnimation};
 use game_data::delegate_data::Scope;
 use game_data::game_state::GameState;
 use game_data::special_effects::{Projectile, SpecialEffect, TimedEffectData};
-
-use crate::CardDefinitionExt;
 
 /// Whether an alert popup should be shown when [show] is called.
 #[derive(Eq, PartialEq)]

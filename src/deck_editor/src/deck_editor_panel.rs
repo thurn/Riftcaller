@@ -15,6 +15,7 @@
 use adventure_actions::adventure_flags;
 use adventure_data::adventure_action::AdventureAction;
 use adventure_data::adventure_effect_data::{DeckCardAction, DeckCardEffect};
+use card_definition_data::cards;
 use core_data::adventure_primitives::CardFilterId;
 use core_ui::action_builder::ActionBuilder;
 use core_ui::button::{Button, ButtonType};
@@ -55,7 +56,7 @@ pub struct DeckEditorPanel<'a> {
 impl<'a> DeckEditorPanel<'a> {
     fn card_section(&self, mut cards: Vec<(&CardVariant, Option<&u32>)>) -> Column {
         cards.sort_by_key(|(variant, _)| {
-            let definition = rules::get(**variant);
+            let definition = cards::get(**variant);
             (definition.card_type, definition.cost.mana, definition.name.displayed_name())
         });
         let chunks = cards.chunks(5);

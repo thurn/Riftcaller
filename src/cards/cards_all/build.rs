@@ -15,11 +15,11 @@
 //! Generates cards_all.rs. This used to be automatic via the 'linkme' crate,
 //! but new versions of Rust have caused a bunch of crazy problems with it.
 
-use std::{env, fs};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, LineWriter, Write};
 use std::path::Path;
+use std::{env, fs};
 
 use anyhow::Result;
 use regex::Regex;
@@ -49,7 +49,7 @@ fn main() -> Result<()> {
     let mut file = LineWriter::new(File::create(out_path)?);
     writeln!(file, "//! GENERATED CODE - DO NOT MODIFY\n")?;
 
-    writeln!(file, "use rules::DEFINITIONS;\n")?;
+    writeln!(file, "use card_definition_data::cards::DEFINITIONS;\n")?;
 
     let mut modules = functions
         .iter()

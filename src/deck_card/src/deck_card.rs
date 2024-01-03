@@ -16,6 +16,7 @@
 
 use adapters::response_builder::{ResponseBuilder, ResponseState};
 use card_definition_data::card_view_context::CardViewContext;
+use card_definition_data::cards;
 use core_data::game_primitives::Milliseconds;
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
@@ -41,7 +42,7 @@ pub struct CardHeight(f32);
 
 /// Builds a new default [CardView] for a card based on its [CardVariant].
 pub fn card_view_for_variant(variant: CardVariant) -> CardView {
-    let definition = rules::get(variant);
+    let definition = cards::get(variant);
     let response_builder = ResponseBuilder::new(
         definition.side,
         ResponseState { animate: false, is_final_update: true, display_preference: None },

@@ -14,6 +14,7 @@
 
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::{
     costs, delegates, history, in_play, raids, requirements, show_prompt, text, this,
 };
@@ -34,10 +35,7 @@ use game_data::random;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{
-    curses, custom_state, draw_cards, end_raid, mana, mutations, prompts, visual_effects,
-    CardDefinitionExt,
-};
+use rules::{curses, custom_state, draw_cards, end_raid, mana, mutations, prompts, visual_effects};
 
 pub fn illea_the_high_sage(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

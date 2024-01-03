@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{CardId, RoomId, Side};
 use core_ui::design::BackgroundColor;
 use core_ui::icons;
@@ -31,7 +32,7 @@ use protos::riftcaller::{
     AnchorCorner, CardAnchor, CardAnchorNode, FlexAlign, FlexJustify, InterfaceMainControls,
 };
 use rules::combat::CustomBoostActivation;
-use rules::{combat, queries, CardDefinitionExt};
+use rules::{combat, queries};
 
 /// Builds an [InterfaceMainControls] response to show to the `side` player in
 /// order to make a decision in this raid if a choice is currently available.

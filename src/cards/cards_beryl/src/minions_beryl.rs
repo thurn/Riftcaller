@@ -14,6 +14,7 @@
 
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::{
     combat_abilities, costs, delegates, requirements, show_prompt, text, text_helpers, this,
 };
@@ -35,7 +36,7 @@ use game_data::special_effects::{
 use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{end_raid, mana, prompts, visual_effects, CardDefinitionExt};
+use rules::{end_raid, mana, prompts, visual_effects};
 use with_error::fail;
 
 pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {

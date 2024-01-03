@@ -22,6 +22,8 @@
 use std::cmp;
 
 use anyhow::Result;
+use card_definition_data::cards;
+use card_definition_data::cards::CardDefinitionExt;
 use constants::game_constants;
 use core_data::game_primitives::{
     ActionCount, CardId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue, ProgressValue,
@@ -48,7 +50,7 @@ use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
 use crate::visual_effects::VisualEffects;
-use crate::{dispatch, draw_cards, flags, mana, queries, CardDefinitionExt};
+use crate::{dispatch, draw_cards, flags, mana, queries};
 
 /// Change a card to the 'face up' state and makes the card revealed to both
 /// players.
@@ -678,7 +680,7 @@ pub fn create_and_add_card(
     variant: CardVariant,
     position: CardPosition,
 ) -> Result<()> {
-    let definition = crate::get(variant);
+    let definition = cards::get(variant);
     let side = definition.side;
     let card_id = CardId::new(side, game.cards(side).len());
     let state = CardState::new_with_position(
@@ -703,13 +705,13 @@ pub fn create_and_add_card(
 /// game, face-down in the same position as the current card. All existing card
 /// state is discarded.
 pub fn overwrite_card(game: &mut GameState, card_id: CardId, new: CardVariant) -> Result<()> {
-    let old_definition = crate::get(game.card(card_id).variant);
+    let old_definition = cards::get(game.card(card_id).variant);
     let position = game.card(card_id).position();
     let sorting_key = game.card(card_id).sorting_key;
     *game.card_mut(card_id) =
         CardState::new_with_position(card_id, new, position, sorting_key, false);
     dispatch::remove_card_from_delegate_map(&mut game.delegate_map, old_definition, card_id);
-    let new_definition = crate::get(new);
+    let new_definition = cards::get(new);
     dispatch::add_card_to_delegate_map(
         &mut game.delegate_map,
         new_definition,

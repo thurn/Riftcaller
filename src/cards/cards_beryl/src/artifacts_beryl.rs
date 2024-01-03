@@ -14,6 +14,7 @@
 
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
     text_helpers, this,
@@ -43,10 +44,7 @@ use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{
-    draw_cards, end_raid, flags, mana, mutations, prompts, queries, visual_effects,
-    CardDefinitionExt,
-};
+use rules::{draw_cards, end_raid, flags, mana, mutations, prompts, queries, visual_effects};
 use with_error::WithError;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {

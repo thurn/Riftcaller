@@ -1,6 +1,6 @@
 //! GENERATED CODE - DO NOT MODIFY
 
-use rules::DEFINITIONS;
+use card_definition_data::cards::DEFINITIONS;
 
 
 pub fn initialize() {

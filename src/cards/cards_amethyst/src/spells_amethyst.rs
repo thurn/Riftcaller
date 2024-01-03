@@ -17,6 +17,7 @@
 use assets::rexard_images;
 use card_definition_data::ability_data::{Ability, AbilityType};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::raids::{add_sanctum_access, add_vault_access};
 use card_helpers::*;
 use core_data::game_primitives::{CardType, InitiatedBy, Rarity, RoomId, School, Side};
@@ -25,7 +26,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{GameDelegate, QueryDelegate};
 use raid_state::InitiateRaidOptions;
-use rules::{draw_cards, flags, mana, mutations, CardDefinitionExt};
+use rules::{draw_cards, flags, mana, mutations};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {
     CardDefinition {

@@ -16,6 +16,7 @@
 
 use card_definition_data::ability_data::{Ability, AbilityType};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::costs::{actions, scheme};
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
@@ -32,7 +33,7 @@ use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::delegate_data::{GameDelegate, QueryDelegate, RaidOutcome};
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
 use rules::mutations::{OnZeroStored, SummonMinion};
-use rules::{curses, damage, destroy, draw_cards, end_raid, mutations, CardDefinitionExt};
+use rules::{curses, damage, destroy, draw_cards, end_raid, mutations};
 
 pub fn test_ritual(_: CardMetadata) -> CardDefinition {
     CardDefinition {

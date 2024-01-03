@@ -14,6 +14,7 @@
 
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
@@ -36,9 +37,7 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::mutations::RealizeCards;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{
-    curses, custom_state, flags, mana, mutations, prompts, visual_effects, CardDefinitionExt,
-};
+use rules::{curses, custom_state, flags, mana, mutations, prompts, visual_effects};
 
 pub fn nimbus_enclave(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

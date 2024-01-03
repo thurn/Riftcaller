@@ -14,6 +14,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use anyhow::Result;
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{AbilityId, CardId, GameObjectId, Milliseconds, RoomId, Side};
 use game_data::animation_tracker::{GameAnimation, TargetedInteraction};
 use game_data::game_state::GameState;
@@ -32,7 +33,6 @@ use protos::riftcaller::{
     SetCardMovementEffectCommand, SetMusicCommand, TimeValue, TurnFaceDownArenaAnimationCommand,
     VisitRoomCommand,
 };
-use rules::CardDefinitionExt;
 use {adapters, assets};
 
 use crate::{card_sync, positions};

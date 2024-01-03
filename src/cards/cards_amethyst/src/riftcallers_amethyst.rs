@@ -15,6 +15,7 @@
 use assets::rexard_images;
 use card_definition_data::ability_data::Ability;
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::requirements::FaceUpInPlay;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::*;
@@ -25,7 +26,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{EventDelegate, GameDelegate};
 use rules::mutations::RealizeCards;
 use rules::visual_effects::VisualEffects;
-use rules::{draw_cards, mana, mutations, CardDefinitionExt};
+use rules::{draw_cards, mana, mutations};
 
 pub fn ennera_imris(_: CardMetadata) -> CardDefinition {
     CardDefinition {

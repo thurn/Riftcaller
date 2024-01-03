@@ -14,6 +14,7 @@
 
 use card_definition_data::ability_data::Ability;
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{abilities, costs, delegates, requirements, show_prompt, text, this};
@@ -33,7 +34,7 @@ use game_data::prompt_data::{
 use game_data::text::TextToken::*;
 use rules::mutations::RealizeCards;
 use rules::visual_effects::VisualEffects;
-use rules::{curses, draw_cards, mutations, prompts, CardDefinitionExt};
+use rules::{curses, draw_cards, mutations, prompts};
 
 pub fn equivalent_exchange(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

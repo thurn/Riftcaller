@@ -14,6 +14,7 @@
 
 use adventure_data::adventure::{AdventureState, CardChoice, DraftData, ShopData};
 use adventure_data::card_filter_data::{CardFilterCategoryOperator, UpgradedStatus};
+use card_definition_data::cards;
 use core_data::adventure_primitives::{CardFilterId, Coins};
 use enumset::{EnumSet, EnumSetType};
 use game_data::card_name::CardVariant;
@@ -30,7 +31,7 @@ pub fn all_cards(
     state: &AdventureState,
     filter: CardFilterId,
 ) -> impl Iterator<Item = CardVariant> + '_ {
-    rules::all_cards()
+    cards::all_cards()
         .filter(move |definition| {
             definition.sets.contains(&state.config.card_set)
                 && definition.side == state.side
@@ -77,7 +78,7 @@ pub fn shop_choices(state: &mut AdventureState, filter: CardFilterId) -> ShopDat
 /// [CardFilterId].
 pub fn matches(filter_id: CardFilterId, variant: CardVariant) -> bool {
     let filter = game_tables::card_filter(filter_id);
-    let definition = rules::get(variant);
+    let definition = cards::get(variant);
 
     let rarity = check_set(filter.rarity, definition.rarity);
     let types = check_set(filter.card_types, definition.card_type);

@@ -20,6 +20,7 @@ use ::panels::add_to_zone_panel::AddToZonePanel;
 use adventure_data::adventure::AdventureConfiguration;
 use adventure_generator::mock_adventure;
 use anyhow::Result;
+use card_definition_data::cards;
 use core_data::game_primitives::{
     AbilityId, AbilityIndex, CardId, CardPlayId, GameId, InitiatedBy, RoomId, RoomLocation, Side,
 };
@@ -241,7 +242,7 @@ pub async fn handle_debug_action(
         }
         DebugAction::AddToZone { variant, position, turn_face_up } => {
             debug_update_game(database, data, |game, _| {
-                let side = rules::get(*variant).side;
+                let side = cards::get(*variant).side;
                 if let Some(card_id) =
                     mutations::realize_top_of_deck(game, side, 1, RealizeCards::SetVisibleToOwner)?
                         .get(0)
@@ -452,7 +453,7 @@ fn create_at_position(
     card: CardName,
     position: CardPosition,
 ) -> Result<CardId> {
-    let side = rules::get(CardVariant::standard(card)).side;
+    let side = cards::get(CardVariant::standard(card)).side;
     let card_id = *mutations::realize_top_of_deck(game, side, 1, RealizeCards::SetVisibleToOwner)?
         .get(0)
         .with_error(|| "Deck is empty")?;

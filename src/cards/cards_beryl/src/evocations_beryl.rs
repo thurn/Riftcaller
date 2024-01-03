@@ -16,6 +16,7 @@ use std::iter;
 
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
@@ -44,9 +45,7 @@ use game_data::text::TextToken::*;
 use raid_state::{custom_access, InitiateRaidOptions};
 use rules::mutations::{OnZeroStored, RealizeCards};
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{
-    curses, destroy, draw_cards, flags, mana, mutations, prompts, visual_effects, CardDefinitionExt,
-};
+use rules::{curses, destroy, draw_cards, flags, mana, mutations, prompts, visual_effects};
 
 pub fn empyreal_chorus(meta: CardMetadata) -> CardDefinition {
     CardDefinition {

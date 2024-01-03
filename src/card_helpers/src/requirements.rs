@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{HasCardId, RaidId, RoomId, Side};
 use game_data::card_configuration::TargetRequirement;
 use game_data::card_state::CardPosition;
@@ -22,7 +23,7 @@ use game_data::game_state::GameState;
 use game_data::history_data::{HistoryEvent, HistoryEventKind};
 use game_data::prompt_data::GamePrompt;
 use game_data::utils;
-use rules::{flags, play_card, prompts, CardDefinitionExt};
+use rules::{flags, play_card, prompts};
 
 use crate::{face_down_in_play, history};
 

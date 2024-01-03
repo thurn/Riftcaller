@@ -16,6 +16,7 @@
 
 use adapters::response_builder::ResponseBuilder;
 use card_definition_data::card_view_context::CardViewContext;
+use card_definition_data::cards;
 use constants::game_constants;
 use core_data::game_primitives::{RoomId, School, Side};
 use game_data::card_state::{CardPositionKind, CardState};
@@ -40,7 +41,7 @@ pub fn run(builder: &mut ResponseBuilder, game: &GameState) {
         .flat_map(|c| {
             let mut cards = vec![card_sync::card_view(
                 builder,
-                &CardViewContext::Game(rules::get(c.variant), game, c),
+                &CardViewContext::Game(cards::get(c.variant), game, c),
             )];
             cards.append(&mut card_sync::activated_ability_cards(builder, game, c));
             cards.append(&mut status_markers::build(builder, game, c));

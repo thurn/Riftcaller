@@ -18,6 +18,8 @@ use std::iter;
 
 use anyhow::Result;
 use card_definition_data::ability_data::AbilityType;
+use card_definition_data::cards;
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{AbilityId, CardId, RoomId, Side};
 use game_data::card_configuration::TargetRequirement;
 use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, GameStateAction};
@@ -25,7 +27,7 @@ use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{GamePrompt, PromptAction};
 use game_data::state_machine_data::PlayCardOptions;
 use raid_state::raid_prompt;
-use rules::{flags, prompts, queries, CardDefinitionExt};
+use rules::{flags, prompts, queries};
 use with_error::fail;
 
 /// Returns an iterator over currently-legal [GameAction]s for the `side` player
@@ -155,7 +157,7 @@ fn legal_ability_actions(
     side: Side,
     ability_id: AbilityId,
 ) -> impl Iterator<Item = GameAction> + '_ {
-    let ability = rules::ability_definition(game, ability_id);
+    let ability = cards::ability_definition(game, ability_id);
     let mut activate = None;
     let mut target_rooms = None;
 

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{GameObjectId, InitiatedBy};
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::CardCounter;
@@ -24,10 +25,7 @@ use game_data::raid_data::RaidJumpRequest;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
 use raid_state::{custom_access, InitiateRaidOptions};
-use rules::{
-    curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, prompts,
-    CardDefinitionExt,
-};
+use rules::{curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, prompts};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;

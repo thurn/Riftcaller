@@ -16,6 +16,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use adapters;
+use card_definition_data::cards;
 use core_data::game_primitives::{ActionCount, CardId, ManaValue, PointsValue, RoomId, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardState;
@@ -54,7 +55,7 @@ pub fn overwrite_card(game: &mut GameState, card_id: CardId, card_variant: CardV
 
 /// Returns the [Side] player who owns the [CardName] card
 pub fn side_for_card_name(name: CardName) -> Side {
-    rules::get(CardVariant::standard(name)).side
+    cards::get(CardVariant::standard(name)).side
 }
 
 /// Represents a user client connected to a test game

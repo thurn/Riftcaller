@@ -15,6 +15,8 @@
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
 use card_definition_data::card_view_context::CardViewContext;
+use card_definition_data::cards;
+use card_definition_data::cards::CardDefinitionExt;
 use constants::game_constants;
 use core_data::game_primitives::{CardId, CardType, ManaValue, Rarity, School, Side, WoundCount};
 use core_ui::icons;
@@ -26,7 +28,7 @@ use protos::riftcaller::{
     card_targeting, ArrowTargetRoom, CardIcons, CardPrefab, CardTargeting, CardTitle, CardView,
     RevealedCardView, RulesText, TargetingArrow,
 };
-use rules::{flags, prompts, queries, CardDefinitionExt};
+use rules::{flags, prompts, queries};
 use rules_text::{card_icons, supplemental_info};
 
 use crate::{card_sync, positions};
@@ -37,7 +39,7 @@ pub fn summon_project_card_view(
     card_id: CardId,
 ) -> CardView {
     let card = game.card(card_id);
-    let definition = rules::get(card.variant);
+    let definition = cards::get(card.variant);
     let context = CardViewContext::Game(definition, game, card);
 
     CardView {

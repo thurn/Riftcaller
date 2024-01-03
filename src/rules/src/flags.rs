@@ -16,6 +16,8 @@
 //! action can currently be taken
 
 use card_definition_data::ability_data::AbilityType;
+use card_definition_data::cards;
+use cards::CardDefinitionExt;
 use constants::game_constants;
 use core_data::game_primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, RoomLocation, Side,
@@ -39,7 +41,7 @@ use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
 
 use crate::mana::ManaPurpose;
-use crate::{curses, dispatch, mana, prompts, queries, CardDefinitionExt};
+use crate::{curses, dispatch, mana, prompts, queries};
 
 /// Returns the player that is currently able to take actions in the provided
 /// game. If no player can act, e.g. because the game has ended, returns None.
@@ -182,7 +184,7 @@ pub fn can_take_activate_ability_action(
     let card = game.card(ability_id.card_id);
 
     let AbilityType::Activated { cost, target_requirement } =
-        &crate::ability_definition(game, ability_id).ability_type
+        &cards::ability_definition(game, ability_id).ability_type
     else {
         return false;
     };
@@ -230,7 +232,7 @@ pub fn activated_ability_has_valid_targets(
     side: Side,
     ability_id: AbilityId,
 ) -> bool {
-    match &crate::ability_definition(game, ability_id).ability_type {
+    match &cards::ability_definition(game, ability_id).ability_type {
         AbilityType::Activated { target_requirement, .. } => match target_requirement {
             TargetRequirement::None => {
                 can_take_activate_ability_action(game, side, ability_id, CardTarget::None)
@@ -253,7 +255,7 @@ fn can_use_any_card_ability(game: &GameState, card_id: CardId) -> bool {
 }
 
 fn is_valid_target(game: &GameState, card_id: CardId, target: CardTarget) -> bool {
-    let definition = crate::get(game.card(card_id).variant);
+    let definition = cards::get(game.card(card_id).variant);
     if let Some(targeting) = &definition.config.custom_targeting {
         return matching_targeting(game, targeting, card_id, target);
     }
@@ -295,7 +297,7 @@ fn matching_targeting<T>(
 /// and is expected to pay its costs immediately.
 pub fn enters_play_face_up(game: &GameState, card_id: CardId) -> bool {
     !matches!(
-        crate::get(game.card(card_id).variant).card_type,
+        cards::get(game.card(card_id).variant).card_type,
         CardType::Minion | CardType::Scheme | CardType::Project
     )
 }
@@ -303,7 +305,7 @@ pub fn enters_play_face_up(game: &GameState, card_id: CardId) -> bool {
 /// Returns true if the indicated card should enter play in a room
 pub fn enters_play_in_room(game: &GameState, card_id: CardId) -> bool {
     matches!(
-        crate::get(game.card(card_id).variant).card_type,
+        cards::get(game.card(card_id).variant).card_type,
         CardType::Minion | CardType::Scheme | CardType::Project
     )
 }

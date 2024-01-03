@@ -20,6 +20,7 @@ use std::fmt::Debug;
 use anyhow::Result;
 use card_definition_data::ability_data::Delegate;
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards;
 use core_data::game_primitives::{AbilityId, CardId};
 use game_data::card_name::CardMetadata;
 use game_data::delegate_data::{DelegateContext, DelegateMap, EventData, QueryData, Scope};
@@ -30,7 +31,7 @@ pub fn populate_delegate_map(game: &mut GameState) {
     let mut result = DelegateMap::default();
     for card_id in game.all_card_ids() {
         let variant = game.card(card_id).variant;
-        let definition = crate::get(variant);
+        let definition = cards::get(variant);
         add_card_to_delegate_map(&mut result, definition, card_id, variant.metadata);
     }
     game.delegate_map = result;

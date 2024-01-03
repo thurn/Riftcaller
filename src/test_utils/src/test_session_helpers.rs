@@ -14,6 +14,7 @@
 
 use adapters::CustomCardIdentifier;
 use anyhow::Result;
+use card_definition_data::cards;
 use core_data::game_primitives::{CardType, RoomId, Side};
 use game_data::card_configuration::Resonance;
 use game_data::card_name::{CardName, CardVariant};
@@ -362,7 +363,7 @@ impl TestSessionHelpers for TestSession {
         play_impl(
             self,
             CardVariant::standard(card_name),
-            match rules::get(CardVariant::standard(card_name)).card_type {
+            match cards::get(CardVariant::standard(card_name)).card_type {
                 CardType::Minion | CardType::Project | CardType::Scheme => {
                     Some(test_constants::ROOM_ID)
                 }
@@ -375,7 +376,7 @@ impl TestSessionHelpers for TestSession {
         play_impl(
             self,
             CardVariant::upgraded(card_name),
-            match rules::get(CardVariant::standard(card_name)).card_type {
+            match cards::get(CardVariant::standard(card_name)).card_type {
                 CardType::Minion | CardType::Project | CardType::Scheme => {
                     Some(test_constants::ROOM_ID)
                 }

@@ -15,6 +15,7 @@
 use adapters::response_builder::ResponseBuilder;
 use card_definition_data::ability_data::AbilityType;
 use card_definition_data::card_view_context::CardViewContext;
+use card_definition_data::cards;
 use core_data::game_primitives::{
     AbilityId, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
 };
@@ -95,7 +96,7 @@ pub fn activated_ability_cards(
         return result;
     }
 
-    let definition = rules::get(card.variant);
+    let definition = cards::get(card.variant);
 
     if card.is_face_down() && card.position().in_play() {
         if builder.user_side == Side::Covenant && definition.card_type == CardType::Project {
@@ -134,7 +135,7 @@ pub fn ability_card_view(
     target_requirement: Option<&TargetRequirement<AbilityId>>,
 ) -> CardView {
     let card = game.card(ability_id.card_id);
-    let definition = rules::get(card.variant);
+    let definition = cards::get(card.variant);
     let context = CardViewContext::Game(definition, game, card);
 
     CardView {

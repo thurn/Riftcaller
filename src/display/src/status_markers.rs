@@ -15,6 +15,7 @@
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
 use card_definition_data::card_view_context::CardViewContext;
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{CardId, School};
 use game_data::card_state::CardState;
 use game_data::delegate_data::{CardStatusMarker, CardStatusMarkersQuery};
@@ -22,7 +23,7 @@ use game_data::game_state::GameState;
 use protos::riftcaller::{
     CardIdentifier, CardPrefab, CardTitle, CardView, RevealedCardView, RulesText,
 };
-use rules::{dispatch, CardDefinitionExt};
+use rules::dispatch;
 
 use crate::positions;
 

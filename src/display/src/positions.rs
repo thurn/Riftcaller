@@ -15,6 +15,7 @@
 use adapters;
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{
     AbilityId, CardId, CardPlayId, GameObjectId, HasCardId, ItemLocation, RoomId, RoomLocation,
     Side,
@@ -37,7 +38,7 @@ use protos::riftcaller::{
     RevealedCardsBrowserSize, RoomIdentifier,
 };
 use raid_state::raid_display_state;
-use rules::{activate_ability, prompts, queries, CardDefinitionExt};
+use rules::{activate_ability, prompts, queries};
 
 pub const RELEASE_SORTING_KEY: u32 = 100;
 

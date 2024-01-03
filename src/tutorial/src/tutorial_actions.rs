@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use anyhow::Result;
+use card_definition_data::cards;
 use core_data::game_primitives::{CardId, RoomLocation, Side};
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
@@ -150,7 +151,7 @@ fn add_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<(
 
 fn remove_game_modifiers(game: &mut GameState, card_names: &[CardName]) -> Result<()> {
     for card_name in card_names {
-        let side = rules::get(CardVariant::standard(*card_name)).side;
+        let side = cards::get(CardVariant::standard(*card_name)).side;
         let card_id = game
             .game_modifiers(side)
             .find(|c| c.variant.name == *card_name)

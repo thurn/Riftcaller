@@ -15,6 +15,7 @@
 use std::iter;
 
 use anyhow::Result;
+use card_definition_data::cards::CardDefinitionExt;
 use constants::game_constants;
 use core_data::game_primitives::{CardId, CardPlayId, CardSubtype, CardType, InitiatedBy, Side};
 use game_data::animation_tracker::GameAnimation;
@@ -32,7 +33,7 @@ use with_error::{verify, WithError};
 
 use crate::mana::ManaPurpose;
 use crate::state_machine::StateMachine;
-use crate::{dispatch, flags, mana, mutations, prompts, queries, state_machine, CardDefinitionExt};
+use crate::{dispatch, flags, mana, mutations, prompts, queries, state_machine};
 
 /// Starts a new play card action, either as a result the explicit game action
 /// or as an effect of another card.

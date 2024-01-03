@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use card_definition_data::ability_data::AbilityType;
+use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{AbilityId, InitiatedBy};
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_configuration::Cost;
@@ -26,7 +27,7 @@ use with_error::fail;
 
 use crate::mana::ManaPurpose;
 use crate::state_machine::StateMachine;
-use crate::{dispatch, mana, mutations, queries, state_machine, CardDefinitionExt};
+use crate::{dispatch, mana, mutations, queries, state_machine};
 
 /// Starts a new activate ability action
 pub fn initiate(game: &mut GameState, ability_id: AbilityId, target: CardTarget) -> Result<()> {

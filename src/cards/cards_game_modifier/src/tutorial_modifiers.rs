@@ -15,6 +15,7 @@
 use assets::rexard_images;
 use card_definition_data::ability_data::Ability;
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards;
 use card_helpers::requirements::always;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, RoomId, School, Side};
@@ -157,7 +158,7 @@ pub fn tutorial_force_sanctum_score(_: CardMetadata) -> CardDefinition {
                 mutation: |g, _, _| {
                     let scheme = g
                         .hand(Side::Covenant)
-                        .find(|card| rules::get(card.variant).card_type == CardType::Scheme)
+                        .find(|card| cards::get(card.variant).card_type == CardType::Scheme)
                         .map(|c| c.id);
                     if let Some(id) = scheme {
                         g.raid_mut()?.accessed = vec![id];

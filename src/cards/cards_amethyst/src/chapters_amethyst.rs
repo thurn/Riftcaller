@@ -15,12 +15,12 @@
 use assets::rexard_images;
 use card_definition_data::ability_data::Ability;
 use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::{history, *};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
 use game_data::card_configuration::CardConfig;
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use rules::CardDefinitionExt;
 
 pub fn ubras_efaris_time_shaper(_: CardMetadata) -> CardDefinition {
     CardDefinition {
