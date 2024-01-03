@@ -16,11 +16,11 @@ use card_definition_data::ability_data::{Ability, AbilityType};
 use card_definition_data::card_view_context::CardViewContext;
 use core_data::game_primitives::AbilityId;
 use core_ui::icons;
+use dispatcher::dispatch;
 use game_data::card_configuration::{AttackBoost, Cost};
 use game_data::delegate_data::{CardStatusMarker, IsSlowWeaponQuery};
 use game_data::text::{TextElement, TextToken};
 use protos::riftcaller::RulesText;
-use rules::dispatch;
 
 pub mod card_icons;
 pub mod card_info;

@@ -16,6 +16,7 @@ use anyhow::Result;
 use core_data::game_primitives::{
     CardId, GameObjectId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
 };
+use dispatcher::dispatch;
 use game_data::animation_tracker::{GameAnimation, TargetedInteraction};
 use game_data::card_configuration::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
@@ -35,7 +36,7 @@ use game_data::raid_data::{
 };
 use rules::mana::ManaPurpose;
 use rules::mutations::SummonMinion;
-use rules::{combat, dispatch, end_raid, flags, mana, mutations, prompts, queries};
+use rules::{combat, end_raid, flags, mana, mutations, prompts, queries};
 use tracing::debug;
 use with_error::{fail, verify, WithError};
 

@@ -15,11 +15,12 @@
 use anyhow::Result;
 use core_data::game_primitives::Side;
 use database::Database;
+use dispatcher::dispatch;
 use game_data::deck::Deck;
 use game_data::game_state::{GameConfiguration, GameState};
 use game_data::player_name::{AIPlayer, PlayerId};
 use player_data::{PlayerState, PlayerStatus};
-use rules::{dispatch, mutations};
+use rules::mutations;
 use tracing::info;
 use tutorial::tutorial_actions;
 use user_action_data::{NewGameAction, NewGameDeck};

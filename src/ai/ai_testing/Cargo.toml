@@ -25,6 +25,7 @@ ai_game_integration = { path = "../ai_game_integration", version = "0.0.0" }
 ai_monte_carlo = { path = "../ai_monte_carlo", version = "0.0.0" }
 ai_tree_search = { path = "../ai_tree_search", version = "0.0.0" }
 cards_all = { path = "../../cards/cards_all", version = "0.0.0" }
+dispatcher = { path = "../../dispatcher", version = "0.0.0" }
 game_data = { path = "../../data/game_data", version = "0.0.0" }
 core_data = { path = "../../data/core_data", version = "0.0.0" }
 decklists = { path = "../../decklists", version = "0.0.0" }

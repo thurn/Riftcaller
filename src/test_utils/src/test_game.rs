@@ -34,6 +34,7 @@ use core_data::game_primitives::{
     ActionCount, CardPlayId, CurseCount, GameId, InitiatedBy, ManaValue, PointsValue, RoomId,
     RoomLocation, Side, WoundCount,
 };
+use dispatcher::dispatch;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::{CardPosition, CardPositionKind};
 use game_data::deck::Deck;
@@ -42,7 +43,6 @@ use game_data::player_name::PlayerId;
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use game_data::utils;
 use maplit::hashmap;
-use rules::dispatch;
 
 use crate::test_game_client;
 use crate::test_session::TestSession;

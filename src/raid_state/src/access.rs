@@ -15,6 +15,7 @@
 use anyhow::Result;
 use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{CardId, CardType, RoomId, Side};
+use dispatcher::dispatch;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::CanScoreAccessedCardQuery;
 use game_data::flag_data::Flag;
@@ -24,7 +25,7 @@ use game_data::raid_data::{RaidChoice, RaidInfo, RaidLabel, RaidStep, ScoredCard
 use game_data::random;
 use rules::mana::ManaPurpose;
 use rules::mutations::RealizeCards;
-use rules::{dispatch, mana, mutations, queries};
+use rules::{mana, mutations, queries};
 
 /// Returns a vector of the cards accessed for the current raid target, mutating
 /// the [GameState] to store the results of random zone selections.

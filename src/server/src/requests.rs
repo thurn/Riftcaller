@@ -18,6 +18,7 @@ use anyhow::Result;
 use core_data::game_primitives::GameId;
 use core_ui::prelude::*;
 use database::Database;
+use dispatcher::dispatch;
 use display::set_display_preference;
 use game_data::animation_tracker::{AnimationState, AnimationTracker};
 use game_data::game_actions::DisplayPreference;
@@ -30,7 +31,6 @@ use protos::riftcaller::{
     LoadSceneCommand, RenderScreenOverlayCommand, SceneLoadMode, UpdatePanelsCommand,
 };
 use routing::all_panels;
-use rules::dispatch;
 use screen_overlay::ScreenOverlay;
 use with_error::WithError;
 

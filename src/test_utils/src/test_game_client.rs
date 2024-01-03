@@ -18,6 +18,7 @@ use std::collections::HashMap;
 use adapters;
 use card_definition_data::cards;
 use core_data::game_primitives::{ActionCount, CardId, ManaValue, PointsValue, RoomId, Side};
+use dispatcher::dispatch;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardState;
 use game_data::game_state::GameState;
@@ -35,7 +36,6 @@ use protos::riftcaller::{
     ObjectPositionRiftcallers, ObjectPositionRoom, PlayInRoom, PlayerName, PlayerView,
     RevealedCardView, RevealedCardsBrowserSize, RoomIdentifier,
 };
-use rules::dispatch;
 
 use crate::client_interface::{ClientInterface, HasText};
 use crate::test_world_map::TestWorldMap;

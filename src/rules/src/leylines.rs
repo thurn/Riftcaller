@@ -14,12 +14,13 @@
 
 use anyhow::Result;
 use core_data::game_primitives::AbilityId;
+use dispatcher::dispatch;
 use game_data::delegate_data::LeylinesReceivedEvent;
 use game_data::game_state::GameState;
 use game_data::state_machine_data::{GiveLeylinesData, GiveLeylinesStep};
 
+use crate::state_machine;
 use crate::state_machine::StateMachine;
-use crate::{dispatch, state_machine};
 
 /// Gives `quantity` leylines to the Riftcaller player. Each leyline gives the
 /// Riftcaller one mana to use during each raid.

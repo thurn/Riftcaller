@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{HasAbilityId, Side};
+use dispatcher::dispatch;
 use game_data::delegate_data::ShowPromptQuery;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
@@ -21,9 +22,9 @@ use game_data::prompt_data::{
 };
 use game_data::special_effects::Projectile;
 
+use crate::mana;
 use crate::mana::ManaPurpose;
 use crate::visual_effects::VisualEffects;
-use crate::{dispatch, mana};
 
 /// Returns true if the [Side] player currently has no active prompts.
 pub fn is_empty(game: &GameState, side: Side) -> bool {

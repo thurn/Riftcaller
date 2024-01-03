@@ -28,10 +28,11 @@ use anyhow::Result;
 use core_data::game_primitives::{GameId, Side};
 use criterion::measurement::WallTime;
 use criterion::{criterion_group, criterion_main, BenchmarkGroup, Criterion};
+use dispatcher::dispatch;
 use game_data::game_actions::{GameAction, GameStateAction};
 use game_data::game_state::{GameConfiguration, GameState, MulliganDecision};
 use game_data::player_name::{AIPlayer, PlayerId};
-use rules::{dispatch, mutations};
+use rules::mutations;
 
 criterion_group!(
     benches,

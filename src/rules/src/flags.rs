@@ -22,6 +22,7 @@ use constants::game_constants;
 use core_data::game_primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, RoomLocation, Side,
 };
+use dispatcher::dispatch;
 use game_data::card_configuration::TargetRequirement;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -41,7 +42,7 @@ use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
 
 use crate::mana::ManaPurpose;
-use crate::{curses, dispatch, mana, prompts, queries};
+use crate::{curses, mana, prompts, queries};
 
 /// Returns the player that is currently able to take actions in the provided
 /// game. If no player can act, e.g. because the game has ended, returns None.

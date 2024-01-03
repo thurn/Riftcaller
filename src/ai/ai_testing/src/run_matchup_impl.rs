@@ -21,9 +21,10 @@ use ai_game_integration::state_node::RiftcallerState;
 use anyhow::Result;
 use clap::{ArgEnum, Parser};
 use core_data::game_primitives::{GameId, Side};
+use dispatcher::dispatch;
 use game_data::game_state::{GameConfiguration, GameState};
 use game_data::player_name::{AIPlayer, PlayerId};
-use rules::{dispatch, mutations, queries};
+use rules::{mutations, queries};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]
 pub enum Verbosity {

@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use core_data::game_primitives::InitiatedBy;
+use dispatcher::dispatch;
 use game_data::delegate_data::{
     AbilityWillEndRaidEvent, RaidEndEvent, RaidFailureEvent, RaidOutcome, RaidSuccessEvent,
 };
@@ -22,7 +23,7 @@ use game_data::history_data::HistoryEvent;
 use game_data::state_machine_data::{EndRaidData, EndRaidStep};
 
 use crate::state_machine::StateMachine;
-use crate::{dispatch, flags, state_machine};
+use crate::{flags, state_machine};
 
 /// Ends the current raid.
 ///

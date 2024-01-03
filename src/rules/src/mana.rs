@@ -19,13 +19,12 @@ use std::cmp;
 
 use anyhow::Result;
 use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, ManaValue, RaidId, RoomId, Side};
+use dispatcher::dispatch;
 use game_data::delegate_data::{ManaLostToOpponentAbility, ManaLostToOpponentAbilityEvent};
 use game_data::game_state::GameState;
 use game_data::utils;
 use tracing::debug;
 use with_error::verify;
-
-use crate::dispatch;
 
 /// Identifies possible reasons why a player's mana value would need to be
 /// queried or spent.

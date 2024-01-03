@@ -1,0 +1,18 @@
+[package]
+name = "dispatcher"
+version = "0.0.0"
+description = "Generic functions for firing game events"
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+doctest = false
+test = false
+
+[dependencies]
+card_definition_data = { path = "../data/card_definition_data", version = "0.0.0" }
+game_data = { path = "../data/game_data", version = "0.0.0" }
+core_data = { path = "../data/core_data", version = "0.0.0" }
+
+anyhow = { features = ["backtrace"], version = "1.0.75" }

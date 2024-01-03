@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{CardId, HasAbilityId, Side};
+use dispatcher::dispatch;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DealtDamage, DealtDamageEvent, WillDealDamageEvent};
 use game_data::game_state::GameState;
@@ -21,7 +22,7 @@ use game_data::random;
 use game_data::state_machine_data::{DealDamageData, DealDamageStep};
 
 use crate::state_machine::StateMachine;
-use crate::{dispatch, mutations, state_machine};
+use crate::{mutations, state_machine};
 
 /// Deals damage. Discards random card from the hand of the Riftcaller player
 /// for each point of damage. If no cards remain, they lose the game.

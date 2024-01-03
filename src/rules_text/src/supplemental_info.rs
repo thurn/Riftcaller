@@ -20,9 +20,10 @@ use convert_case::{Case, Casing};
 use core_data::game_primitives::AbilityIndex;
 use core_ui::icons;
 use core_ui::prelude::*;
+use dispatcher::dispatch;
 use game_data::delegate_data::CardStatusMarkersQuery;
 use game_data::text::{TextElement, TextTokenKind};
-use rules::{dispatch, queries};
+use rules::queries;
 
 use crate::card_info::{CardInfoElement, SupplementalCardInfo};
 

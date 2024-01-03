@@ -15,6 +15,7 @@
 //! Calculations for using weapons during combat
 
 use core_data::game_primitives::{AttackValue, CardId, ManaValue};
+use dispatcher::dispatch;
 use game_data::card_configuration::{AttackBoost, CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
@@ -25,7 +26,7 @@ use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
 
 use crate::mana::ManaPurpose;
-use crate::{dispatch, mana, queries};
+use crate::{mana, queries};
 
 /// Records the number of times some [CustomBoostCost] must be paid to defeat a
 /// minion.

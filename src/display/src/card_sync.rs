@@ -20,6 +20,7 @@ use core_data::game_primitives::{
     AbilityId, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
 };
 use core_ui::{design, icons};
+use dispatcher::dispatch;
 use game_data::card_configuration::TargetRequirement;
 use game_data::card_state::CardState;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
@@ -35,7 +36,7 @@ use protos::riftcaller::{
     CardTitle, CardView, EffectAddress, FlexColor, InfoZoomHighlight, NoTargeting, PlayInRoom,
     RevealedCardView, RulesText, TargetingArrow,
 };
-use rules::{dispatch, flags, prompts, queries};
+use rules::{flags, prompts, queries};
 use rules_text::{card_icons, supplemental_info};
 use {adapters, assets, rules_text};
 

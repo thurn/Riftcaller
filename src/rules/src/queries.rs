@@ -23,6 +23,7 @@ use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CardType, HealthValue,
     ItemLocation, ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
+use dispatcher::dispatch;
 use game_data::card_configuration::{AttackBoost, CardStats, Cost, Resonance, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
@@ -36,7 +37,7 @@ use game_data::game_state::GameState;
 use game_data::prompt_data::GamePrompt;
 use game_data::raid_data::{RaidData, RaidState, RaidStatus, RaidStep};
 
-use crate::{dispatch, prompts};
+use crate::prompts;
 
 /// Obtain the [CardStats] for a given card
 pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {

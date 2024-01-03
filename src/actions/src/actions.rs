@@ -19,6 +19,7 @@
 use anyhow::Result;
 use constants::game_constants;
 use core_data::game_primitives::{AbilityId, CardId, InitiatedBy, RoomId, Side};
+use dispatcher::dispatch;
 use game_data::animation_tracker::AnimationState;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
@@ -37,8 +38,8 @@ use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
 use rules::mana::ManaPurpose;
 use rules::{
-    activate_ability, curses, damage, destroy, dispatch, draw_cards, end_raid, flags, leylines,
-    mana, mutations, play_card, prompts, queries, wounds,
+    activate_ability, curses, damage, destroy, draw_cards, end_raid, flags, leylines, mana,
+    mutations, play_card, prompts, queries, wounds,
 };
 use tracing::{debug, instrument};
 use with_error::{fail, verify, WithError};

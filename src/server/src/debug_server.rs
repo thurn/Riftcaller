@@ -27,6 +27,7 @@ use core_data::game_primitives::{
 use core_ui::actions::InterfaceAction;
 use core_ui::panels;
 use database::Database;
+use dispatcher::dispatch;
 use display::render;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::card_state::CardPosition;
@@ -42,7 +43,7 @@ use protos::riftcaller::game_command::Command;
 use protos::riftcaller::{ClientAction, ClientDebugCommand, LoadSceneCommand, SceneLoadMode};
 use rules::mana::ManaPurpose;
 use rules::mutations::{RealizeCards, SummonMinion};
-use rules::{curses, dispatch, draw_cards, mana, mutations, wounds};
+use rules::{curses, draw_cards, mana, mutations, wounds};
 use serde_json::{de, ser};
 use sled::Db;
 use ulid::Ulid;

@@ -14,12 +14,13 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{AbilityId, WoundCount};
+use dispatcher::dispatch;
 use game_data::delegate_data::WoundsReceivedEvent;
 use game_data::game_state::GameState;
 use game_data::state_machine_data::{GiveWoundsData, GiveWoundsStep};
 
+use crate::state_machine;
 use crate::state_machine::StateMachine;
-use crate::{dispatch, state_machine};
 
 /// Give the Riftcaller player `quantity` wounds, which decreases their maximum
 /// hand size.

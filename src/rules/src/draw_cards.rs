@@ -14,6 +14,7 @@
 
 use anyhow::Result;
 use core_data::game_primitives::{InitiatedBy, Side};
+use dispatcher::dispatch;
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{DrawCardsViaAbilityEvent, WillDrawCardsEvent};
@@ -22,7 +23,7 @@ use game_data::state_machine_data::{DrawCardsData, DrawCardsStep};
 
 use crate::mutations::RealizeCards;
 use crate::state_machine::StateMachine;
-use crate::{dispatch, mutations, state_machine};
+use crate::{mutations, state_machine};
 
 /// Function to draw `count` cards from the top of a player's deck and
 /// place them into their hand.

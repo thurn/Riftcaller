@@ -12,6 +12,7 @@ test = false
 
 [dependencies]
 assets = { path = "../assets", version = "0.0.0" }
+dispatcher = { path = "../dispatcher", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 card_definition_data = { path = "../data/card_definition_data", version = "0.0.0" }
 game_data = { path = "../data/game_data", version = "0.0.0" }

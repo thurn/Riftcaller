@@ -20,6 +20,7 @@ dependencies = [
  "card_definition_data",
  "constants",
  "core_data",
+ "dispatcher",
  "enum-iterator",
  "game_data",
  "raid_state",
@@ -67,7 +68,6 @@ dependencies = [
  "game_data",
  "game_tables",
  "player_data",
- "rules",
  "with_error",
 ]
 
@@ -128,7 +128,6 @@ dependencies = [
  "enumset",
  "game_data",
  "game_tables",
- "rules",
 ]
 
 [[package]]
@@ -187,6 +186,7 @@ dependencies = [
  "clap",
  "core_data",
  "decklists",
+ "dispatcher",
  "game_data",
  "rules",
  "with_error",
@@ -1062,6 +1062,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dispatcher"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "card_definition_data",
+ "core_data",
+ "game_data",
+]
+
+[[package]]
 name = "display"
 version = "0.0.0"
 dependencies = [
@@ -1073,6 +1083,7 @@ dependencies = [
  "constants",
  "core_data",
  "core_ui",
+ "dispatcher",
  "enum-iterator",
  "game_data",
  "panel_address",
@@ -2387,6 +2398,7 @@ dependencies = [
  "constants",
  "core_data",
  "core_ui",
+ "dispatcher",
  "fallible-iterator",
  "game_data",
  "prompt_ui",
@@ -2616,6 +2628,7 @@ dependencies = [
  "constants",
  "core_data",
  "dashmap",
+ "dispatcher",
  "enum-iterator",
  "game_data",
  "once_cell",
@@ -2632,6 +2645,7 @@ dependencies = [
  "convert_case 0.5.0",
  "core_data",
  "core_ui",
+ "dispatcher",
  "game_data",
  "protos",
  "rules",
@@ -2912,6 +2926,7 @@ dependencies = [
  "database",
  "deck_editor",
  "decklists",
+ "dispatcher",
  "display",
  "enum-iterator",
  "game_data",
@@ -3143,6 +3158,7 @@ dependencies = [
  "core_ui",
  "database",
  "decklists",
+ "dispatcher",
  "game_data",
  "maplit",
  "player_data",

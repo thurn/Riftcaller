@@ -29,6 +29,7 @@ use core_data::game_primitives::{
     ActionCount, CardId, InitiatedBy, ManaValue, PointsValue, PowerChargeValue, ProgressValue,
     RoomId, Side, TurnNumber,
 };
+use dispatcher::dispatch;
 use game_data::animation_tracker::GameAnimation;
 use game_data::card_name::CardVariant;
 use game_data::card_state::{CardCounter, CardIdsExt, CardState};
@@ -50,7 +51,7 @@ use with_error::{fail, verify};
 
 use crate::mana::ManaPurpose;
 use crate::visual_effects::VisualEffects;
-use crate::{dispatch, draw_cards, flags, mana, queries};
+use crate::{draw_cards, flags, mana, queries};
 
 /// Change a card to the 'face up' state and makes the card revealed to both
 /// players.
