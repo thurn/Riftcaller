@@ -24,14 +24,12 @@ use anyhow::Result;
 use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives;
 use core_data::game_primitives::{
-    AbilityId, AbilityIndex, ActionCount, AttackValue, BreachValue, CardId, CardSubtype, CardType,
-    HealthValue, ManaValue, PointsValue, PowerChargeValue, ProgressValue, Rarity, RazeCost, RoomId,
-    School, ShieldValue, Side, Sprite,
+    AbilityId, ActionCount, AttackValue, BreachValue, CardId, HealthValue, ManaValue, PointsValue,
+    PowerChargeValue, ProgressValue, RazeCost, RoomId, School, ShieldValue, Sprite,
 };
 use enum_kinds::EnumKind;
 
-use crate::card_name::{CardMetadata, CardName, CardVariant};
-use crate::card_set_name::CardSetName;
+use crate::card_name::CardMetadata;
 use crate::delegate_data::GameDelegate;
 use crate::game_state::GameState;
 use crate::special_effects::{ProjectileData, TimedEffectData};
@@ -451,77 +449,5 @@ impl CardConfigBuilder {
     pub fn identity(mut self, config: IdentityConfig) -> Self {
         self.config.identity = Some(config);
         self
-    }
-}
-
-/// The fundamental object defining the behavior of a given card in Riftcaller
-///
-/// This struct's top-level fields should be universal properties which need to
-/// be set by every card
-#[derive(Debug)]
-pub struct CardDefinition {
-    pub name: CardName,
-    pub sets: Vec<CardSetName>,
-    pub cost: Cost<CardId>,
-    pub image: Sprite,
-    pub card_type: CardType,
-    pub subtypes: Vec<CardSubtype>,
-    pub side: Side,
-    pub school: School,
-    pub rarity: Rarity,
-    pub abilities: Vec<Ability>,
-    pub config: CardConfig,
-}
-
-impl CardDefinition {
-    pub fn variant(&self) -> CardVariant {
-        CardVariant { name: self.name, metadata: self.config.metadata }
-    }
-
-    /// Returns the ability at the given index. Panics if no ability with this
-    /// index exists.
-    pub fn ability(&self, index: AbilityIndex) -> &Ability {
-        &self.abilities[index.value()]
-    }
-
-    /// Iterator over all [AbilityId]s of a card.
-    pub fn ability_ids(&self, card_id: CardId) -> impl Iterator<Item = AbilityId> {
-        (0..self.abilities.len()).map(move |i| AbilityId::new(card_id, i))
-    }
-
-    pub fn is_spell(&self) -> bool {
-        self.card_type.is_spell()
-    }
-
-    pub fn is_scheme(&self) -> bool {
-        self.card_type == CardType::Scheme
-    }
-
-    pub fn is_minion(&self) -> bool {
-        self.card_type == CardType::Minion
-    }
-
-    pub fn is_artifact(&self) -> bool {
-        self.card_type == CardType::Artifact
-    }
-
-    pub fn is_ally(&self) -> bool {
-        self.card_type == CardType::Ally
-    }
-
-    pub fn is_permanent(&self) -> bool {
-        !self.is_spell()
-    }
-
-    pub fn is_infernal(&self) -> bool {
-        self.config.resonance.map(|r| r.infernal) == Some(true)
-    }
-
-    pub fn is_mortal(&self) -> bool {
-        self.config.resonance.map(|r| r.mortal) == Some(true)
-    }
-
-    pub fn is_astral(&self) -> bool {
-        self.config.resonance.map(|r| r.astral) == Some(true)
     }
 }

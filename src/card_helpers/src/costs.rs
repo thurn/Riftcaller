@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{AbilityId, ActionCount, CardId, ManaValue};
-use game_data::card_definition::{Cost, CustomCost};
+use game_data::card_configuration::{Cost, CustomCost};
 use game_data::card_state::CardCounter;
 use game_data::text::{TextElement, TextToken};
 use rules::mutations;

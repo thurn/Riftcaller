@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{RoomId, Side};
-use game_data::card_definition::Resonance;
+use game_data::card_configuration::Resonance;
 use game_data::card_name::CardName;
 use protos::riftcaller::client_action::Action;
 use protos::riftcaller::{DrawCardAction, RoomIdentifier};

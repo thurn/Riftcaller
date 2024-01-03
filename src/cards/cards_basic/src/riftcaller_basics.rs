@@ -13,13 +13,14 @@
 // limitations under the License.
 
 use assets::rexard_images::{self, RexardPack, RexardWeaponType};
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::costs::actions;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
 use card_helpers::*;
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
+use game_data::card_configuration::{
+    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;

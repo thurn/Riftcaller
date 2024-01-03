@@ -18,7 +18,7 @@ use core_ui::icons;
 use core_ui::prelude::*;
 use core_ui::style::Corner;
 use core_ui::text::Text;
-use game_data::card_definition::{Cost, CustomBoostCost, CustomWeaponCost};
+use game_data::card_configuration::{Cost, CustomBoostCost, CustomWeaponCost};
 use game_data::game_actions::{GameAction, RaidAction, RazeCardActionType};
 use game_data::game_state::GameState;
 use game_data::raid_data::{

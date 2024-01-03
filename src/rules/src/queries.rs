@@ -20,7 +20,7 @@ use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CardType, HealthValue,
     ItemLocation, ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
 };
-use game_data::card_definition::{
+use game_data::card_configuration::{
     AbilityType, AttackBoost, CardStats, Cost, Resonance, TargetRequirement,
 };
 use game_data::card_state::{CardPosition, CardState};

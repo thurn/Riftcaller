@@ -14,9 +14,9 @@
 
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
+use card_definition_data::card_view_context::CardViewContext;
 use core_data::game_primitives::{CardId, School};
 use game_data::card_state::CardState;
-use game_data::card_view_context::CardViewContext;
 use game_data::delegate_data::{CardStatusMarker, CardStatusMarkersQuery};
 use game_data::game_state::GameState;
 use protos::riftcaller::{

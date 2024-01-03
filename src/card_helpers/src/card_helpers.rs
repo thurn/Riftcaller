@@ -16,7 +16,7 @@
 //! wildcard import in card definition files.
 
 use core_data::game_primitives::{CardId, HasCardId, HealthValue, ManaValue, RoomId, Side};
-use game_data::card_definition::{AbilityType, Cost, TargetRequirement};
+use game_data::card_configuration::{AbilityType, Cost, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     AccessEvent, EventDelegate, GameDelegate, MutationFn, QueryDelegate, RaidEvent, RaidOutcome,

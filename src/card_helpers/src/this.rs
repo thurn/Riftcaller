@@ -15,7 +15,7 @@
 use core_data::game_primitives::{
     AbilityId, AttackValue, CardId, HasAbilityId, HasCardId, TurnNumber,
 };
-use game_data::card_definition::Cost;
+use game_data::card_configuration::Cost;
 use game_data::delegate_data::{
     AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, DiscardedCard, EventDelegate,
     GameDelegate, MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,

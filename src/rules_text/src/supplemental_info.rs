@@ -14,12 +14,12 @@
 
 use std::collections::HashSet;
 
+use card_definition_data::card_definition::CardDefinition;
+use card_definition_data::card_view_context::CardViewContext;
 use convert_case::{Case, Casing};
 use core_data::game_primitives::AbilityIndex;
 use core_ui::icons;
 use core_ui::prelude::*;
-use game_data::card_definition::CardDefinition;
-use game_data::card_view_context::CardViewContext;
 use game_data::delegate_data::CardStatusMarkersQuery;
 use game_data::text::{TextElement, TextTokenKind};
 use rules::{dispatch, queries};

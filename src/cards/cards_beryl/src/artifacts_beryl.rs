@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
     text_helpers, this,
@@ -21,9 +22,9 @@ use core_data::game_primitives::{
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{
-    Ability, ActivatedAbility, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition,
-    CustomBoostCost, CustomWeaponCost, Resonance,
+use game_data::card_configuration::{
+    Ability, ActivatedAbility, AttackBoost, CardConfig, CardConfigBuilder, CustomBoostCost,
+    CustomWeaponCost, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;

@@ -15,7 +15,7 @@
 use adapters::CustomCardIdentifier;
 use anyhow::Result;
 use core_data::game_primitives::{CardType, RoomId, Side};
-use game_data::card_definition::Resonance;
+use game_data::card_configuration::Resonance;
 use game_data::card_name::{CardName, CardVariant};
 use game_data::player_name::PlayerId;
 use protos::riftcaller::client_action::Action;

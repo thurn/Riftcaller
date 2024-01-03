@@ -16,7 +16,7 @@ use core_data::game_primitives::{
     AbilityId, ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomId, RoomIdCrypt,
     RoomIdMarker, RoomIdSanctum, RoomIdVault, Side, TurnNumber,
 };
-use game_data::card_definition::Resonance;
+use game_data::card_configuration::Resonance;
 use game_data::delegate_data::{
     AccessEvent, CardPlayed, CardStatusMarker, DealtDamage, EventDelegate, GameDelegate,
     ManaLostToOpponentAbility, MutationFn, QueryDelegate, RaidEvent, Scope, ScoreCard,

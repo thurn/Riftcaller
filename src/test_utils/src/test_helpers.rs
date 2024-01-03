@@ -19,7 +19,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use adapters::ServerCardId;
 use core_data::game_primitives::{AttackValue, CardId, GameId, HealthValue, ManaValue};
-use game_data::card_definition::Resonance;
+use game_data::card_configuration::Resonance;
 use game_data::card_name::CardName;
 use game_data::player_name::PlayerId;
 use protos::riftcaller::CardIdentifier;

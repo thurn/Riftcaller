@@ -14,11 +14,11 @@
 
 use adapters::response_builder::ResponseBuilder;
 use adapters::CustomCardIdentifier;
+use card_definition_data::card_view_context::CardViewContext;
 use constants::game_constants;
 use core_data::game_primitives::{CardId, CardType, ManaValue, Rarity, School, Side, WoundCount};
 use core_ui::icons;
-use game_data::card_definition::TargetRequirement;
-use game_data::card_view_context::CardViewContext;
+use game_data::card_configuration::TargetRequirement;
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{GamePrompt, RoomSelectorPrompt};

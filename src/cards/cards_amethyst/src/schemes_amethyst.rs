@@ -16,14 +16,13 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardPack;
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::costs::scheme;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_scored_by_covenant;
 use card_helpers::*;
 use core_data::game_primitives::{CardType, Rarity, School, Side};
-use game_data::card_definition::{
-    Ability, AbilityType, CardConfigBuilder, CardDefinition, SchemePoints,
-};
+use game_data::card_configuration::{Ability, AbilityType, CardConfigBuilder, SchemePoints};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{EventDelegate, GameDelegate, QueryDelegate};

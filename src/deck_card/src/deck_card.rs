@@ -15,13 +15,13 @@
 //! Renders cards as they're seen in the deck editor and adventure UI
 
 use adapters::response_builder::{ResponseBuilder, ResponseState};
+use card_definition_data::card_view_context::CardViewContext;
 use core_data::game_primitives::Milliseconds;
 use core_ui::draggable::Draggable;
 use core_ui::prelude::*;
 use core_ui::style;
 use display::card_sync;
 use game_data::card_name::CardVariant;
-use game_data::card_view_context::CardViewContext;
 use protos::riftcaller::game_command::Command;
 use protos::riftcaller::studio_appear_effect::StudioAppear;
 use protos::riftcaller::studio_display::Display;

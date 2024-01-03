@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use anyhow::Result;
 use core_data::game_primitives::CardId;
+use game_data::card_state::CardState;
+use game_data::game_state::GameState;
 
 use crate::card_definition::CardDefinition;
-use crate::card_state::CardState;
-use crate::game_state::GameState;
 
 /// Provides the context in which a card view is being displayed, i.e. either
 /// during an active game or in a deck editor.
@@ -74,12 +73,13 @@ impl<'a> CardViewContext<'a> {
         }
     }
 
-    /// Equivalent to `query_or` which accepts a function returning [Result].
+    /// Equivalent to `query_or` which accepts a function returning
+    /// [anyhow::Result].
     pub fn query_or_ok<T>(
         &self,
         default: T,
-        fun: impl Fn(&GameState, &CardState) -> Result<T>,
-    ) -> Result<T> {
+        fun: impl Fn(&GameState, &CardState) -> anyhow::Result<T>,
+    ) -> anyhow::Result<T> {
         match self {
             Self::Default(_) => Ok(default),
             Self::Game(_, state, card) => fun(state, card),

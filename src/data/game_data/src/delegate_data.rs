@@ -77,10 +77,10 @@ use macros::DelegateEnum;
 use serde::{Deserialize, Serialize};
 
 #[allow(unused)] // Used in rustdocs
-use crate::card_definition::Cost;
-use crate::card_definition::Resonance;
+use crate::card_configuration::Cost;
+use crate::card_configuration::Resonance;
 #[allow(unused)] // Used in rustdocs
-use crate::card_definition::{AttackBoost, CardStats};
+use crate::card_configuration::{AttackBoost, CardStats};
 use crate::card_name::CardMetadata;
 #[allow(unused)] // Used in rustdocs
 use crate::card_state::{CardData, CardPosition};

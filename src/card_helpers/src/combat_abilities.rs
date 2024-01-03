@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{ActionCount, DamageAmount, InitiatedBy, ManaValue, Side};
-use game_data::card_definition::{Ability, AbilityType};
+use game_data::card_configuration::{Ability, AbilityType};
 use game_data::delegate_data::RaidOutcome;
 use game_data::text::TextToken::*;
 use rules::mana::ManaPurpose;

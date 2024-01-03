@@ -14,6 +14,7 @@
 
 //! Test cards
 
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::costs::{actions, scheme};
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
@@ -21,9 +22,8 @@ use card_helpers::{abilities, combat_abilities, *};
 use core_data::game_primitives::{
     CardSubtype, CardType, InitiatedBy, Rarity, School, Side, Sprite,
 };
-use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, CardDefinition, Resonance,
-    SchemePoints,
+use game_data::card_configuration::{
+    Ability, AbilityType, AttackBoost, CardConfig, CardConfigBuilder, Resonance, SchemePoints,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;

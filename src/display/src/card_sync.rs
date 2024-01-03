@@ -13,13 +13,13 @@
 // limitations under the License.
 
 use adapters::response_builder::ResponseBuilder;
+use card_definition_data::card_view_context::CardViewContext;
 use core_data::game_primitives::{
     AbilityId, CardType, ItemLocation, RoomId, RoomLocation, School, Side,
 };
 use core_ui::{design, icons};
-use game_data::card_definition::{AbilityType, TargetRequirement};
+use game_data::card_configuration::{AbilityType, TargetRequirement};
 use game_data::card_state::CardState;
-use game_data::card_view_context::CardViewContext;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::ContinuousDisplayEffectQuery;
 use game_data::game_actions::CardTarget;

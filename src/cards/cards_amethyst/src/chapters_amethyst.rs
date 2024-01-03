@@ -13,9 +13,10 @@
 // limitations under the License.
 
 use assets::rexard_images;
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::{history, *};
 use core_data::game_primitives::{CardType, Rarity, School, Side};
-use game_data::card_definition::{Ability, CardConfig, CardDefinition};
+use game_data::card_configuration::{Ability, CardConfig};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use rules::CardDefinitionExt;

@@ -15,7 +15,7 @@
 //! Calculations for using weapons during combat
 
 use core_data::game_primitives::{AttackValue, CardId, ManaValue};
-use game_data::card_definition::{AttackBoost, CustomBoostCost, CustomWeaponCost};
+use game_data::card_configuration::{AttackBoost, CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardCounter;
 use game_data::delegate_data::{
     AttackBoostBonusQuery, CanEncounterTargetQuery, CanUseWeaponQuery, CardEncounter,

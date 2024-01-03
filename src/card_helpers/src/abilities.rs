@@ -15,7 +15,7 @@
 //! Helpers for defining common card abilities
 
 use core_data::game_primitives::{AbilityId, InitiatedBy, ManaValue, INNER_ROOMS};
-use game_data::card_definition::{Ability, AbilityType, Cost, TargetRequirement};
+use game_data::card_configuration::{Ability, AbilityType, Cost, TargetRequirement};
 use game_data::card_name::CardMetadata;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::custom_card_state::CustomCardState;

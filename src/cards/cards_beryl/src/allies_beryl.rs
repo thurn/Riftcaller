@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::{costs, history, in_play, show_prompt, text, text_helpers, this};
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_definition::{
-    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
+use game_data::card_configuration::{
+    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;

@@ -16,11 +16,10 @@
 
 pub mod agent_definition;
 pub mod animation_tracker;
-pub mod card_definition;
+pub mod card_configuration;
 pub mod card_name;
 pub mod card_set_name;
 pub mod card_state;
-pub mod card_view_context;
 pub mod character_preset;
 pub mod continuous_visual_effect;
 pub mod custom_card_state;

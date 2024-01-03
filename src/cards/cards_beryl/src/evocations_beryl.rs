@@ -14,6 +14,7 @@
 
 use std::iter;
 
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{
     abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
@@ -25,8 +26,8 @@ use core_data::game_primitives::{
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::animation_tracker::GameAnimation;
-use game_data::card_definition::{
-    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, CardDefinition, TargetRequirement,
+use game_data::card_configuration::{
+    Ability, ActivatedAbility, CardConfig, CardConfigBuilder, TargetRequirement,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;

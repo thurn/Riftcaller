@@ -14,10 +14,10 @@
 
 use assets;
 use assets::CardIconType;
+use card_definition_data::card_view_context::CardViewContext;
 use core_data::game_primitives::ManaValue;
 use core_ui::icons;
 use game_data::card_state::CardCounter;
-use game_data::card_view_context::CardViewContext;
 use protos::riftcaller::{CardIcon, CardIcons};
 use rules::queries;
 

@@ -18,8 +18,8 @@
 use std::fmt::Debug;
 
 use anyhow::Result;
+use card_definition_data::card_definition::CardDefinition;
 use core_data::game_primitives::{AbilityId, CardId};
-use game_data::card_definition::CardDefinition;
 use game_data::card_name::CardMetadata;
 use game_data::delegate_data::{DelegateContext, DelegateMap, EventData, QueryData, Scope};
 use game_data::game_state::GameState;

@@ -19,7 +19,7 @@ use constants::game_constants;
 use core_data::game_primitives::{
     AbilityId, CardId, CardSubtype, CardType, RaidId, RoomId, RoomLocation, Side,
 };
-use game_data::card_definition::{AbilityType, TargetRequirement};
+use game_data::card_configuration::{AbilityType, TargetRequirement};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     CanActivateAbility, CanActivateAbilityQuery, CanCovenantScoreSchemeQuery,

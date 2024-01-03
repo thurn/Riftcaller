@@ -17,7 +17,7 @@ use core_data::game_primitives::{
     CardId, GameObjectId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
 };
 use game_data::animation_tracker::{GameAnimation, TargetedInteraction};
-use game_data::card_definition::{CustomBoostCost, CustomWeaponCost};
+use game_data::card_configuration::{CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     ApproachMinionEvent, CardAccessEvent, EncounterMinionEvent, MinionCombatAbilityEvent,

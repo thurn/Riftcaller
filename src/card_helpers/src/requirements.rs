@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{HasCardId, RaidId, RoomId, Side};
-use game_data::card_definition::TargetRequirement;
+use game_data::card_configuration::TargetRequirement;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::DealtDamage;
 #[allow(unused_imports)] // Used in Rustdocs

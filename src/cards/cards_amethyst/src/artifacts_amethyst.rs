@@ -16,11 +16,12 @@
 
 use assets::rexard_images;
 use assets::rexard_images::RexardWeaponType;
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::abilities::encounter_ability_text;
 use card_helpers::{abilities, *};
 use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::card_definition::{
-    Ability, AbilityType, AttackBoost, CardConfigBuilder, CardDefinition, Resonance,
+use game_data::card_configuration::{
+    Ability, AbilityType, AttackBoost, CardConfigBuilder, Resonance,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;

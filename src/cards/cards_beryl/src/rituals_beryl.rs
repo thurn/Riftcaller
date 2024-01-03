@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use card_definition_data::card_definition::CardDefinition;
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{abilities, costs, delegates, requirements, show_prompt, text, this};
 use core_data::game_primitives::{CardSubtype, CardType, HasCardId, Rarity, School, Side};
-use game_data::card_definition::{Ability, CardConfig, CardConfigBuilder, CardDefinition};
+use game_data::card_configuration::{Ability, CardConfig, CardConfigBuilder};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardIdsExt;

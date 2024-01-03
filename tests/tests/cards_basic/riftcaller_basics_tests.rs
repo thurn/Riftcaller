@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::Side;
-use game_data::card_definition::Resonance;
+use game_data::card_configuration::Resonance;
 use game_data::card_name::CardName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_helpers::WeaponStats;

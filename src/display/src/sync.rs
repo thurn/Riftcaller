@@ -15,10 +15,10 @@
 //! Converts a GameState into GameView updates
 
 use adapters::response_builder::ResponseBuilder;
+use card_definition_data::card_view_context::CardViewContext;
 use constants::game_constants;
 use core_data::game_primitives::{RoomId, School, Side};
 use game_data::card_state::{CardPositionKind, CardState};
-use game_data::card_view_context::CardViewContext;
 use game_data::character_preset::CharacterPreset;
 use game_data::game_state::GameState;
 use protos::riftcaller::{

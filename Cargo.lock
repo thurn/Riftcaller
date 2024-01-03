@@ -415,6 +415,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c4872d67bab6358e59559027aa3b9157c53d9358c51423c17554809a8858e0f8"
 
 [[package]]
+name = "card_definition_data"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "core_data",
+ "game_data",
+ "with_error",
+]
+
+[[package]]
 name = "card_helpers"
 version = "0.0.0"
 dependencies = [
@@ -446,6 +456,7 @@ name = "cards_amethyst"
 version = "0.0.0"
 dependencies = [
  "assets",
+ "card_definition_data",
  "card_helpers",
  "core_data",
  "game_data",
@@ -459,6 +470,7 @@ name = "cards_basic"
 version = "0.0.0"
 dependencies = [
  "assets",
+ "card_definition_data",
  "card_helpers",
  "core_data",
  "game_data",
@@ -471,6 +483,7 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "assets",
+ "card_definition_data",
  "card_helpers",
  "core_data",
  "core_ui",
@@ -494,6 +507,7 @@ name = "cards_game_modifier"
 version = "0.0.0"
 dependencies = [
  "assets",
+ "card_definition_data",
  "card_helpers",
  "core_data",
  "game_data",
@@ -504,6 +518,7 @@ dependencies = [
 name = "cards_test"
 version = "0.0.0"
 dependencies = [
+ "card_definition_data",
  "card_helpers",
  "core_data",
  "game_data",
@@ -980,6 +995,7 @@ name = "deck_card"
 version = "0.0.0"
 dependencies = [
  "adapters",
+ "card_definition_data",
  "core_data",
  "core_ui",
  "display",
@@ -1044,6 +1060,7 @@ dependencies = [
  "adapters",
  "anyhow",
  "assets",
+ "card_definition_data",
  "constants",
  "core_data",
  "core_ui",
@@ -2585,6 +2602,7 @@ name = "rules"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "card_definition_data",
  "constants",
  "core_data",
  "dashmap",
@@ -2600,6 +2618,7 @@ name = "rules_text"
 version = "0.0.0"
 dependencies = [
  "assets",
+ "card_definition_data",
  "convert_case 0.5.0",
  "core_data",
  "core_ui",

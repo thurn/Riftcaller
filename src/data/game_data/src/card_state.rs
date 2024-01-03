@@ -224,8 +224,8 @@ pub struct CardData {
 }
 
 /// Stores the state of a Card during an ongoing game. The game rules for a
-/// card are not part of its state, see [crate::card_definition::CardDefinition]
-/// for that.
+/// card are not part of its state, see
+/// [card_definition_data::card_definition::CardDefinition] for that.
 #[derive(PartialEq, Eq, Hash, Debug, Clone, Serialize, Deserialize)]
 pub struct CardState {
     /// ID for this card.

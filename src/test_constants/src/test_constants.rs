@@ -16,7 +16,7 @@
 
 use core_data::adventure_primitives::Coins;
 use core_data::game_primitives::{HealthValue, ManaValue, RaidId, RoomId};
-use game_data::card_definition::Resonance;
+use game_data::card_configuration::Resonance;
 use protos::riftcaller::RoomIdentifier;
 
 /// The title returned for hidden cards
