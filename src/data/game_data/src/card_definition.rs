@@ -209,10 +209,6 @@ impl<T> Debug for TargetRequirement<T> {
     }
 }
 
-/// Predicate which provides additional restrictions on whether an ability can
-/// be activated. If not specified, normal activation rules apply.
-pub type CanActivate = fn(&GameState, AbilityId) -> bool;
-
 /// Possible types of ability
 #[derive(Debug, Clone, EnumKind)]
 #[enum_kind(AbilityTypeKind)]

@@ -98,7 +98,7 @@ use crate::text::TextElement;
 pub struct Scope {
     /// Ability which owns this delegate.
     ability_id: AbilityId,
-    /// Metadata for the this card
+    /// Metadata for this card
     metadata: CardMetadata,
 }
 
