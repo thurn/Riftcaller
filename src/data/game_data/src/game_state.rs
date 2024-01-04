@@ -30,7 +30,7 @@ use with_error::{fail, WithError};
 use crate::animation_tracker::{AnimationState, AnimationStep, AnimationTracker, GameAnimation};
 use crate::card_state::{CardPosition, CardState};
 use crate::deck::Deck;
-use crate::delegate_data::DelegateMap;
+use crate::delegate_data::GameDelegateMap;
 use crate::history_data::{GameHistory, HistoryCounters, HistoryEvent};
 use crate::player_name::PlayerId;
 use crate::prompt_data::PromptStack;
@@ -272,7 +272,7 @@ pub struct GameState {
     pub rng: Option<Xoshiro256StarStar>,
     /// Lookup table for delegates present on cards in this game
     #[serde(skip)]
-    pub delegate_map: DelegateMap,
+    pub delegate_map: GameDelegateMap,
     /// Handles state tracking for the 'undo' action.
     pub undo_tracker: Option<UndoTracker>,
 }
@@ -315,7 +315,7 @@ impl GameState {
                 AnimationState::Track
             }),
             next_sorting_key: 1,
-            delegate_map: DelegateMap::default(),
+            delegate_map: GameDelegateMap::default(),
             rng: if config.deterministic {
                 Some(Xoshiro256StarStar::seed_from_u64(314159265358979323))
             } else {

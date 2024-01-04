@@ -3193,6 +3193,7 @@ dependencies = [
  "core_ui",
  "criterion",
  "decklists",
+ "dispatcher",
  "element_names",
  "game_data",
  "insta",

@@ -173,7 +173,7 @@ pub type TransformationFn<T, R> = fn(&GameState, Scope, &T, R) -> R;
 /// response.
 #[derive(Copy, Clone)]
 pub struct EventDelegate<T> {
-    /// Should return true if this delegate's `mutation`.
+    /// Should return true if this delegate's `mutation` should run.
     pub requirement: RequirementFn<T>,
     /// Modifies the current [GameState] in response to the associated event.
     pub mutation: MutationFn<T>,
@@ -698,26 +698,26 @@ impl fmt::Debug for GameDelegate {
 /// Contains the state needed to invoke a delegate within the context of a
 /// specific game.
 #[derive(Clone, Debug)]
-pub struct DelegateContext {
+pub struct GameDelegateContext {
     pub delegate: GameDelegate,
     pub scope: Scope,
 }
 
 /// Stores delegates in a given game for faster lookup
 #[derive(Clone, Debug, Default)]
-pub struct DelegateMap {
-    pub lookup: HashMap<GameDelegateKind, Vec<DelegateContext>>,
+pub struct GameDelegateMap {
+    pub lookup: HashMap<GameDelegateKind, Vec<GameDelegateContext>>,
 }
 
-impl DelegateMap {
+impl GameDelegateMap {
     pub fn delegate_count(&self, kind: GameDelegateKind) -> usize {
         self.lookup.get(&kind).map_or(0, Vec::len)
     }
 
-    /// Gets the [DelegateContext] for a given [GameDelegateKind] and index.
+    /// Gets the [GameDelegateContext] for a given [GameDelegateKind] and index.
     ///
     /// Panics if no such delegate exists.
-    pub fn get(&self, kind: GameDelegateKind, index: usize) -> &DelegateContext {
+    pub fn get(&self, kind: GameDelegateKind, index: usize) -> &GameDelegateContext {
         &self.lookup.get(&kind).expect("Delegate")[index]
     }
 }

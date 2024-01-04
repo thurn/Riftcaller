@@ -13,4 +13,5 @@
 // limitations under the License.
 
 //! Generic functions for firing game events
+pub mod adventure_dispatch;
 pub mod dispatch;

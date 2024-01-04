@@ -22,6 +22,8 @@ use derive_more::{
 use serde::{Deserialize, Serialize};
 use with_error::fail;
 
+use crate::game_primitives::AbilityIndex;
+
 #[derive(
     Debug,
     Display,
@@ -128,4 +130,25 @@ pub enum Skill {
     Stealth,
     Lore,
     Persuasion,
+}
+
+/// Identifies a card with abilities which modify game events during an
+/// adventure.
+#[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
+pub enum AdventureCardId {
+    /// An identity card within the player's deck at a given index position.
+    ///
+    /// Currently only one identity card is allowed.
+    Identity(usize),
+    /// A sigil card within the player's deck at a given index position.
+    Sigil(usize),
+    /// A global Game Modifier card within the adventure's active modifier list.
+    GameModifier(usize),
+}
+
+/// Identifies an ability within a card in the context of an adventure.
+#[derive(Debug, PartialEq, Eq, Hash, Copy, Clone, Serialize, Deserialize)]
+pub struct AdventureAbilityId {
+    pub card_id: AdventureCardId,
+    pub index: AbilityIndex,
 }

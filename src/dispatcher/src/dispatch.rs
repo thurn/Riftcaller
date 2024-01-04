@@ -23,12 +23,12 @@ use card_definition_data::card_definition::CardDefinition;
 use card_definition_data::cards;
 use core_data::game_primitives::{AbilityId, CardId};
 use game_data::card_name::CardMetadata;
-use game_data::delegate_data::{DelegateContext, DelegateMap, EventData, QueryData, Scope};
+use game_data::delegate_data::{EventData, GameDelegateContext, GameDelegateMap, QueryData, Scope};
 use game_data::game_state::GameState;
 
-/// Adds a [DelegateMap] for this game to store active delegates..
+/// Adds a [GameDelegateMap] for this game to store active delegates..
 pub fn populate_delegate_map(game: &mut GameState) {
-    let mut result = DelegateMap::default();
+    let mut result = GameDelegateMap::default();
     for card_id in game.all_card_ids() {
         let variant = game.card(card_id).variant;
         let definition = cards::get(variant);
@@ -39,7 +39,7 @@ pub fn populate_delegate_map(game: &mut GameState) {
 
 /// Adds a new card's [CardDefinition] to the delegate map.
 pub fn add_card_to_delegate_map(
-    map: &mut DelegateMap,
+    map: &mut GameDelegateMap,
     definition: &CardDefinition,
     card_id: CardId,
     metadata: CardMetadata,
@@ -52,7 +52,7 @@ pub fn add_card_to_delegate_map(
                 map.lookup
                     .entry(d.kind())
                     .or_default()
-                    .push(DelegateContext { delegate: d.clone(), scope });
+                    .push(GameDelegateContext { delegate: d.clone(), scope });
             }
         }
     }
@@ -63,7 +63,7 @@ pub fn add_card_to_delegate_map(
 /// This function assumes that the set of delegates for the card has not
 /// changed, which is currently always the case.
 pub fn remove_card_from_delegate_map(
-    map: &mut DelegateMap,
+    map: &mut GameDelegateMap,
     definition: &CardDefinition,
     card_id: CardId,
 ) {
