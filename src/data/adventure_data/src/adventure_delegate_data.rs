@@ -13,10 +13,13 @@
 // limitations under the License.
 
 use std::fmt;
+use std::fmt::{Debug, Formatter};
 
 use anyhow::Result;
-use core_data::adventure_primitives::{AdventureAbilityId, AdventureCardId};
+use core_data::adventure_primitives::{AdventureAbilityId, AdventureCardId, Coins};
+use enum_kinds::EnumKind;
 use game_data::card_name::CardMetadata;
+use macros::AdventureDelegateEnum;
 
 use crate::adventure::AdventureState;
 
@@ -59,8 +62,8 @@ impl AdventureScope {
     }
 }
 
-impl fmt::Debug for AdventureScope {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+impl Debug for AdventureScope {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self.ability_id)
     }
 }
@@ -109,5 +112,49 @@ impl<T, R> AdventureQuery<T, R> {
         transformation: AdventureTransformation<T, R>,
     ) -> Self {
         Self { requirement, transformation }
+    }
+}
+
+/// Functions implemented by an Event struct, automatically implemented by
+/// deriving [AdventureDelegateEnum]
+pub trait AdventureEventData<T: Debug>: Debug {
+    /// Get the underlying data for this event
+    fn data(&self) -> &T;
+
+    fn kind(&self) -> AdventureDelegateKind;
+
+    /// Return the wrapped [AdventureEvent] if the provided [AdventureDelegate]
+    /// is of the matching type.
+    fn extract(delegate: &AdventureDelegate) -> Option<&AdventureEvent<T>>;
+}
+
+/// Functions implemented by a Query struct, automatically implemented by
+/// deriving [AdventureDelegateEnum]
+pub trait AdventureQueryData<TData: Debug, TResult: Debug>: Debug {
+    /// Get the underlying data for this query
+    fn data(&self) -> &TData;
+
+    fn kind(&self) -> AdventureDelegateKind;
+
+    /// Return the wrapped [AdventureQuery] if the provided [AdventureDelegate]
+    /// is of the matching type.
+    fn extract(delegate: &AdventureDelegate) -> Option<&AdventureQuery<TData, TResult>>;
+}
+
+#[derive(EnumKind, Clone, AdventureDelegateEnum)]
+#[enum_kind(AdventureDelegateKind, derive(Hash))]
+pub enum AdventureDelegate {
+    ShopPurchasePrice(AdventureQuery<AdventureCardId, Coins>),
+}
+
+impl AdventureDelegate {
+    pub fn kind(&self) -> AdventureDelegateKind {
+        self.into()
+    }
+}
+
+impl Debug for AdventureDelegate {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "Delegate::{:?}", AdventureDelegateKind::from(self))
     }
 }

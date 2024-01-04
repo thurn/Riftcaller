@@ -36,8 +36,8 @@
 //! in game simulation code running 25% slower.
 //!
 //! Delegate enum members automatically have an associated struct generated for
-//! them by the [DelegateEnum] macro, which is the name of the enum variant with
-//! the prefix `Event` or `Query`, e.g. [DawnEvent] for `Delegate::Dawn`.
+//! them by the [GameDelegateEnum] macro, which is the name of the enum variant
+//! with the prefix `Event` or `Query`, e.g. [DawnEvent] for `Delegate::Dawn`.
 //!
 //! # Example Generated Code
 //! We generate approximately the following code for each delegate enum value:
@@ -73,7 +73,7 @@ use core_data::game_primitives::{
     MinionEncounterId, RaidId, RoomAccessId, RoomId, ShieldValue, Side, TurnNumber, WoundCount,
 };
 use enum_kinds::EnumKind;
-use macros::DelegateEnum;
+use macros::GameDelegateEnum;
 use serde::{Deserialize, Serialize};
 
 #[allow(unused)] // Used in rustdocs
@@ -439,9 +439,9 @@ pub struct ManaLostToOpponentAbility {
 /// The core of the delegate pattern, used to identify which event or which
 /// query this delegate wishes to respond to. Each enum variant here
 /// automatically gets an associated struct value generated for it by the
-/// [DelegateEnum] macro -- see module-level documentation for an example of
+/// [GameDelegateEnum] macro -- see module-level documentation for an example of
 /// what this code looks like.
-#[derive(EnumKind, DelegateEnum, Clone)]
+#[derive(EnumKind, GameDelegateEnum, Clone)]
 #[enum_kind(GameDelegateKind, derive(Hash))]
 pub enum GameDelegate {
     /// The Riftcaller's turn begins
@@ -723,7 +723,7 @@ impl GameDelegateMap {
 }
 
 /// Functions implemented by an Event struct, automatically implemented by
-/// deriving [DelegateEnum]
+/// deriving [GameDelegateEnum]
 pub trait EventData<T: fmt::Debug>: fmt::Debug {
     /// Get the underlying data for this event
     fn data(&self) -> &T;
@@ -736,7 +736,7 @@ pub trait EventData<T: fmt::Debug>: fmt::Debug {
 }
 
 /// Functions implemented by a Query struct, automatically implemented by
-/// deriving [DelegateEnum]
+/// deriving [GameDelegateEnum]
 pub trait QueryData<TData: fmt::Debug, TResult: fmt::Debug>: fmt::Debug {
     /// Get the underlying data for this query
     fn data(&self) -> &TData;

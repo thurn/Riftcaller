@@ -82,6 +82,7 @@ dependencies = [
  "enum-kinds",
  "enumset",
  "game_data",
+ "macros",
  "once_cell",
  "rand",
  "rand_xoshiro",

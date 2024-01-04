@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use adventure_data::adventure_delegate_data::AdventureDelegate;
 use core_data::game_primitives::AbilityId;
 use enum_kinds::EnumKind;
 use game_data::card_configuration::{Cost, TargetRequirement};
@@ -21,7 +22,7 @@ use game_data::text::TextElement;
 #[derive(Debug, Clone)]
 pub enum Delegate {
     GameDelegate(GameDelegate),
-    AdventureDelegate,
+    AdventureDelegate(AdventureDelegate),
 }
 
 /// Possible types of ability
