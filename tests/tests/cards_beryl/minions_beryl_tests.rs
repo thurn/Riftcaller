@@ -194,3 +194,90 @@ fn angel_of_unity_cannot_activate_before_room_approach() {
     g.click(Button::Summon);
     assert!(g.activate_ability_with_result(id, 0).is_err());
 }
+
+#[test]
+fn aeon_swimmer_combat_ability() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .actions(4)
+        .opponent(
+            TestSide::new(Side::Covenant).face_up_defender(RoomId::Vault, CardName::AeonSwimmer),
+        )
+        .build();
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    assert_eq!(g.me().actions(), 1);
+    assert!(!g.client.data.raid_active());
+}
+
+#[test]
+fn aeon_swimmer_sacrifice_cannot_pay() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .actions(2)
+        .opponent(
+            TestSide::new(Side::Covenant).face_up_defender(RoomId::Vault, CardName::AeonSwimmer),
+        )
+        .build();
+    g.create_and_play(CardName::TestMortalWeapon);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::TestMortalWeapon);
+    let id = g.client.cards.room_defenders(RoomId::Vault)[0].id();
+    g.opponent_activate_ability(id, 0, None).expect("Error activating");
+    assert_eq!(g.me().actions(), 0);
+    assert!(!g.client.data.raid_active());
+    assert!(matches!(g.client.cards.get(id).position(), Position::DiscardPile(..)));
+}
+
+#[test]
+fn aeon_swimmer_sacrifice_pay_actions() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .actions(4)
+        .opponent(
+            TestSide::new(Side::Covenant).face_up_defender(RoomId::Vault, CardName::AeonSwimmer),
+        )
+        .build();
+    g.create_and_play(CardName::TestMortalWeapon);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::TestMortalWeapon);
+    let id = g.client.cards.room_defenders(RoomId::Vault)[0].id();
+    g.opponent_activate_ability(id, 0, None).expect("Error activating");
+    g.click(Button::Pay);
+    assert_eq!(g.me().actions(), 1);
+    assert!(g.client.data.raid_active());
+    assert!(matches!(g.client.cards.get(id).position(), Position::DiscardPile(..)));
+}
+
+#[test]
+fn aeon_swimmer_sacrifice_end_raid() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .actions(4)
+        .opponent(
+            TestSide::new(Side::Covenant).face_up_defender(RoomId::Vault, CardName::AeonSwimmer),
+        )
+        .build();
+    g.create_and_play(CardName::TestMortalWeapon);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::TestMortalWeapon);
+    let id = g.client.cards.room_defenders(RoomId::Vault)[0].id();
+    g.opponent_activate_ability(id, 0, None).expect("Error activating");
+    g.click(Button::EndRaid);
+    assert_eq!(g.me().actions(), 2);
+    assert!(!g.client.data.raid_active());
+    assert!(matches!(g.client.cards.get(id).position(), Position::DiscardPile(..)));
+}
+
+#[test]
+fn aeon_swimmer_sacrifice_cannot_activate_different_room() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .actions(4)
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Sanctum, CardName::AngelOfUnity)
+                .face_up_defender(RoomId::Vault, CardName::AeonSwimmer),
+        )
+        .build();
+    g.create_and_play(CardName::TestAstralWeapon);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click_card_name(CardName::TestAstralWeapon);
+    let id = g.client.cards.room_defenders(RoomId::Vault)[0].id();
+    assert!(g.opponent_activate_ability(id, 0, None).is_err());
+}

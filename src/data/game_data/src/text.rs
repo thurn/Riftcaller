@@ -41,6 +41,8 @@ pub enum TextToken {
     ActionSymbol,
     Actions(ActionCount),
     GainActions(ActionCount),
+    PaysActions(ActionCount),
+    LosesActions(ActionCount),
     PowerChargeSymbol,
     PowerCharges(PowerChargeValue),
     AddPowerCharges(PowerChargeValue),

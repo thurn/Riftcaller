@@ -616,6 +616,7 @@ pub enum CardSubtype {
     Fey,
     Beast,
     Humanoid,
+    Dragon,
 }
 
 /// An interval of time in milliseconds

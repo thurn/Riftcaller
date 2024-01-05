@@ -201,6 +201,8 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::ManaMinus(n) => format!("-{n}{}", icons::MANA),
         TextToken::ActionSymbol => icons::ACTION.to_string(),
         TextToken::Actions(n) => icons::ACTION.repeat(*n as usize),
+        TextToken::PaysActions(n) => format!("pays {}", icons::ACTION.repeat(*n as usize)),
+        TextToken::LosesActions(n) => format!("loses {}", icons::ACTION.repeat(*n as usize)),
         TextToken::GainActions(n) => {
             format!("gain{}{}", icons::NON_BREAKING_SPACE, icons::ACTION.repeat(*n as usize))
         }

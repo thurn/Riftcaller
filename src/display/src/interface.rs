@@ -50,6 +50,9 @@ pub fn render(builder: &ResponseBuilder, game: &GameState) -> Option<InterfaceMa
             ),
             GamePrompt::RoomSelector(prompt) => room_selector_prompt::controls(prompt),
         };
+    } else if rules::prompts::current(game, side.opponent()).is_some() {
+        // Wait for opponent to make a decision
+        return None;
     } else if let Some(raid) = &game.raid {
         return raid_prompt::build(game, raid, side);
     } else if let GamePhase::ResolveMulligans(_) = &game.info.phase {

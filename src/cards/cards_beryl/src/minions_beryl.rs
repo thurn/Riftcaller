@@ -28,6 +28,7 @@ use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::delegate_data::RaidOutcome;
+use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData};
 use game_data::special_effects::{
@@ -36,7 +37,7 @@ use game_data::special_effects::{
 use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{end_raid, mana, prompts, visual_effects};
+use rules::{end_raid, mana, mutations, prompts, visual_effects};
 use with_error::fail;
 
 pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
@@ -313,6 +314,70 @@ pub fn angel_of_unity(meta: CardMetadata) -> CardDefinition {
                 ProjectileData::new(Projectile::Projectiles2(7))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn aeon_swimmer(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::AeonSwimmer,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(6, 4)),
+        image: assets::covenant_card(meta, "aeon_swimmer"),
+        card_type: CardType::Minion,
+        subtypes: vec![CardSubtype::Roombound, CardSubtype::Dragon],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            ActivatedAbility::new(
+                costs::sacrifice(),
+                text![
+                    text!["End the raid unless the Riftcaller", PaysActions(1)],
+                    text!["Use this ability only during a raid on this room"]
+                ],
+            )
+            .delegate(this::can_activate(|g, s, _, flag| {
+                flag.add_constraint(utils::is_true(|| {
+                    Some(g.raid.as_ref()?.target == g.card(s).position().defending_room()?)
+                }))
+            }))
+            .delegate(this::on_activated(|g, s, _| {
+                if g.riftcaller.actions > 0 {
+                    prompts::push(g, Side::Riftcaller, s.ability_id());
+                } else {
+                    end_raid::run(g, s.initiated_by(), RaidOutcome::Failure)?;
+                }
+                Ok(())
+            }))
+            .delegate(this::prompt(|_, s, _, _| {
+                show_prompt::with_context_and_choices(
+                    ButtonPromptContext::Card(s.card_id()),
+                    vec![
+                        PromptChoice::new().effect(GameEffect::ActionCost(Side::Riftcaller, 1)),
+                        PromptChoice::new().effect(GameEffect::EndRaid(s.ability_id())),
+                    ],
+                )
+            }))
+            .build(),
+            Ability::new(text_helpers::named_trigger(
+                Combat,
+                text![text!["The Riftcaller", LosesActions(2)], text!["End the raid"]],
+            ))
+            .delegate(this::combat(|g, s, _| {
+                mutations::lose_action_points_if_able(g, Side::Riftcaller, 2)?;
+                end_raid::run(g, s.initiated_by(), RaidOutcome::Failure)
+            })),
+        ],
+        config: CardConfigBuilder::new()
+            .health(4)
+            .shield(3)
+            .resonance(Resonance::mortal())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles2(5))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact03")),
             )
             .build(),
     }

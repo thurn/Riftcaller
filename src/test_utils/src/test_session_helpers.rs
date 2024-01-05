@@ -137,6 +137,14 @@ pub trait TestSessionHelpers {
         target: RoomId,
     ) -> Result<GameResponseOutput>;
 
+    /// Activate an ability of one of the opponent's cards
+    fn opponent_activate_ability(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+        target: Option<RoomId>,
+    ) -> Result<GameResponseOutput>;
+
     /// Looks for a card named "curse" in the Riftcaller's hand and plays it.
     fn remove_curse(&mut self);
 
@@ -394,7 +402,8 @@ impl TestSessionHelpers for TestSession {
     }
 
     fn activate_ability(&mut self, card_id: CardIdentifier, index: u32) {
-        activate_ability_impl(self, card_id, index, None).expect("Error activating ability");
+        activate_ability_impl(self, card_id, index, None, self.user_id())
+            .expect("Error activating ability");
     }
 
     fn activate_ability_with_result(
@@ -402,7 +411,7 @@ impl TestSessionHelpers for TestSession {
         card_id: CardIdentifier,
         index: u32,
     ) -> Result<GameResponseOutput> {
-        activate_ability_impl(self, card_id, index, None)
+        activate_ability_impl(self, card_id, index, None, self.user_id())
     }
 
     fn activate_ability_with_target(
@@ -411,7 +420,7 @@ impl TestSessionHelpers for TestSession {
         index: u32,
         target: RoomId,
     ) {
-        activate_ability_impl(self, card_id, index, Some(target))
+        activate_ability_impl(self, card_id, index, Some(target), self.user_id())
             .expect("Error activating ability");
     }
 
@@ -421,7 +430,16 @@ impl TestSessionHelpers for TestSession {
         index: u32,
         target: RoomId,
     ) -> Result<GameResponseOutput> {
-        activate_ability_impl(self, card_id, index, Some(target))
+        activate_ability_impl(self, card_id, index, Some(target), self.user_id())
+    }
+
+    fn opponent_activate_ability(
+        &mut self,
+        card_id: CardIdentifier,
+        index: u32,
+        target: Option<RoomId>,
+    ) -> Result<GameResponseOutput> {
+        activate_ability_impl(self, card_id, index, target, self.opponent_id())
     }
 
     fn remove_curse(&mut self) {
@@ -575,6 +593,7 @@ fn activate_ability_impl(
     card_id: CardIdentifier,
     index: u32,
     target: Option<RoomId>,
+    player_id: PlayerId,
 ) -> Result<GameResponseOutput> {
     session.perform_action(
         Action::PlayCard(PlayCardAction {
@@ -585,6 +604,6 @@ fn activate_ability_impl(
                 ))),
             }),
         }),
-        session.user_id(),
+        player_id,
     )
 }

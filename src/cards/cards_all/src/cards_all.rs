@@ -109,6 +109,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::minions_beryl::sentinel_sphinx);
     DEFINITIONS.insert(cards_beryl::minions_beryl::lawhold_cavalier);
     DEFINITIONS.insert(cards_beryl::minions_beryl::angel_of_unity);
+    DEFINITIONS.insert(cards_beryl::minions_beryl::aeon_swimmer);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);
     DEFINITIONS.insert(cards_beryl::projects_beryl::living_stone);
     DEFINITIONS.insert(cards_beryl::projects_beryl::sealed_necropolis);

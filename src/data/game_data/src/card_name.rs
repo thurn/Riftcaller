@@ -380,6 +380,7 @@ pub enum CardName {
     NobleMartyr,
     SariandiPhaseWalker,
     RiftAdept,
+    AeonSwimmer,
 }
 
 impl CardName {
