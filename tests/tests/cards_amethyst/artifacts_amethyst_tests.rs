@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{RoomId, Side};
-use game_data::card_configuration::Resonance;
+use core_data::game_primitives::{Resonance, RoomId, Side};
 use game_data::card_name::CardName;
 use protos::riftcaller::client_action::Action;
 use protos::riftcaller::{DrawCardAction, RoomIdentifier};
@@ -130,7 +129,7 @@ fn test_attack_weapon() {
     let ability_cost = 1;
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::TestAttackWeapon);
-    g.fire_weapon_combat_abilities(Resonance::infernal(), CardName::TestAttackWeapon);
+    g.fire_weapon_combat_abilities(Resonance::Infernal, CardName::TestAttackWeapon);
     assert_eq!(test_constants::STARTING_MANA - card_cost - ability_cost, g.me().mana());
     assert!(g.client.data.raid_active());
     assert!(g.client.interface.controls().has_text("End Raid"));
@@ -170,7 +169,7 @@ fn bow_of_the_alliance() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::BowOfTheAlliance);
     g.create_and_play(CardName::BowOfTheAlliance);
-    g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::BowOfTheAlliance);
+    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::BowOfTheAlliance);
     assert_eq!(
         test_constants::STARTING_MANA - (2 * card_cost) - (2 * activation_cost),
         g.me().mana()

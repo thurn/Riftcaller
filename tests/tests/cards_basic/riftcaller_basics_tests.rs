@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::Side;
-use game_data::card_configuration::Resonance;
+use core_data::game_primitives::{Resonance, Side};
 use game_data::card_name::CardName;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_helpers::WeaponStats;
@@ -90,7 +89,7 @@ fn simple_blade() {
     let stats = WeaponStats { cost: 4, attack: 2, boost_cost: 1, boost: 1 };
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleBlade);
-    g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::SimpleBlade);
+    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::SimpleBlade);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
@@ -103,7 +102,7 @@ fn simple_axe() {
     let stats = WeaponStats { cost: 4, attack: 3, boost_cost: 3, boost: 1 };
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleAxe);
-    g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::SimpleAxe);
+    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::SimpleAxe);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
@@ -116,7 +115,7 @@ fn simple_bow() {
     let stats = WeaponStats { cost: 0, attack: 1, boost_cost: 2, boost: 1 };
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleBow);
-    g.fire_weapon_combat_abilities(Resonance::astral(), CardName::SimpleBow);
+    g.fire_weapon_combat_abilities(Resonance::Astral, CardName::SimpleBow);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
@@ -129,7 +128,7 @@ fn simple_club() {
     let stats = WeaponStats { cost: 2, attack: 2, boost_cost: 1, boost: 1 };
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleClub);
-    g.fire_weapon_combat_abilities(Resonance::astral(), CardName::SimpleClub);
+    g.fire_weapon_combat_abilities(Resonance::Astral, CardName::SimpleClub);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
@@ -142,7 +141,7 @@ fn simple_hammer() {
     let stats = WeaponStats { cost: 3, attack: 1, boost_cost: 1, boost: 1 };
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleHammer);
-    g.fire_weapon_combat_abilities(Resonance::infernal(), CardName::SimpleHammer);
+    g.fire_weapon_combat_abilities(Resonance::Infernal, CardName::SimpleHammer);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
@@ -155,7 +154,7 @@ fn simple_spear() {
     let stats = WeaponStats { cost: 4, attack: 0, boost_cost: 3, boost: 5 };
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::SimpleSpear);
-    g.fire_weapon_combat_abilities(Resonance::infernal(), CardName::SimpleSpear);
+    g.fire_weapon_combat_abilities(Resonance::Infernal, CardName::SimpleSpear);
     assert_eq!(
         test_constants::STARTING_MANA
             - test_helpers::cost_to_play_and_defeat(stats, test_constants::MINION_HEALTH),
@@ -168,7 +167,7 @@ fn ethereal_blade() {
     let (card_cost, activation_cost) = (1, 1);
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::EtherealBlade);
-    g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::EtherealBlade);
+    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::EtherealBlade);
     assert_eq!(test_constants::STARTING_MANA - card_cost - (4 * activation_cost), g.me().mana());
     g.click(Button::Score);
     assert_eq!(0, g.client.cards.discard_pile().len());

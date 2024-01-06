@@ -17,7 +17,7 @@ use std::collections::HashSet;
 use card_definition_data::card_definition::CardDefinition;
 use card_definition_data::card_view_context::CardViewContext;
 use convert_case::{Case, Casing};
-use core_data::game_primitives::AbilityIndex;
+use core_data::game_primitives::{AbilityIndex, Resonance};
 use core_ui::icons;
 use core_ui::prelude::*;
 use dispatcher::dispatch;
@@ -74,19 +74,17 @@ fn add_card_type_line(
     result.push_str(&definition.card_type.to_string());
     let resonance = context.query_id_or(definition.config.resonance, queries::resonance);
 
-    if let Some(resonance) = resonance {
-        if resonance.mortal {
-            append_resonance(&mut result, "Mortal");
-        }
-        if resonance.infernal {
-            append_resonance(&mut result, "Infernal");
-        }
-        if resonance.astral {
-            append_resonance(&mut result, "Astral");
-        }
-        if resonance.prismatic {
-            append_resonance(&mut result, "Prismatic");
-        }
+    if resonance.contains(Resonance::Mortal) {
+        append_resonance(&mut result, "Mortal");
+    }
+    if resonance.contains(Resonance::Infernal) {
+        append_resonance(&mut result, "Infernal");
+    }
+    if resonance.contains(Resonance::Astral) {
+        append_resonance(&mut result, "Astral");
+    }
+    if resonance.contains(Resonance::Prismatic) {
+        append_resonance(&mut result, "Prismatic");
     }
 
     for subtype in &definition.subtypes {

@@ -14,7 +14,7 @@
 
 //! Calculations for using weapons during combat
 
-use core_data::game_primitives::{AttackValue, CardId, ManaValue};
+use core_data::game_primitives::{AttackValue, CardId, ManaValue, Resonance};
 use dispatcher::dispatch;
 use game_data::card_configuration::{AttackBoost, CustomBoostCost, CustomWeaponCost};
 use game_data::card_state::CardCounter;
@@ -157,17 +157,16 @@ pub fn can_defeat_target(game: &GameState, source: CardId, target: CardId) -> bo
 /// an encounter action. Typically used to determine whether a weapon can target
 /// a minion, e.g. based on resonance.
 pub fn can_encounter_target(game: &GameState, weapon: CardId, minion: CardId) -> bool {
-    let Some(weapon_resonance) = queries::resonance(game, weapon) else {
-        return false;
-    };
-    let Some(minion_resonance) = queries::resonance(game, minion) else {
-        return false;
-    };
+    let weapon_resonance = queries::resonance(game, weapon);
+    let minion_resonance = queries::resonance(game, minion);
 
-    let can_encounter = weapon_resonance.prismatic
-        || (weapon_resonance.mortal && minion_resonance.mortal)
-        || (weapon_resonance.infernal && minion_resonance.infernal)
-        || (weapon_resonance.astral && minion_resonance.astral);
+    let can_encounter = weapon_resonance.contains(Resonance::Prismatic)
+        || (weapon_resonance.contains(Resonance::Mortal)
+            && minion_resonance.contains(Resonance::Mortal))
+        || (weapon_resonance.contains(Resonance::Infernal)
+            && minion_resonance.contains(Resonance::Infernal))
+        || (weapon_resonance.contains(Resonance::Astral)
+            && minion_resonance.contains(Resonance::Astral));
 
     dispatch::perform_query(
         game,

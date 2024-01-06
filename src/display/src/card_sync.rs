@@ -21,6 +21,7 @@ use core_data::game_primitives::{
 };
 use core_ui::{design, icons};
 use dispatcher::dispatch;
+use enumset::EnumSet;
 use game_data::card_configuration::TargetRequirement;
 use game_data::card_state::CardState;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
@@ -268,7 +269,7 @@ fn revealed_ability_card_view(
                 definition.name.displayed_name(),
                 icons::BULLET
             ),
-            text_color: Some(assets::title_color(None)),
+            text_color: Some(assets::title_color(EnumSet::new())),
         }),
         rules_text: Some(RulesText { text: rules_text::ability_text(context, ability) }),
         targeting: context.query_or_none(|game, _| {

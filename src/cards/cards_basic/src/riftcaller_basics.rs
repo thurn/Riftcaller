@@ -19,8 +19,8 @@ use card_helpers::costs::actions;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
 use card_helpers::*;
-use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::card_configuration::{AttackBoost, CardConfig, CardConfigBuilder, Resonance};
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
+use game_data::card_configuration::{AttackBoost, CardConfig, CardConfigBuilder};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::special_effects::{Projectile, ProjectileData, TimedEffect};
@@ -185,7 +185,7 @@ pub fn simple_blade(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(2)))
             .build(),
     }
@@ -206,7 +206,7 @@ pub fn simple_axe(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost::new().mana_cost(3).bonus(1))
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(8))
                     .additional_hit(TimedEffect::SwordSlashes(1)),
@@ -230,7 +230,7 @@ pub fn simple_bow(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),
     }
@@ -251,7 +251,7 @@ pub fn simple_club(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),
     }
@@ -272,7 +272,7 @@ pub fn simple_hammer(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),
     }
@@ -293,7 +293,7 @@ pub fn simple_spear(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(0)
             .attack_boost(AttackBoost::new().mana_cost(3).bonus(5))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),
     }
@@ -328,7 +328,7 @@ pub fn ethereal_blade(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::prismatic())
+            .resonance(Resonance::Prismatic)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(3)))
             .build(),
     }

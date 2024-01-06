@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, AbilityIndex, CardId, CardSubtype, CardType, Rarity, School, Side, Sprite,
+    AbilityId, AbilityIndex, CardId, CardSubtype, CardType, Rarity, Resonance, School, Side, Sprite,
 };
 use game_data::card_configuration::{CardConfig, Cost};
 use game_data::card_name::{CardName, CardVariant};
@@ -81,14 +81,14 @@ impl CardDefinition {
     }
 
     pub fn is_infernal(&self) -> bool {
-        self.config.resonance.map(|r| r.infernal) == Some(true)
+        self.config.resonance.contains(Resonance::Infernal)
     }
 
     pub fn is_mortal(&self) -> bool {
-        self.config.resonance.map(|r| r.mortal) == Some(true)
+        self.config.resonance.contains(Resonance::Mortal)
     }
 
     pub fn is_astral(&self) -> bool {
-        self.config.resonance.map(|r| r.astral) == Some(true)
+        self.config.resonance.contains(Resonance::Astral)
     }
 }

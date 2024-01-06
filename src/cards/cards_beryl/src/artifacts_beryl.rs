@@ -20,12 +20,12 @@ use card_helpers::{
     text_helpers, this,
 };
 use core_data::game_primitives::{
-    CardSubtype, CardType, GameObjectId, Rarity, RoomId, School, Side, INNER_ROOMS,
+    CardSubtype, CardType, GameObjectId, Rarity, Resonance, RoomId, School, Side, INNER_ROOMS,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_configuration::{
-    AttackBoost, CardConfig, CardConfigBuilder, CustomBoostCost, CustomWeaponCost, Resonance,
+    AttackBoost, CardConfig, CardConfigBuilder, CustomBoostCost, CustomWeaponCost,
 };
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
@@ -74,7 +74,7 @@ pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(4))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
@@ -117,7 +117,7 @@ pub fn staff_of_the_valiant(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(13))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile02"))
@@ -180,7 +180,7 @@ pub fn triumph(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(0)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(15))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic3_Projectile03"))
@@ -218,7 +218,7 @@ pub fn spear_of_conquest(meta: CardMetadata) -> CardDefinition {
             .attack_boost(
                 AttackBoost::new().custom_boost_cost(CustomBoostCost::PowerCharges(1)).bonus(1),
             )
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(23))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
@@ -256,7 +256,7 @@ pub fn blade_of_reckoning(meta: CardMetadata) -> CardDefinition {
             .attack_boost(
                 AttackBoost::new().custom_boost_cost(CustomBoostCost::PowerCharges(1)).bonus(1),
             )
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(23))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
@@ -292,7 +292,7 @@ pub fn resolution(meta: CardMetadata) -> CardDefinition {
             .base_attack(meta.upgrade(2, 4))
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
             .breach(5)
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles2(19))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile03"))
@@ -415,16 +415,15 @@ pub fn chains_of_mortality(meta: CardMetadata) -> CardDefinition {
                     Mortal,
                     "during that encounter"
                 ],
-                in_play::on_query_resonance(|g, _, card_id, resonance| {
+                in_play::on_query_resonance(|g, _, card_id, mut resonance| {
                     if Some(*card_id) == g.current_raid_defender()
                         && history::minions_encountered_this_turn(g).count() == 1
                     {
                         // Encounters are added to history immediately, so the 'first encounter'
                         // corresponds to an encounter history of length 1.
-                        resonance.with_mortal(true)
-                    } else {
-                        resonance
+                        resonance.insert(Resonance::Mortal);
                     }
+                    resonance
                 }),
             ),
             abilities::encounter_boost(),
@@ -432,7 +431,7 @@ pub fn chains_of_mortality(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(2))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
@@ -505,7 +504,7 @@ pub fn skyprism(meta: CardMetadata) -> CardDefinition {
                     .bonus(1)
                     .custom_weapon_cost(CustomWeaponCost::ActionPoints(1)),
             )
-            .resonance(Resonance::prismatic())
+            .resonance(Resonance::Prismatic)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(6))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
@@ -530,7 +529,10 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
             ActivatedAbility::new(costs::sacrifice(), text![Evade, "an", Infernal, "minion"])
                 .delegate(this::can_activate(|g, _, _, flag| {
                     flag.add_constraint(utils::is_true(|| {
-                        Some(queries::resonance(g, raids::active_encounter_prompt(g)?)?.infernal)
+                        Some(
+                            queries::resonance(g, raids::active_encounter_prompt(g)?)
+                                .contains(Resonance::Infernal),
+                        )
                     }))
                     .add_constraint(flags::can_evade_current_minion(g))
                 }))
@@ -541,7 +543,7 @@ pub fn shield_of_the_flames(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(meta.upgrade(2, 3))
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(9))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles02"))
@@ -615,7 +617,7 @@ pub fn foebane(meta: CardMetadata) -> CardDefinition {
             .custom_targeting(requirements::defended_room())
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(meta.upgrade(1, 2)))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(17))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles02"))
@@ -653,7 +655,10 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
         )
         .delegate(this::can_activate(|g, _, _, flag| {
             flag.add_constraint(utils::is_true(|| {
-                Some(queries::resonance(g, raids::active_encounter_prompt(g)?)?.astral)
+                Some(
+                    queries::resonance(g, raids::active_encounter_prompt(g)?)
+                        .contains(Resonance::Astral),
+                )
             }))
         }))
         .delegate(this::on_activated(|g, s, _| {
@@ -667,14 +672,14 @@ pub fn whip_of_disjunction(meta: CardMetadata) -> CardDefinition {
             |g, _, event| {
                 let health = queries::health(g, event.data.card_id);
                 let resonance = queries::resonance(g, event.data.card_id);
-                if !(health > 5 || resonance.map_or(true, |r| !r.astral)) {
+                if health <= 5 && resonance.contains(Resonance::Astral) {
                     end_raid::prevent(g)
                 }
                 Ok(())
             },
         ))
         .build()],
-        config: CardConfigBuilder::new().resonance(Resonance::astral()).build(),
+        config: CardConfigBuilder::new().resonance(Resonance::Astral).build(),
     }
 }
 
@@ -735,7 +740,7 @@ pub fn glimmersong(meta: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .base_attack(meta.upgrade(0, 1))
-            .resonance(Resonance::prismatic())
+            .resonance(Resonance::Prismatic)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(26))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
@@ -823,7 +828,7 @@ pub fn spear_of_ultimatum(meta: CardMetadata) -> CardDefinition {
             .base_attack(2)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
             .breach(meta.upgrade(1, 3))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(26))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
@@ -867,7 +872,7 @@ pub fn maul_of_devastation(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(meta.upgrade(1, 2))
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles2(5))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))

@@ -25,9 +25,10 @@ use core_data::adventure_primitives::{Coins, Skill};
 use core_data::game_primitives;
 use core_data::game_primitives::{
     ActionCount, AttackValue, BreachValue, CardId, HealthValue, ManaValue, PointsValue,
-    PowerChargeValue, ProgressValue, RazeCost, RoomId, School, ShieldValue, Sprite,
+    PowerChargeValue, ProgressValue, RazeCost, Resonance, RoomId, School, ShieldValue, Sprite,
 };
 use enum_kinds::EnumKind;
+use enumset::EnumSet;
 
 use crate::card_name::CardMetadata;
 use crate::game_state::GameState;
@@ -206,62 +207,6 @@ impl<T> Debug for TargetRequirement<T> {
     }
 }
 
-/// The possible resonances of weapons and minions. Minions can only be
-/// damaged by weapons from the same resonance, or by Prismatic weapons.
-#[derive(Debug, Default, Clone, Copy)]
-pub struct Resonance {
-    pub mortal: bool,
-    pub infernal: bool,
-    pub astral: bool,
-    pub prismatic: bool,
-}
-
-impl Resonance {
-    pub fn mortal() -> Self {
-        Self { mortal: true, ..Self::default() }
-    }
-
-    pub fn infernal() -> Self {
-        Self { infernal: true, ..Self::default() }
-    }
-
-    pub fn astral() -> Self {
-        Self { astral: true, ..Self::default() }
-    }
-
-    pub fn prismatic() -> Self {
-        Self { prismatic: true, ..Self::default() }
-    }
-
-    pub fn with_mortal(mut self, mortal: bool) -> Self {
-        self.mortal = mortal;
-        self
-    }
-
-    pub fn with_infernal(mut self, infernal: bool) -> Self {
-        self.infernal = infernal;
-        self
-    }
-
-    pub fn with_astral(mut self, astral: bool) -> Self {
-        self.astral = astral;
-        self
-    }
-
-    pub fn with_prismatic(mut self, prismatic: bool) -> Self {
-        self.prismatic = prismatic;
-        self
-    }
-
-    /// Counts how many of mortal, infernal, and astral resonances are present
-    /// here
-    pub fn basic_resonance_count(self) -> u32 {
-        (if self.mortal { 1 } else { 0 })
-            + (if self.infernal { 1 } else { 0 })
-            + (if self.astral { 1 } else { 0 })
-    }
-}
-
 /// Configuration for an Identity card
 #[derive(Debug)]
 pub struct IdentityConfig {
@@ -275,8 +220,11 @@ pub struct IdentityConfig {
 /// cards
 #[derive(Debug, Default)]
 pub struct CardConfig {
+    /// Basic numerical properties of this card.
     pub stats: CardStats,
-    pub resonance: Option<Resonance>,
+    /// Optionally, the resonance for this card. Weapon cards can only interact
+    /// with Minion cards that have a matching resonance.
+    pub resonance: EnumSet<Resonance>,
     /// Targeting requirements for this card, e.g. to target a room.
     pub custom_targeting: Option<TargetRequirement<CardId>>,
     /// A projectile to use when this card's combat ability triggers
@@ -350,7 +298,7 @@ impl CardConfigBuilder {
     }
 
     pub fn resonance(mut self, resonance: Resonance) -> Self {
-        self.config.resonance = Some(resonance);
+        self.config.resonance.insert(resonance);
         self
     }
 

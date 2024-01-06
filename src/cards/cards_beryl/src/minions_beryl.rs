@@ -19,11 +19,11 @@ use card_helpers::{
     combat_abilities, costs, delegates, requirements, show_prompt, text, text_helpers, this,
 };
 use core_data::game_primitives::{
-    CardSubtype, CardType, GameObjectId, ManaValue, Rarity, School, Side,
+    CardSubtype, CardType, GameObjectId, ManaValue, Rarity, Resonance, School, Side,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
-use game_data::card_configuration::{CardConfigBuilder, Resonance};
+use game_data::card_configuration::CardConfigBuilder;
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardIdsExt, CardPosition};
@@ -83,7 +83,7 @@ pub fn incarnation_of_justice(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(5)
             .shield(meta.upgrade(1, 3))
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(4))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic3_Projectile01"))
@@ -114,7 +114,7 @@ pub fn sentinel_sphinx(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(meta.upgrade(2, 3))
             .shield(meta.upgrade(1, 2))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(6))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
@@ -242,7 +242,7 @@ pub fn lawhold_cavalier(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(meta.upgrade(3, 5))
             .shield(1)
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .visual_effect(
                 TimedEffectData::new(TimedEffect::MagicCircles1(7))
                     .scale(1.5)
@@ -309,7 +309,7 @@ pub fn angel_of_unity(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(1)
             .shield(2)
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles2(7))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
@@ -373,7 +373,7 @@ pub fn aeon_swimmer(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(4)
             .shield(3)
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles2(5))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))

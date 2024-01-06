@@ -21,8 +21,8 @@ use card_definition_data::card_definition::CardDefinition;
 use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::combat;
 use card_helpers::{combat_abilities, *};
-use core_data::game_primitives::{CardType, InitiatedBy, Rarity, School, Side};
-use game_data::card_configuration::{CardConfigBuilder, Resonance};
+use core_data::game_primitives::{CardType, InitiatedBy, Rarity, Resonance, School, Side};
+use game_data::card_configuration::CardConfigBuilder;
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::CardPosition;
@@ -64,7 +64,7 @@ pub fn time_golem(_: CardMetadata) -> CardDefinition {
                 PromptChoice::new().effect(GameEffect::ActionCost(Side::Riftcaller, 2)),
             ])
         }))],
-        config: CardConfigBuilder::new().health(3).resonance(Resonance::infernal()).build(),
+        config: CardConfigBuilder::new().health(3).resonance(Resonance::Infernal).build(),
     }
 }
 
@@ -89,7 +89,7 @@ pub fn shadow_lurker(_: CardMetadata) -> CardDefinition {
             ),
             combat_abilities::end_raid(),
         ],
-        config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::astral()).build(),
+        config: CardConfigBuilder::new().health(2).shield(1).resonance(Resonance::Astral).build(),
     }
 }
 
@@ -129,7 +129,7 @@ pub fn sphinx_of_winters_breath(_: CardMetadata) -> CardDefinition {
                 }),
             ]),
         }],
-        config: CardConfigBuilder::new().health(3).shield(1).resonance(Resonance::mortal()).build(),
+        config: CardConfigBuilder::new().health(3).shield(1).resonance(Resonance::Mortal).build(),
     }
 }
 
@@ -166,7 +166,7 @@ pub fn bridge_troll(_: CardMetadata) -> CardDefinition {
                 Ok(())
             }),
         )],
-        config: CardConfigBuilder::new().health(0).shield(2).resonance(Resonance::mortal()).build(),
+        config: CardConfigBuilder::new().health(0).shield(2).resonance(Resonance::Mortal).build(),
     }
 }
 
@@ -199,10 +199,6 @@ pub fn stormcaller(_: CardMetadata) -> CardDefinition {
                 PromptChoice::new().effect(GameEffect::TakeDamageCost(s.ability_id(), 2)),
             ])
         }))],
-        config: CardConfigBuilder::new()
-            .health(3)
-            .shield(2)
-            .resonance(Resonance::infernal())
-            .build(),
+        config: CardConfigBuilder::new().health(3).shield(2).resonance(Resonance::Infernal).build(),
     }
 }

@@ -70,15 +70,16 @@ use anyhow::Result;
 use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CurseCount, HasAbilityId,
     HasCardId, HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue,
-    MinionEncounterId, RaidId, RoomAccessId, RoomId, ShieldValue, Side, TurnNumber, WoundCount,
+    MinionEncounterId, RaidId, Resonance, RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
+    WoundCount,
 };
 use enum_kinds::EnumKind;
+use enumset::EnumSet;
 use macros::GameDelegateEnum;
 use serde::{Deserialize, Serialize};
 
 #[allow(unused)] // Used in rustdocs
 use crate::card_configuration::Cost;
-use crate::card_configuration::Resonance;
 #[allow(unused)] // Used in rustdocs
 use crate::card_configuration::{AttackBoost, CardStats};
 use crate::card_name::CardMetadata;
@@ -657,9 +658,9 @@ pub enum GameDelegate {
     /// Queries the current breach value of a card. Invoked with
     /// [CardStats::breach] or 0.
     BreachValue(QueryDelegate<CardId, BreachValue>),
-    /// Queries the [Resonance] for a weapon or minion. Invoked with
+    /// Queries the [Resonance] set for a weapon or minion. Invoked with
     /// `CardConfig::resonance`.
-    Resonance(QueryDelegate<CardId, Resonance>),
+    Resonance(QueryDelegate<CardId, EnumSet<Resonance>>),
     /// Queries the current raze cost of a card. Invoked with
     /// [CardStats::raze_cost] or 0.
     RazeCost(QueryDelegate<CardId, BreachValue>),

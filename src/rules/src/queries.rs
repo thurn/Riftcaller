@@ -21,10 +21,12 @@ use card_definition_data::cards::CardDefinitionExt;
 use constants::game_constants;
 use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CardType, HealthValue,
-    ItemLocation, ManaValue, PointsValue, RazeCost, RoomId, RoomLocation, ShieldValue, Side,
+    ItemLocation, ManaValue, PointsValue, RazeCost, Resonance, RoomId, RoomLocation, ShieldValue,
+    Side,
 };
 use dispatcher::dispatch;
-use game_data::card_configuration::{AttackBoost, CardStats, Cost, Resonance, TargetRequirement};
+use enumset::EnumSet;
+use game_data::card_configuration::{AttackBoost, CardStats, Cost, TargetRequirement};
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, BaseAttackQuery, BreachValueQuery, HealthValueQuery,
@@ -185,11 +187,11 @@ pub fn sanctum_access_count(game: &GameState) -> Result<u32> {
     Ok(dispatch::perform_query(game, SanctumAccessCountQuery(&raid_id), 1))
 }
 
-/// Queries the Resonance for a card (weapon or minion). Minions can only be
+/// Queries the Resonance set for a card (weapon or minion). Minions can only be
 /// damaged by weapons from the same resonance, or by Prismatic weapons.
-pub fn resonance(game: &GameState, card_id: CardId) -> Option<Resonance> {
-    let resonance = game.card(card_id).definition().config.resonance?;
-    Some(dispatch::perform_query(game, ResonanceQuery(&card_id), resonance))
+pub fn resonance(game: &GameState, card_id: CardId) -> EnumSet<Resonance> {
+    let resonance = game.card(card_id).definition().config.resonance;
+    dispatch::perform_query(game, ResonanceQuery(&card_id), resonance)
 }
 
 /// Looks up what type of target a given card requires

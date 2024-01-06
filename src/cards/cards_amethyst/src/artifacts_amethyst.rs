@@ -20,8 +20,8 @@ use card_definition_data::ability_data::{Ability, AbilityType};
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::abilities::encounter_ability_text;
 use card_helpers::{abilities, *};
-use core_data::game_primitives::{CardSubtype, CardType, Rarity, School, Side};
-use game_data::card_configuration::{AttackBoost, CardConfigBuilder, Resonance};
+use core_data::game_primitives::{CardSubtype, CardType, Rarity, Resonance, School, Side};
+use game_data::card_configuration::{AttackBoost, CardConfigBuilder};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{GameDelegate, QueryDelegate};
@@ -62,7 +62,7 @@ pub fn marauders_axe(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(8))
                     .additional_hit(TimedEffect::SwordSlashes(1)),
@@ -87,7 +87,7 @@ pub fn keen_halberd(_: CardMetadata) -> CardDefinition {
             .base_attack(3)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
             .breach(1)
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(2)))
             .build(),
     }
@@ -117,7 +117,7 @@ pub fn bow_of_the_alliance(_: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(1)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(0))
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .combat_projectile(ProjectileData::new(Projectile::Projectiles1(4)))
             .build(),
     }

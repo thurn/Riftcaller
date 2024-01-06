@@ -15,8 +15,7 @@
 //! Standard values used in unit tests.
 
 use core_data::adventure_primitives::Coins;
-use core_data::game_primitives::{HealthValue, ManaValue, RaidId, RoomId};
-use game_data::card_configuration::Resonance;
+use core_data::game_primitives::{HealthValue, ManaValue, RaidId, Resonance, RoomId};
 use protos::riftcaller::RoomIdentifier;
 
 /// The title returned for hidden cards
@@ -58,5 +57,4 @@ pub const MANA_TAKEN: ManaValue = 2;
 
 pub const MINION_HEALTH: HealthValue = 5;
 
-pub const TEST_RESONANCE: Resonance =
-    Resonance { mortal: false, infernal: true, astral: false, prismatic: false };
+pub const TEST_RESONANCE: Resonance = Resonance::Infernal;

@@ -21,7 +21,7 @@ use std::str::FromStr;
 
 use anyhow::Result;
 use enum_iterator::Sequence;
-use enumset::EnumSetType;
+use enumset::{EnumSet, EnumSetType};
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
 use ulid::Ulid;
@@ -669,5 +669,23 @@ impl InitiatedBy {
 
     pub fn card_id(&self) -> Option<CardId> {
         self.ability_id().map(|a| a.card_id)
+    }
+}
+
+/// The possible resonances of weapons and minions. Minions can only be
+/// damaged by weapons from the same resonance, or by Prismatic weapons.
+#[derive(Hash, Debug, Display, EnumString, Serialize, Deserialize, EnumSetType)]
+pub enum Resonance {
+    Mortal,
+    Astral,
+    Infernal,
+    Prismatic,
+}
+
+impl Resonance {
+    pub fn basic_resonance_count(set: EnumSet<Resonance>) -> u32 {
+        (if set.contains(Resonance::Mortal) { 1 } else { 0 })
+            + (if set.contains(Resonance::Infernal) { 1 } else { 0 })
+            + (if set.contains(Resonance::Astral) { 1 } else { 0 })
     }
 }

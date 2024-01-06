@@ -13,10 +13,10 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, RoomId, RoomIdCrypt,
-    RoomIdMarker, RoomIdSanctum, RoomIdVault, Side, TurnNumber,
+    AbilityId, ActionCount, CardId, CurseCount, HasRoomId, ManaValue, RaidId, Resonance, RoomId,
+    RoomIdCrypt, RoomIdMarker, RoomIdSanctum, RoomIdVault, Side, TurnNumber,
 };
-use game_data::card_configuration::Resonance;
+use enumset::EnumSet;
 use game_data::delegate_data::{
     AccessEvent, CardPlayed, CardStatusMarker, DealtDamage, EventDelegate, GameDelegate,
     ManaLostToOpponentAbility, MutationFn, QueryDelegate, RaidEvent, Scope, ScoreCard,
@@ -380,9 +380,11 @@ pub fn on_query_mana_cost(
     })
 }
 
-/// A delegate which intercepts queries for a card's [Resonance] when a card is
-/// face up & in play.
-pub fn on_query_resonance(transformation: TransformationFn<CardId, Resonance>) -> GameDelegate {
+/// A delegate which intercepts queries for a card's [Resonance] set when a card
+/// is face up & in play.
+pub fn on_query_resonance(
+    transformation: TransformationFn<CardId, EnumSet<Resonance>>,
+) -> GameDelegate {
     GameDelegate::Resonance(QueryDelegate {
         requirement: requirements::face_up_in_play,
         transformation,

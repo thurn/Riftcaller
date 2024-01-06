@@ -22,11 +22,9 @@ use card_helpers::text_helpers::named_trigger;
 use card_helpers::this::on_activated;
 use card_helpers::{abilities, combat_abilities, *};
 use core_data::game_primitives::{
-    CardSubtype, CardType, InitiatedBy, Rarity, School, Side, Sprite,
+    CardSubtype, CardType, InitiatedBy, Rarity, Resonance, School, Side, Sprite,
 };
-use game_data::card_configuration::{
-    AttackBoost, CardConfig, CardConfigBuilder, Resonance, SchemePoints,
-};
+use game_data::card_configuration::{AttackBoost, CardConfig, CardConfigBuilder, SchemePoints};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardIdsExt, CardPosition};
@@ -160,7 +158,7 @@ pub fn test_minion_shield_2_astral(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .shield(2)
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .build(),
         ..test_ritual(metadata)
     }
@@ -175,7 +173,7 @@ pub fn test_minion_shield_3_mortal(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .shield(3)
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .build(),
         ..test_ritual(metadata)
     }
@@ -228,7 +226,7 @@ pub fn test_minion_infernal(metadata: CardMetadata) -> CardDefinition {
         name: CardName::TestInfernalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .build(),
         ..test_minion_end_raid(metadata)
     }
@@ -239,7 +237,7 @@ pub fn test_minion_astral(metadata: CardMetadata) -> CardDefinition {
         name: CardName::TestAstralMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .build(),
         ..test_minion_end_raid(metadata)
     }
@@ -251,7 +249,7 @@ pub fn test_minion_astral_1_shield(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
             .shield(1)
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .build(),
         ..test_minion_end_raid(metadata)
     }
@@ -262,7 +260,7 @@ pub fn test_minion_mortal(metadata: CardMetadata) -> CardDefinition {
         name: CardName::TestMortalMinion,
         config: CardConfigBuilder::new()
             .health(test_constants::MINION_HEALTH)
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .build(),
         ..test_minion_end_raid(metadata)
     }
@@ -271,7 +269,7 @@ pub fn test_minion_mortal(metadata: CardMetadata) -> CardDefinition {
 pub fn test_mortal_minion_2_health(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
         name: CardName::TestMortalMinion2Health,
-        config: CardConfigBuilder::new().health(2).resonance(Resonance::mortal()).build(),
+        config: CardConfigBuilder::new().health(2).resonance(Resonance::Mortal).build(),
         ..test_minion_end_raid(metadata)
     }
 }
@@ -340,7 +338,7 @@ pub fn test_weapon_abyssal(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
-            .resonance(Resonance::astral())
+            .resonance(Resonance::Astral)
             .build(),
         ..test_weapon_2_attack(metadata)
     }
@@ -354,7 +352,7 @@ pub fn test_weapon_infernal(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .build(),
         ..test_weapon_2_attack(metadata)
     }
@@ -368,7 +366,7 @@ pub fn test_weapon_mortal(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
-            .resonance(Resonance::mortal())
+            .resonance(Resonance::Mortal)
             .build(),
         ..test_weapon_2_attack(metadata)
     }
@@ -520,11 +518,7 @@ pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {
         school: School::Law,
         rarity: Rarity::Common,
         abilities: vec![combat_abilities::deal_damage::<1>(), combat_abilities::end_raid()],
-        config: CardConfigBuilder::new()
-            .health(5)
-            .shield(1)
-            .resonance(Resonance::infernal())
-            .build(),
+        config: CardConfigBuilder::new().health(5).shield(1).resonance(Resonance::Infernal).build(),
         ..test_ritual(metadata)
     }
 }
@@ -541,7 +535,7 @@ pub fn test_attack_weapon(metadata: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new()
             .base_attack(3)
             .attack_boost(AttackBoost::new().mana_cost(1).bonus(2))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(8))
                     .additional_hit(TimedEffect::SwordSlashes(1)),
@@ -619,7 +613,7 @@ pub fn test_weapon_reduce_cost_on_raid(metadata: CardMetadata) -> CardDefinition
         config: CardConfigBuilder::new()
             .base_attack(2)
             .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
-            .resonance(Resonance::infernal())
+            .resonance(Resonance::Infernal)
             .build(),
         ..test_ritual(metadata)
     }

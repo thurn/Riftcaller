@@ -20,6 +20,7 @@ use card_definition_data::cards::CardDefinitionExt;
 use constants::game_constants;
 use core_data::game_primitives::{CardId, CardType, ManaValue, Rarity, School, Side, WoundCount};
 use core_ui::icons;
+use enumset::EnumSet;
 use game_data::card_configuration::TargetRequirement;
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
@@ -91,7 +92,7 @@ fn revealed_summon_project_card_view(
                 definition.name.displayed_name(),
                 icons::CARET_UP
             ),
-            text_color: Some(assets::title_color(None)),
+            text_color: Some(assets::title_color(EnumSet::new())),
         }),
         rules_text: Some(rules_text::build(context)),
         targeting: context.query_or_none(|game, _| {
@@ -192,7 +193,7 @@ fn action_card_view(
             image_background: None,
             title: Some(CardTitle {
                 text: card.title,
-                text_color: Some(assets::title_color(None)),
+                text_color: Some(assets::title_color(EnumSet::new())),
             }),
             rules_text: Some(RulesText { text: card.text }),
             targeting: game.map(|g| boolean_target(|_| (card.can_play_fn)(g, builder.user_side))),
@@ -263,7 +264,11 @@ fn counter_card_view(builder: &ResponseBuilder, side: Side, card: CounterCard) -
         } else {
             None
         },
-        arena_frame: Some(assets::arena_frame(Side::Riftcaller, CardType::GameModifier, None)),
+        arena_frame: Some(assets::arena_frame(
+            Side::Riftcaller,
+            CardType::GameModifier,
+            EnumSet::new(),
+        )),
         face_down_arena_frame: None,
         owning_player: builder.to_player_name(side),
         revealed_card: Some(Box::new(RevealedCardView {
@@ -274,7 +279,7 @@ fn counter_card_view(builder: &ResponseBuilder, side: Side, card: CounterCard) -
             image_background: None,
             title: Some(CardTitle {
                 text: card.title,
-                text_color: Some(assets::title_color(None)),
+                text_color: Some(assets::title_color(EnumSet::new())),
             }),
             rules_text: Some(RulesText { text: card.text }),
             targeting: None,
@@ -344,7 +349,7 @@ fn room_selector(
             image_background: None,
             title: Some(CardTitle {
                 text: definition.name.displayed_name(),
-                text_color: Some(assets::title_color(None)),
+                text_color: Some(assets::title_color(EnumSet::new())),
             }),
             rules_text: Some(RulesText { text: "Select target room".to_string() }),
             targeting: Some(CardTargeting {

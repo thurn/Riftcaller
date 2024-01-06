@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{RoomId, Side};
-use game_data::card_configuration::Resonance;
+use core_data::game_primitives::{Resonance, RoomId, Side};
 use game_data::card_name::CardName;
 use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
@@ -222,7 +221,7 @@ fn blade_of_reckoning() {
 fn resolution() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
     g.create_and_play(CardName::Resolution);
-    g.fire_weapon_combat_abilities(Resonance::mortal(), CardName::Resolution);
+    g.fire_weapon_combat_abilities(Resonance::Mortal, CardName::Resolution);
     assert!(g.client.cards.discard_pile().contains_card(CardName::Resolution));
 }
 

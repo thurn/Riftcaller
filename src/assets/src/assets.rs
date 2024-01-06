@@ -14,10 +14,10 @@
 
 //! Helper functions for constructing resource URLs used during a game
 
-use core_data::game_primitives::{CardType, Rarity, School, Side, Sprite};
+use core_data::game_primitives::{CardType, Rarity, Resonance, School, Side, Sprite};
 use core_ui::design;
 use core_ui::design::FontColor;
-use game_data::card_configuration::Resonance;
+use enumset::EnumSet;
 use game_data::card_name::CardMetadata;
 use game_data::character_preset::CharacterPreset;
 use game_data::special_effects::{
@@ -170,14 +170,14 @@ pub fn card_frame(school: School, full_height: bool) -> SpriteAddress {
     SpriteAddress { address: format!("{string}.png") }
 }
 
-/// Title font color to use for a given [Resonance].
-pub fn title_color(resonance: Option<Resonance>) -> FlexColor {
-    match resonance {
-        Some(r) if r.prismatic => FontColor::PrismaticCardTitle,
-        Some(r) if r.basic_resonance_count() > 1 => FontColor::MultiResonanceCardTitle,
-        Some(r) if r.mortal => FontColor::MortalCardTitle,
-        Some(r) if r.infernal => FontColor::InfernalCardTitle,
-        Some(r) if r.astral => FontColor::AstralCardTitle,
+/// Title font color to use for a given [Resonance] set.
+pub fn title_color(set: EnumSet<Resonance>) -> FlexColor {
+    match () {
+        _ if set.contains(Resonance::Prismatic) => FontColor::PrismaticCardTitle,
+        _ if Resonance::basic_resonance_count(set) > 1 => FontColor::MultiResonanceCardTitle,
+        _ if set.contains(Resonance::Mortal) => FontColor::MortalCardTitle,
+        _ if set.contains(Resonance::Infernal) => FontColor::InfernalCardTitle,
+        _ if set.contains(Resonance::Astral) => FontColor::AstralCardTitle,
         _ => FontColor::NormalCardTitle,
     }
     .into()
@@ -197,7 +197,7 @@ pub fn resonance_string(name: &'static str) -> String {
 
 /// Address for an image to display as a background for a card of the given
 /// [Resonance].
-pub fn title_background(_: Option<Resonance>) -> SpriteAddress {
+pub fn title_background(_: EnumSet<Resonance>) -> SpriteAddress {
     SpriteAddress {
         address: "LittleSweetDaemon/TCG_Card_Design/Custom/Title/BlackWhiteFaceTape.png"
             .to_string(),
@@ -205,26 +205,29 @@ pub fn title_background(_: Option<Resonance>) -> SpriteAddress {
 }
 
 /// Address for the frame of a card in the arena
-pub fn arena_frame(_: Side, card_type: CardType, resonance: Option<Resonance>) -> SpriteAddress {
+pub fn arena_frame(_: Side, card_type: CardType, resonance: EnumSet<Resonance>) -> SpriteAddress {
     SpriteAddress {
         address: format!(
             "{}.png",
-            match resonance {
-                Some(r) if r.prismatic => "SpriteWay/Icons/Clean Frames/9047",
-                Some(r) if r.basic_resonance_count() > 1 => "SpriteWay/Icons/Clean Frames/9008",
-                Some(r) if r.mortal => "SpriteWay/Icons/Clean Frames/9020",
-                Some(r) if r.infernal => "SpriteWay/Icons/Clean Frames/9054",
-                Some(r) if r.astral => "SpriteWay/Icons/Clean Frames/9048",
-                _ => match card_type {
-                    CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",
-                    CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
-                    CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
-                    CardType::GameModifier => "SpriteWay/Icons/Clean Frames/9058",
-                    CardType::Chapter => "SpriteWay/Icons/Clean Frames/9022",
-                    CardType::Riftcaller => "SpriteWay/Icons/Clean Frames/9040",
-                    _ => "SpriteWay/Icons/Clean Frames/9062",
-                },
-            }
+            match card_type {
+                _ if resonance.contains(Resonance::Prismatic) =>
+                    "SpriteWay/Icons/Clean Frames/9047",
+                _ if Resonance::basic_resonance_count(resonance) > 1 =>
+                    "SpriteWay/Icons/Clean Frames/9008",
+                _ if resonance.contains(Resonance::Prismatic) =>
+                    "SpriteWay/Icons/Clean Frames/9020",
+                _ if resonance.contains(Resonance::Prismatic) =>
+                    "SpriteWay/Icons/Clean Frames/9054",
+                _ if resonance.contains(Resonance::Prismatic) =>
+                    "SpriteWay/Icons/Clean Frames/9048",
+                CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",
+                CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
+                CardType::Project => "SpriteWay/Icons/Clean Frames/9025",
+                CardType::GameModifier => "SpriteWay/Icons/Clean Frames/9058",
+                CardType::Chapter => "SpriteWay/Icons/Clean Frames/9022",
+                CardType::Riftcaller => "SpriteWay/Icons/Clean Frames/9040",
+                _ => "SpriteWay/Icons/Clean Frames/9062",
+            },
         ),
     }
 }
