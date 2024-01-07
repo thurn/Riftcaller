@@ -183,6 +183,11 @@ pub fn active_this_encounter<T>(game: &GameState, source: impl HasCardId, _: &T)
     })
 }
 
+/// A `TargetRequirement` for a card which can target any room
+pub fn any_room<T>() -> TargetRequirement<T> {
+    TargetRequirement::TargetRoom(|_, _, _| true)
+}
+
 /// A `TargetRequirement` for a card which can target any room which is a valid
 /// raid target
 pub fn any_raid_target<T>() -> TargetRequirement<T> {

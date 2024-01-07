@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{Resonance, RoomId, Side};
-use game_data::card_name::CardName;
+use game_data::card_name::{CardName, CardVariant};
 use test_utils::client_interface::HasText;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_helpers::WeaponStats;
@@ -723,4 +723,53 @@ fn amaras_decree_destroyed() {
     assert_eq!(g.me().score(), 0);
     g.create_and_play(CardName::TestRitualDestroyAllEnemyPermanents);
     assert_eq!(g.me().score(), 10);
+}
+
+#[test]
+fn lawbringer() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMortalMinion)
+                .deck_top(CardName::TestScheme3_10),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::Lawbringer, RoomId::Vault);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Lawbringer);
+    assert!(g.client.data.raid_active());
+    g.click(Button::Score);
+}
+
+#[test]
+fn lawbringer_cannot_use_in_different_room() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Sanctum, CardName::TestMortalMinion)
+                .deck_top(CardName::TestScheme3_10),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::Lawbringer, RoomId::Sanctum);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.click_card_name_with_result(CardName::Lawbringer).is_err());
+}
+
+#[test]
+fn lawbringer_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestAstralMinion)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion)
+                .deck_top(CardName::TestScheme3_10),
+        )
+        .build();
+    let id = g.add_variant_to_hand(CardVariant::upgraded(CardName::Lawbringer));
+    g.play_card(id, g.user_id(), Some(RoomId::Vault));
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Lawbringer);
+    g.click_card_name(CardName::Lawbringer);
+    assert!(g.client.data.raid_active());
+    g.click(Button::Score);
 }

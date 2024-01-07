@@ -13,8 +13,9 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, AttackValue, CardId, HasAbilityId, HasCardId, TurnNumber,
+    AbilityId, AttackValue, CardId, HasAbilityId, HasCardId, Resonance, TurnNumber,
 };
+use enumset::EnumSet;
 use game_data::card_configuration::Cost;
 use game_data::delegate_data::{
     AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, DiscardedCard, EventDelegate,
@@ -157,4 +158,9 @@ pub fn base_attack(transformation: TransformationFn<CardId, AttackValue>) -> Gam
 /// double for shield costs)
 pub fn is_slow_weapon(transformation: TransformationFn<CardId, bool>) -> GameDelegate {
     GameDelegate::IsSlowWeapon(QueryDelegate { requirement: card, transformation })
+}
+
+/// A delegate which modifies this card's [Resonance].
+pub fn resonance(transformation: TransformationFn<CardId, EnumSet<Resonance>>) -> GameDelegate {
+    delegates::on_query_resonance(card, transformation)
 }

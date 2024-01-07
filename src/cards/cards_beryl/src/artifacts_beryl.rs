@@ -937,3 +937,63 @@ pub fn amaras_decree(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn lawbringer(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Lawbringer,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(2),
+        image: assets::riftcaller_card(meta, "lawbringer"),
+        card_type: CardType::Artifact,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: abilities::some(vec![
+            meta.is_upgraded.then(|| {
+                Ability::new(text!["Prismatic"]).delegate(this::resonance(
+                    |_, _, _, mut resonance| {
+                        resonance.insert(Resonance::Prismatic);
+                        resonance
+                    },
+                ))
+            }),
+            Some(
+                Ability::new(text_helpers::named_trigger(
+                    Play,
+                    text![text!["Choose target room"], text!["Use this weapon only in that room"]],
+                ))
+                .delegate(this::on_played(|g, s, played| {
+                    g.card_mut(s).custom_state.push(CustomCardState::TargetRoom {
+                        target_room: played.target.room_id()?,
+                        play_id: played.card_play_id,
+                    });
+                    Ok(())
+                }))
+                .delegate(this::can_use_weapon(|g, s, _, flag| {
+                    let Some(room_id) = g.raid.as_ref().map(|r| r.target) else {
+                        return flag;
+                    };
+
+                    flag.add_constraint(
+                        g.card(s)
+                            .custom_state
+                            .target_rooms_contain(g.card(s).last_card_play_id, room_id),
+                    )
+                })),
+            ),
+            Some(abilities::encounter_boost()),
+        ]),
+        config: CardConfigBuilder::new()
+            .base_attack(4)
+            .attack_boost(AttackBoost::new().mana_cost(1).bonus(1))
+            .resonance(Resonance::Mortal)
+            .custom_targeting(requirements::any_room())
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(4))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
+            )
+            .build(),
+    }
+}

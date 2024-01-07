@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use core_data::game_primitives::{CardId, CardPlayId, CardType, MinionEncounterId};
+use core_data::game_primitives::{CardId, CardPlayId, CardType, MinionEncounterId, RoomId};
 use serde::{Deserialize, Serialize};
 
 use crate::game_state::TurnData;
@@ -27,6 +27,9 @@ pub enum CustomCardState {
 
     /// Apply an effect to a card for the duration of a single turn.
     TargetCardForTurn { target_card: CardId, turn: TurnData },
+
+    /// Affect some room based on the scope of a given [CardPlayId].
+    TargetRoom { target_room: RoomId, play_id: CardPlayId },
 
     /// Record that an enhancement cost has been paid for a given instance of
     /// playing this card. This is used to implement effects like "access the
@@ -104,6 +107,23 @@ impl CustomCardStateList {
             }
             _ => None,
         })
+    }
+
+    /// Checks if the provided [RoomId] is registered as a room target for the
+    /// given [CardPlayId].
+    ///
+    /// Returns false if the [CardPlayId] is `None`.
+    pub fn target_rooms_contain(&self, id: Option<CardPlayId>, room_id: RoomId) -> bool {
+        if let Some(card_play_id) = id {
+            self.list.iter().any(|state| match state {
+                CustomCardState::TargetRoom { target_room, play_id } => {
+                    card_play_id == *play_id && *target_room == room_id
+                }
+                _ => false,
+            })
+        } else {
+            false
+        }
     }
 
     /// Checks if the provided [CardId] is registered as a target for the given

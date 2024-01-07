@@ -13,8 +13,9 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, CardId, InitiatedBy, ManaValue, RaidId, ShieldValue, Side,
+    AbilityId, CardId, InitiatedBy, ManaValue, RaidId, Resonance, ShieldValue, Side,
 };
+use enumset::EnumSet;
 use game_data::continuous_visual_effect::ContinuousDisplayEffect;
 use game_data::delegate_data::{
     AccessEvent, CardPlayed, CardStatusMarker, EventDelegate, GameDelegate, MutationFn,
@@ -157,6 +158,13 @@ pub fn on_will_draw_cards(
     mutation: MutationFn<Side>,
 ) -> GameDelegate {
     GameDelegate::WillDrawCards(EventDelegate { requirement, mutation })
+}
+
+pub fn on_query_resonance(
+    requirement: RequirementFn<CardId>,
+    transformation: TransformationFn<CardId, EnumSet<Resonance>>,
+) -> GameDelegate {
+    GameDelegate::Resonance(QueryDelegate { requirement, transformation })
 }
 
 pub fn on_query_card_status_markers(

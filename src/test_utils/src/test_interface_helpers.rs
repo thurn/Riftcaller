@@ -110,6 +110,9 @@ pub trait TestInterfaceHelpers {
     /// Clicks as the user on a button as the showing a given card's name
     fn click_card_name(&mut self, card_name: CardName);
 
+    /// Equivalent function to `click_card_name` which returns a Result.
+    fn click_card_name_with_result(&mut self, card_name: CardName) -> Result<GameResponseOutput>;
+
     /// Locate a button containing the provided `text` in the provided player's
     /// interface controls and invoke its registered action.
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput;
@@ -202,6 +205,13 @@ impl TestInterfaceHelpers for TestSession {
 
     fn click_card_name(&mut self, card_name: CardName) {
         self.click_on(self.player_id_for_side(Side::Riftcaller), card_name.displayed_name());
+    }
+
+    fn click_card_name_with_result(&mut self, card_name: CardName) -> Result<GameResponseOutput> {
+        self.click_on_with_result(
+            self.player_id_for_side(Side::Riftcaller),
+            card_name.displayed_name(),
+        )
     }
 
     fn click_on(&mut self, player_id: PlayerId, text: impl Into<String>) -> GameResponseOutput {

@@ -381,6 +381,7 @@ pub enum CardName {
     SariandiPhaseWalker,
     RiftAdept,
     AeonSwimmer,
+    Lawbringer,
 }
 
 impl CardName {

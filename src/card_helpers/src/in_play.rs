@@ -385,10 +385,7 @@ pub fn on_query_mana_cost(
 pub fn on_query_resonance(
     transformation: TransformationFn<CardId, EnumSet<Resonance>>,
 ) -> GameDelegate {
-    GameDelegate::Resonance(QueryDelegate {
-        requirement: requirements::face_up_in_play,
-        transformation,
-    })
+    delegates::on_query_resonance(requirements::face_up_in_play, transformation)
 }
 
 /// A delegate which intercepts queries for a card's [CardStatusMarker]s when
