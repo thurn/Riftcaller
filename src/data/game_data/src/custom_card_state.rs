@@ -109,23 +109,6 @@ impl CustomCardStateList {
         })
     }
 
-    /// Checks if the provided [RoomId] is registered as a room target for the
-    /// given [CardPlayId].
-    ///
-    /// Returns false if the [CardPlayId] is `None`.
-    pub fn target_rooms_contain(&self, id: Option<CardPlayId>, room_id: RoomId) -> bool {
-        if let Some(card_play_id) = id {
-            self.list.iter().any(|state| match state {
-                CustomCardState::TargetRoom { target_room, play_id } => {
-                    card_play_id == *play_id && *target_room == room_id
-                }
-                _ => false,
-            })
-        } else {
-            false
-        }
-    }
-
     /// Checks if the provided [CardId] is registered as a target for the given
     /// [CardPlayId].
     ///
@@ -134,6 +117,29 @@ impl CustomCardStateList {
     pub fn targets_contain(&self, id: Option<CardPlayId>, card_id: CardId) -> bool {
         if let Some(play_id) = id {
             self.targets(play_id).any(|id| id == card_id)
+        } else {
+            false
+        }
+    }
+
+    /// Returns an iterator over all [CustomCardState::TargetRoom] targets which
+    /// have been recorded for a given [CardPlayId].
+    pub fn target_rooms(&self, id: CardPlayId) -> impl Iterator<Item = RoomId> + '_ {
+        self.list.iter().filter_map(move |state| match state {
+            CustomCardState::TargetRoom { target_room, play_id } if *play_id == id => {
+                Some(*target_room)
+            }
+            _ => None,
+        })
+    }
+
+    /// Checks if the provided [RoomId] is registered as a room target for the
+    /// given [CardPlayId].
+    ///
+    /// Returns false if the [CardPlayId] is `None`.
+    pub fn target_rooms_contain(&self, id: Option<CardPlayId>, room_id: RoomId) -> bool {
+        if let Some(play_id) = id {
+            self.target_rooms(play_id).any(|id| id == room_id)
         } else {
             false
         }

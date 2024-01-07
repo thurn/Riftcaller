@@ -236,10 +236,19 @@ fn revealed_card_view(
 
 fn info_zoom_highlight(card: &CardState) -> Option<InfoZoomHighlight> {
     if card.position().in_play() {
-        if let Some(card_id) = card.custom_state.targets(card.last_card_play_id?).next() {
+        let card_play_id = card.last_card_play_id?;
+        if let Some(card_id) = card.custom_state.targets(card_play_id).next() {
             return Some(InfoZoomHighlight {
                 highlight: Some(info_zoom_highlight::Highlight::Card(adapters::card_identifier(
                     card_id,
+                ))),
+            });
+        }
+
+        if let Some(room_id) = card.custom_state.target_rooms(card_play_id).next() {
+            return Some(InfoZoomHighlight {
+                highlight: Some(info_zoom_highlight::Highlight::Room(adapters::room_identifier(
+                    room_id,
                 ))),
             });
         }

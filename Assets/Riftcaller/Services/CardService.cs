@@ -216,6 +216,7 @@ namespace Riftcaller.Services
 
     public void ClearInfoZoom()
     {
+      _registry.ArenaService.HideRoomSelector();
       _registry.DocumentService.ClearInfoZoom();
       _registry.Studio.ClearSubject();
       if (_currentTargetHighlight)
@@ -243,8 +244,8 @@ namespace Riftcaller.Services
             showOnLeft = ShowCardHighlight(zoomed.InfoZoomHighlight.Card);
             break;
           case InfoZoomHighlight.HighlightOneofCase.Room:
-            // TODO: Implement this.
-            throw new NotImplementedException();
+            showOnLeft = _registry.ArenaService.ShowRoomSelectorForRoom(zoomed.InfoZoomHighlight.Room);
+            break;
         }
       }
       
@@ -289,7 +290,7 @@ namespace Riftcaller.Services
       // HACK: The Card component gets disabled during this process one time in a hundred and I have no idea why  
       zoomed.enabled = true;
     }
-
+    
     bool ShowCardHighlight(CardIdentifier cardIdentifier)
     {
       var target = FindCard(cardIdentifier);

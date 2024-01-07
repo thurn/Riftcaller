@@ -94,6 +94,18 @@ namespace Riftcaller.Services
       }
     }
 
+    /// <summary>
+    /// Shows a green highlight on the requested room. Returns true if this room is on the right side of the screen.
+    /// </summary>
+    public bool ShowRoomSelectorForRoom(RoomIdentifier roomId)
+    {
+      HideRoomSelector();
+      var room = FindRoom(roomId);
+      room.SpriteRenderer.enabled = true;
+      _curentRoomSelector = room;
+      return _registry.MainCamera.WorldToScreenPoint(room.transform.position).x > Screen.width / 2.0;      
+    }
+
     public void ShowRoomSelectorForMousePosition(ISet<RoomIdentifier> validRooms)
     {
       HideRoomSelector();
