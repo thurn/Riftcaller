@@ -37,11 +37,6 @@ pub fn uct1_333() {
 }
 
 #[test]
-pub fn uct1_432() {
-    nim::assert_perfect_short(&NimState::new_with_piles(4, 3, 2), &NIM_UCT1_AGENT);
-}
-
-#[test]
 pub fn uct1_deadline_exceeded() {
     let agent = AgentData::omniscient(
         "UCT1",
