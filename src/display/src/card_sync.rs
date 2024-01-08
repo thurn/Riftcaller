@@ -52,7 +52,7 @@ pub fn card_view(builder: &ResponseBuilder, context: &CardViewContext) -> CardVi
         prefab: CardPrefab::Standard.into(),
         card_back: Some(assets::card_back(
             context.query_or(context.definition().school, |game, card| {
-                *game.player(card.side()).schools.get(0).unwrap_or(&School::Neutral)
+                *game.player(card.side()).schools.first().unwrap_or(&School::Neutral)
             }),
         )),
         revealed_to_viewer: revealed,

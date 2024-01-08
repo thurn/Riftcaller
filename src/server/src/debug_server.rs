@@ -246,7 +246,7 @@ pub async fn handle_debug_action(
                 let side = cards::get(*variant).side;
                 if let Some(card_id) =
                     mutations::realize_top_of_deck(game, side, 1, RealizeCards::SetVisibleToOwner)?
-                        .get(0)
+                        .first()
                 {
                     mutations::overwrite_card(game, *card_id, *variant)?;
 
@@ -456,7 +456,7 @@ fn create_at_position(
 ) -> Result<CardId> {
     let side = cards::get(CardVariant::standard(card)).side;
     let card_id = *mutations::realize_top_of_deck(game, side, 1, RealizeCards::SetVisibleToOwner)?
-        .get(0)
+        .first()
         .with_error(|| "Deck is empty")?;
     mutations::overwrite_card(game, card_id, CardVariant::standard(card))?;
     mutations::move_card(game, card_id, position)?;

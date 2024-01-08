@@ -67,7 +67,7 @@ pub fn remove_card_from_delegate_map(
     definition: &CardDefinition,
     card_id: CardId,
 ) {
-    for (_, ability) in definition.abilities.iter().enumerate() {
+    for ability in &definition.abilities {
         for delegate in &ability.delegates {
             if let Delegate::GameDelegate(d) = delegate {
                 map.lookup

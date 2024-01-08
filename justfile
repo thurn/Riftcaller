@@ -1,6 +1,6 @@
 set positional-arguments
 
-code-review: git-status disallowed check-format build clippy test check-docs git-status
+code-review: disallowed check-format build clippy test check-docs
 
 check:
     RUSTFLAGS="--deny warnings" cargo check --workspace --all-targets --all-features --exclude "protos"

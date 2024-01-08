@@ -124,7 +124,7 @@ fn player_view(game: &GameState, side: Side) -> PlayerView {
         }),
         deck_view: Some(DeckView {
             card_back: Some(assets::card_back(
-                *game.player(side).schools.get(0).unwrap_or(&School::Neutral),
+                *game.player(side).schools.first().unwrap_or(&School::Neutral),
             )),
             card_count: game.deck(side).count() as u32,
             can_take_draw_card_action: flags::can_take_draw_card_action(game, side),
