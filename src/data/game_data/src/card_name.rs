@@ -205,8 +205,8 @@ pub enum CardName {
     TestRitualGiveCurse,
     TestEvocation,
     TestAlly,
-    TestSpellDeal1Damage,
-    TestSpellDeal5Damage,
+    TestRitualDeal1Damage,
+    TestRitualDeal5Damage,
     /// Ritual to return all discarded cards to the Covenant's hand
     TestRitualReturnDiscardToHand,
     /// Ritual to return all 'occupant' cards to the Covenant's hand
@@ -382,6 +382,7 @@ pub enum CardName {
     RiftAdept,
     AeonSwimmer,
     Lawbringer,
+    Vengeance,
 }
 
 impl CardName {

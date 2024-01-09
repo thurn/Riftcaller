@@ -169,7 +169,7 @@ fn blue_warden_activate_after_damage() {
     let id = g.create_and_play(CardName::BlueWarden);
     g.draw_card();
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     g.activate_ability(id, 0);
     assert_eq!(g.client.cards.hand().real_cards().len(), 3);
     g.click(Button::ClosePriorityPrompt);

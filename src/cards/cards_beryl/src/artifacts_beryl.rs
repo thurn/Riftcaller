@@ -15,15 +15,9 @@
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
 use card_definition_data::cards::CardDefinitionExt;
-use card_helpers::{
-    abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
-    text_helpers, this,
-};
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, Rarity, Resonance, RoomId, School, Side, INNER_ROOMS,
 };
-use core_ui::design;
-use core_ui::design::TimedEffectDataExt;
 use game_data::card_configuration::{
     AttackBoost, CardConfig, CardConfigBuilder, CustomBoostCost, CustomWeaponCost,
 };
@@ -42,6 +36,13 @@ use game_data::special_effects::{
 };
 use game_data::text::TextToken::*;
 use game_data::utils;
+
+use card_helpers::{
+    abilities, costs, delegates, history, in_play, raids, requirements, show_prompt, text,
+    text_helpers, this,
+};
+use core_ui::design;
+use core_ui::design::TimedEffectDataExt;
 use rules::mana::ManaPurpose;
 use rules::visual_effects::{ShowAlert, VisualEffects};
 use rules::{draw_cards, end_raid, flags, mana, mutations, prompts, queries, visual_effects};
@@ -991,6 +992,64 @@ pub fn lawbringer(meta: CardMetadata) -> CardDefinition {
             .custom_targeting(requirements::any_room())
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles1(4))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn vengeance(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Vengeance,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::riftcaller_card(meta, "vengeance"),
+        card_type: CardType::Artifact,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            Ability::new(text!["When you take damage,", AddPowerCharges(1)]).delegate(
+                in_play::on_damage(|g, s, _| {
+                    visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                    g.card_mut(s).add_counters(CardCounter::PowerCharges, 1);
+                    Ok(())
+                }),
+            ),
+            ActivatedAbility::new(
+                costs::power_charges::<1>(),
+                text!["Defeat an", Infernal, "minion"],
+            )
+            .delegate(this::can_activate(|g, _, _, flag| {
+                flag.add_constraint(utils::is_true(|| {
+                    Some(
+                        queries::resonance(g, raids::active_encounter_prompt(g)?)
+                            .contains(Resonance::Infernal),
+                    )
+                }))
+                .add_constraint(flags::can_defeat_current_minion(g))
+            }))
+            .delegate(this::on_activated(|g, _, _| {
+                mutations::apply_raid_jump(g, RaidJumpRequest::DefeatCurrentMinion);
+                Ok(())
+            }))
+            .build(),
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(meta.upgrade(1, 2))
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(1))
+            .resonance(Resonance::Infernal)
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(18))
+                    .scale(1.5)
+                    .effect_color(design::YELLOW_900)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagic_Buff02")),
+            )
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(13))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
             )

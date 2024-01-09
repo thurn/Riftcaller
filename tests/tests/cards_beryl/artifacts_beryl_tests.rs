@@ -773,3 +773,55 @@ fn lawbringer_upgraded() {
     assert!(g.client.data.raid_active());
     g.click(Button::Score);
 }
+
+#[test]
+fn vengeance() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion)
+                // First one is drawn for turn
+                .deck_top(CardName::TestScheme3_10)
+                .deck_top(CardName::TestScheme3_10),
+        )
+        .build();
+    let id = g.create_and_play(CardName::Vengeance);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
+    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Vault);
+    g.activate_ability(id, 1);
+    assert!(g.client.cards.get(id).arena_icon_option().is_none());
+    g.click(Button::Score);
+}
+
+#[test]
+fn vengeance_cannot_activate_no_charges() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::Vengeance);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.activate_ability_with_result(id, 1).is_err());
+}
+
+#[test]
+fn vengeance_cannot_activate_resonance() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMortalMinion),
+        )
+        .build();
+    let id = g.create_and_play(CardName::Vengeance);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
+    assert!(g.client.cards.get(id).arena_icon().contains("1"));
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Vault);
+    assert!(g.activate_ability_with_result(id, 1).is_err());
+}

@@ -27,9 +27,10 @@ use game_data::card_configuration::TargetRequirement;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
     CanActivateAbility, CanActivateAbilityQuery, CanCovenantScoreSchemeQuery,
-    CanEndRaidAccessPhaseQuery, CanEvadeMinionQuery, CanInitiateRaidQuery, CanPlayCardQuery,
-    CanProgressCardQuery, CanProgressRoomQuery, CanSummonQuery, CanTakeDrawCardActionQuery,
-    CanTakeGainManaActionQuery, CanUseNoWeaponQuery, CanWinGameViaPointsQuery,
+    CanEndRaidAccessPhaseQuery, CanEvadeMinionQuery, CanInitiateRaidQuery,
+    CanMinionBeDefeatedQuery, CanPlayCardQuery, CanProgressCardQuery, CanProgressRoomQuery,
+    CanSummonQuery, CanTakeDrawCardActionQuery, CanTakeGainManaActionQuery, CanUseNoWeaponQuery,
+    CanWinGameViaPointsQuery,
 };
 use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_actions::CardTarget;
@@ -448,6 +449,17 @@ pub fn can_evade_current_minion(game: &GameState) -> bool {
         return false;
     };
     dispatch::perform_query(game, CanEvadeMinionQuery(&minion_id), Flag::new(true)).into()
+}
+
+/// Can the minion currently being encountered be defeated at all?
+///
+/// This only describes whether the minion can be defeated by any means, not
+/// whether the Riftcaller player is currently able to do so.
+pub fn can_defeat_current_minion(game: &GameState) -> bool {
+    let Some(minion_id) = game.current_raid_defender() else {
+        return false;
+    };
+    dispatch::perform_query(game, CanMinionBeDefeatedQuery(&minion_id), Flag::new(true)).into()
 }
 
 /// Returns true if the [CardId] card is currently the outermost defender in a

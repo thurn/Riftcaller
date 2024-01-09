@@ -50,7 +50,7 @@ fn visitation() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(1)).build();
     g.create_and_play(CardName::Visitation);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().len(), 1);
     assert!(g.client.cards.discard_pile().contains_card(CardName::Visitation));
@@ -61,7 +61,7 @@ fn visitation_pass() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(1)).build();
     g.create_and_play(CardName::Visitation);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     g.click(Button::NoPromptAction);
     assert_eq!(g.client.cards.hand().len(), 0);
     assert!(g.client.cards.evocations_and_allies().contains_card(CardName::Visitation));
@@ -73,7 +73,7 @@ fn visitation_multiple_copies() {
     g.create_and_play(CardName::Visitation);
     g.create_and_play(CardName::Visitation);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     g.click(Button::NoPromptAction);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().len(), 1);
@@ -86,7 +86,7 @@ fn visitation_prevent_partial() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5)).build();
     g.create_and_play(CardName::Visitation);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellDeal5Damage);
+    g.create_and_play(CardName::TestRitualDeal5Damage);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().len(), 2);
 }
@@ -96,7 +96,7 @@ fn visitation_upgraded() {
     let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5)).build();
     g.create_and_play_upgraded(CardName::Visitation);
     g.pass_turn(Side::Riftcaller);
-    g.create_and_play(CardName::TestSpellDeal5Damage);
+    g.create_and_play(CardName::TestRitualDeal5Damage);
     g.click(Button::Sacrifice);
     assert_eq!(g.client.cards.hand().len(), 5);
 }
@@ -207,7 +207,7 @@ fn planar_sanctuary_activate_after_damage() {
     g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestScheme1_10);
     g.progress_room(test_constants::ROOM_ID);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     assert_eq!(g.client.cards.hand().real_cards().len(), 4);
     assert!(g.me().can_take_action());
     assert!(!g.opponent.this_player.can_take_action());
@@ -307,7 +307,7 @@ fn knowledge_of_the_beyond_activate_planar_sanctuary() {
     g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestScheme1_10);
     g.progress_room(test_constants::ROOM_ID);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     g.activate_ability(knowledge_of_the_beyond, 1);
     let artifact_id = g.client.cards.hand().find_card_id(CardName::TestMortalWeapon);
     g.play_card(artifact_id, g.user_id(), None);
@@ -327,7 +327,7 @@ fn knowledge_of_the_beyond_activate_planar_sanctuary_first() {
     g.pass_turn(Side::Riftcaller);
     g.create_and_play(CardName::TestScheme1_10);
     g.progress_room(test_constants::ROOM_ID);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     g.activate_ability(planar_sanctuary, 1);
     g.activate_ability(knowledge_of_the_beyond, 1);
     let artifact_id = g.client.cards.hand().find_card_id(CardName::TestMortalWeapon);

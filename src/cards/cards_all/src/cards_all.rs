@@ -87,6 +87,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::maul_of_devastation);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::amaras_decree);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::lawbringer);
+    DEFINITIONS.insert(cards_beryl::artifacts_beryl::vengeance);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::nimbus_enclave);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::enforcers_of_silence);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::keepers_of_the_eye);

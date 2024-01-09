@@ -214,7 +214,7 @@ fn holy_aura_discard_to_damage() {
     g.add_to_hand(CardName::HolyAura);
     g.pass_turn(Side::Riftcaller);
     assert_eq!(g.client.cards.hand().len(), 1);
-    g.create_and_play(CardName::TestSpellDeal1Damage);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
     assert_eq!(g.client.cards.hand().len(), 2);
     test_helpers::assert_cards_match(g.client.cards.discard_pile(), vec![CardName::HolyAura]);
 }

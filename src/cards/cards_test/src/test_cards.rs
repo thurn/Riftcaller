@@ -657,7 +657,7 @@ pub fn test_ally(metadata: CardMetadata) -> CardDefinition {
 
 pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestSpellDeal1Damage,
+        name: CardName::TestRitualDeal1Damage,
         cost: cost(0),
         card_type: CardType::Ritual,
         sets: vec![CardSetName::Test],
@@ -671,7 +671,7 @@ pub fn test_spell_deal_1_damage(metadata: CardMetadata) -> CardDefinition {
 
 pub fn test_spell_deal_5_damage(metadata: CardMetadata) -> CardDefinition {
     CardDefinition {
-        name: CardName::TestSpellDeal5Damage,
+        name: CardName::TestRitualDeal5Damage,
         cost: cost(0),
         card_type: CardType::Ritual,
         sets: vec![CardSetName::Test],

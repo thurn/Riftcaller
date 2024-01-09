@@ -610,6 +610,8 @@ pub enum GameDelegate {
     CanEndRaidAccessPhase(QueryDelegate<RaidId, Flag>),
     /// Can the minion with the given ID be evaded?
     CanEvadeMinion(QueryDelegate<CardId, Flag>),
+    /// Can the minion with the given ID be defeated?
+    CanMinionBeDefeated(QueryDelegate<CardId, Flag>),
     /// Can the [Side] player currently win the game by scoring points?
     ///
     /// Note that if you prevent a player from winning via points, you are
