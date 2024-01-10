@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="EMPTY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/actions/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/adapters/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/assets/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/card_helpers/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/cards_codegen/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/constants/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core_ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/database/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/deck_card/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/deck_editor/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/decklists/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/dispatcher/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/display/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/element_names/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/game_tables/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/logging/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/macros/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/panel_address/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/panels/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/plugin/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/prompt_ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/protos/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/raid_state/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/riftcaller/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/routing/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/rules/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/rules_text/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/screen_overlay/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/server/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_constants/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test_utils/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/tutorial/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/with_error/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/tests" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

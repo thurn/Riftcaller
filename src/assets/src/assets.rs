@@ -214,12 +214,9 @@ pub fn arena_frame(_: Side, card_type: CardType, resonance: EnumSet<Resonance>) 
                     "SpriteWay/Icons/Clean Frames/9047",
                 _ if Resonance::basic_resonance_count(resonance) > 1 =>
                     "SpriteWay/Icons/Clean Frames/9008",
-                _ if resonance.contains(Resonance::Prismatic) =>
-                    "SpriteWay/Icons/Clean Frames/9020",
-                _ if resonance.contains(Resonance::Prismatic) =>
-                    "SpriteWay/Icons/Clean Frames/9054",
-                _ if resonance.contains(Resonance::Prismatic) =>
-                    "SpriteWay/Icons/Clean Frames/9048",
+                _ if resonance.contains(Resonance::Mortal) => "SpriteWay/Icons/Clean Frames/9020",
+                _ if resonance.contains(Resonance::Infernal) => "SpriteWay/Icons/Clean Frames/9054",
+                _ if resonance.contains(Resonance::Astral) => "SpriteWay/Icons/Clean Frames/9048",
                 CardType::Evocation => "SpriteWay/Icons/Clean Frames/9013",
                 CardType::Scheme => "SpriteWay/Icons/Clean Frames/9032",
                 CardType::Project => "SpriteWay/Icons/Clean Frames/9025",

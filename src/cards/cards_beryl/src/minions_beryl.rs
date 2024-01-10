@@ -19,7 +19,7 @@ use card_helpers::{
     combat_abilities, costs, delegates, requirements, show_prompt, text, text_helpers, this,
 };
 use core_data::game_primitives::{
-    CardSubtype, CardType, GameObjectId, ManaValue, Rarity, Resonance, School, Side,
+    CardSubtype, CardType, GameObjectId, ManaValue, Rarity, Resonance, RoomId, School, Side,
 };
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -31,6 +31,7 @@ use game_data::delegate_data::RaidOutcome;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData};
+use game_data::raid_data::RaidJumpRequest;
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
 };
@@ -376,6 +377,48 @@ pub fn aeon_swimmer(meta: CardMetadata) -> CardDefinition {
             .resonance(Resonance::Mortal)
             .combat_projectile(
                 ProjectileData::new(Projectile::Projectiles2(5))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact03")),
+            )
+            .build(),
+    }
+}
+
+pub fn mazeshaper(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Mazeshaper,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(9, 6)),
+        image: assets::covenant_card(meta, "mazeshaper"),
+        card_type: CardType::Minion,
+        subtypes: vec![CardSubtype::Fey],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![Ability::new(text_helpers::named_trigger(
+            Combat,
+            text![
+                "If the target of this raid is not the",
+                Crypt,
+                ", move the raid to the outermost position of the",
+                Crypt
+            ],
+        ))
+        .delegate(this::combat(|g, _, _| {
+            if g.raid()?.target != RoomId::Crypt {
+                mutations::apply_raid_jump(
+                    g,
+                    RaidJumpRequest::ChangeTargetMoveOutermost(RoomId::Crypt),
+                );
+            }
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .health(7)
+            .shield(1)
+            .resonance(Resonance::Infernal)
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles2(12))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact03")),
             )

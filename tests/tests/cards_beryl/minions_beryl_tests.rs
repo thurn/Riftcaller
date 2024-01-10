@@ -281,3 +281,52 @@ fn aeon_swimmer_sacrifice_cannot_activate_different_room() {
     let id = g.client.cards.room_defenders(RoomId::Vault)[0].id();
     assert!(g.opponent_activate_ability(id, 0, None).is_err());
 }
+
+#[test]
+fn mazeshaper() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Sanctum, CardName::Mazeshaper)
+                .face_up_defender(RoomId::Crypt, CardName::TestAstralMinion)
+                .in_discard_face_down(CardName::TestScheme1_10),
+        )
+        .build();
+    g.create_and_play(CardName::TestAstralWeapon);
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::NoWeapon);
+    g.click_card_name(CardName::TestAstralWeapon);
+    g.click(Button::Score);
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn mazeshaper_defeat() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::Mazeshaper)
+                .deck_top(CardName::TestScheme1_10),
+        )
+        .build();
+    g.create_and_play(CardName::TestInfernalWeapon);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::TestInfernalWeapon);
+    g.click(Button::Score);
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn mazeshaper_no_crypt_defenders() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Sanctum, CardName::Mazeshaper)
+                .in_discard_face_down(CardName::TestScheme1_10),
+        )
+        .build();
+    g.initiate_raid(RoomId::Sanctum);
+    g.click(Button::NoWeapon);
+    g.click(Button::Score);
+    g.click(Button::EndRaid);
+}

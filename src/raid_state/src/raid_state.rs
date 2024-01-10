@@ -199,6 +199,14 @@ fn apply_jump_request_if_needed(game: &mut GameState) -> Result<()> {
             debug!(?target, "Handling RaidJumpRequest::ChangeTarget");
             game.raid_mut()?.target = target;
         }
+        RaidJumpRequest::ChangeTargetMoveOutermost(target) => {
+            debug!(?target, "Handling RaidJumpRequest::ChangeTargetMoveOutermost");
+            let defender_count = game.defenders_unordered(target).count();
+            let raid = game.raid_mut()?;
+            raid.target = target;
+            raid.encounter = defender_count;
+            raid.state = RaidState::Step(RaidStep::NextEncounter);
+        }
         RaidJumpRequest::AddAdditionalTargetRoom(target) => {
             debug!(?target, "Handling RaidJumpRequest::AddAdditionalTargetRoom");
             game.raid_mut()?.target = target;

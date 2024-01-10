@@ -291,6 +291,9 @@ pub enum RaidJumpRequest {
     /// Change the target room of a raid
     ChangeTarget(RoomId),
 
+    /// Change the target room of a raid and move to the outermost position in that room
+    ChangeTargetMoveOutermost(RoomId),
+
     /// Change the target room of this raid and update the state to the
     /// `AccessStart` step.
     AddAdditionalTargetRoom(RoomId),
