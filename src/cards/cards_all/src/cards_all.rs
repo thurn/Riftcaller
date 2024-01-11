@@ -148,6 +148,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::spells_beryl::chains_of_binding);
     DEFINITIONS.insert(cards_beryl::spells_beryl::delve_into_darkness);
     DEFINITIONS.insert(cards_beryl::spells_beryl::liminal_transposition);
+    DEFINITIONS.insert(cards_beryl::spells_beryl::echoing_valor);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::covenant_empty_modifier);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_draw_action);
     DEFINITIONS.insert(cards_game_modifier::tutorial_modifiers::tutorial_disable_gain_mana);

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::card_name::CardName;
 use core_data::game_primitives::{
     AbilityId, CardId, CardPlayId, CardType, HasAbilityId, InitiatedBy, ManaValue, RoomId,
 };
@@ -87,6 +88,8 @@ pub enum PromptContext {
     DiscardToHandSize(usize),
     /// Play a chosen card
     PlayACard,
+    /// Play a named card
+    PlayNamedCard(CardName),
     /// Play a card of a given type the discard pile
     PlayFromDiscard(CardType),
     /// Move a card to the top of the vault

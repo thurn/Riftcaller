@@ -36,6 +36,9 @@ fn game_instructions(context: Option<PromptContext>) -> Option<String> {
             card_type.to_string().to_lowercase()
         )),
         Some(PromptContext::PlayACard) => Some("Play a card.".to_string()),
+        Some(PromptContext::PlayNamedCard(name)) => {
+            Some(format!("Play {}?", name.displayed_name()))
+        }
         _ => None,
     }
 }

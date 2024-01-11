@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::CardId;
+use game_data::card_name::CardName;
 use game_data::delegate_data::Scope;
 use game_data::prompt_data::{
     FromZone, GamePrompt, PlayCardBrowser, PromptContext, UnplayedAction,
@@ -32,7 +33,7 @@ impl PlayCardBrowserBuilder {
             scope,
             cards,
             from_zone,
-            context: PromptContext::PlayACard,
+            context: PromptContext::PlayNamedCard(CardName::EchoingValor),
             unplayed_action: UnplayedAction::None,
         }
     }

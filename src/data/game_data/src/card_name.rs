@@ -383,7 +383,8 @@ pub enum CardName {
     AeonSwimmer,
     Lawbringer,
     Vengeance,
-    Mazeshaper
+    Mazeshaper,
+    EchoingValor,
 }
 
 impl CardName {

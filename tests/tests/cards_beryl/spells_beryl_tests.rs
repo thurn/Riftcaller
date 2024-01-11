@@ -14,6 +14,7 @@
 
 use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::{CardName, CardVariant};
+use protos::riftcaller::object_position::Position;
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::test_session::TestSession;
 use test_utils::*;
@@ -570,4 +571,31 @@ fn liminal_transposition_counts_for_glimmersong() {
     g.play_card(room_selector, g.user_id(), Some(RoomId::RoomA));
     g.click(Button::EndRaid);
     assert!(g.client.cards.get(glimmersong).arena_icon().contains('1'));
+}
+
+#[test]
+fn echoing_valor() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    let id = g.create_and_play_with_target(CardName::EchoingValor, RoomId::Vault);
+    g.click(Button::EndRaid);
+    assert!(matches!(g.client.cards.get(id).position(), Position::DiscardPile(..)));
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
+    g.play_card(id, g.user_id(), Some(RoomId::Sanctum));
+    assert!(matches!(g.client.cards.get(id).position(), Position::Offscreen(..)));
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn echoing_valor_skip() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller)).build();
+    let id = g.create_and_play_with_target(CardName::EchoingValor, RoomId::Vault);
+    g.click(Button::EndRaid);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
+    g.click(Button::SkipPlayingCard);
+    g.pass_turn(Side::Riftcaller);
+    g.pass_turn(Side::Covenant);
+    g.play_card(id, g.user_id(), Some(RoomId::Sanctum));
+    g.click(Button::EndRaid);
 }

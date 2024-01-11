@@ -17,7 +17,8 @@ use card_definition_data::card_definition::CardDefinition;
 use card_definition_data::cards::CardDefinitionExt;
 use card_helpers::play_card_browser_builder::PlayCardBrowserBuilder;
 use card_helpers::{
-    abilities, costs, delegates, history, raids, requirements, show_prompt, text, this,
+    abilities, costs, delegates, history, raids, requirements, show_prompt, text, text_helpers,
+    this,
 };
 use core_data::game_primitives;
 use core_data::game_primitives::{
@@ -687,5 +688,43 @@ pub fn liminal_transposition(meta: CardMetadata) -> CardDefinition {
                         >= 2
             }))
             .build(),
+    }
+}
+
+pub fn echoing_valor(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::EchoingValor,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(1, 0)),
+        image: assets::riftcaller_card(meta, "echoing_valor"),
+        card_type: CardType::Spell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![
+            Ability::new(text!["Raid target room"]).delegate(this::on_played(|g, s, played| {
+                if played.from_zone == FromZone::Discard {
+                    mutations::banish_card(g, s.card_id())?;
+                }
+                raids::initiate(g, s, played.target)
+            })),
+            Ability::new(text_helpers::named_trigger(
+                Dawn,
+                text!["You may play this card from your discard pile, then", Banish, "it"],
+            ))
+            .delegate(this::at_dawn(|g, s, _| {
+                if g.card(s).position().in_discard_pile() {
+                    prompts::push(g, Side::Riftcaller, s);
+                }
+                Ok(())
+            }))
+            .delegate(this::prompt(|_, s, _, _| {
+                PlayCardBrowserBuilder::new(s, FromZone::Discard, vec![s.card_id()])
+                    .context(PromptContext::PlayNamedCard(CardName::EchoingValor))
+                    .build()
+            })),
+        ],
+        config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
     }
 }
