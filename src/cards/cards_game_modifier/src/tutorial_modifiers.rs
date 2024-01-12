@@ -126,7 +126,7 @@ pub fn tutorial_disable_raid_continue(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableRaidContinue,
         Ability::new_with_delegate(
-            text!["The Riftcaller must use a weapon during raid_state"],
+            text!["The Riftcaller must use a weapon during raid_display"],
             GameDelegate::CanUseNoWeapon(QueryDelegate {
                 requirement: always,
                 transformation: delegates::disallow,
@@ -139,7 +139,7 @@ pub fn tutorial_disable_end_raid(_: CardMetadata) -> CardDefinition {
     tutorial_modifier(
         CardName::TutorialDisableEndRaid,
         Ability::new_with_delegate(
-            text!["The Riftcaller cannot end the access phase of raid_state"],
+            text!["The Riftcaller cannot end the access phase of raid_display"],
             GameDelegate::CanEndRaidAccessPhase(QueryDelegate {
                 requirement: always,
                 transformation: delegates::disallow,

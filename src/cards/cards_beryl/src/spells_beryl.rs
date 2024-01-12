@@ -42,8 +42,8 @@ use game_data::prompt_data::{
 use game_data::raid_data::PopulateAccessPromptSource;
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
-use raid_state::custom_access;
 use rules::mutations::RealizeCards;
+use rules::raids::custom_access;
 use rules::visual_effects::VisualEffects;
 use rules::{curses, draw_cards, flags, mutations, prompts};
 use with_error::fail;

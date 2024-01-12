@@ -21,7 +21,7 @@ use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{ButtonPrompt, GamePrompt, PromptChoice};
 use prompt_ui::prompt_display;
 use protos::riftcaller::InterfaceMainControls;
-use raid_state::raid_prompt;
+use raid_display::raid_prompt;
 use rules::flags;
 
 use crate::{button_prompt, card_selector, play_card_browser, room_selector_prompt};

@@ -12,24 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! All primary game rules, responses to user actions, and associated helpers.
-
-pub mod activate_ability;
-pub mod combat;
-pub mod curses;
-pub mod custom_state;
-pub mod damage;
-pub mod destroy;
-pub mod draw_cards;
-pub mod end_raid;
-pub mod flags;
-pub mod leylines;
-pub mod mana;
-pub mod mutations;
-pub mod play_card;
-pub mod prompts;
-pub mod queries;
-pub mod raids;
-pub mod state_machine;
-pub mod visual_effects;
-pub mod wounds;
+pub mod raid_display_state;
+pub mod raid_prompt;

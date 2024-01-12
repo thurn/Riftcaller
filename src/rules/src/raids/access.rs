@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::mana::ManaPurpose;
+use crate::mutations::RealizeCards;
+use crate::{mana, mutations, queries};
 use anyhow::Result;
 use card_definition_data::cards::CardDefinitionExt;
 use core_data::game_primitives::{CardId, CardType, RoomId, Side};
@@ -23,9 +26,6 @@ use game_data::game_actions::RazeCardActionType;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidChoice, RaidInfo, RaidLabel, RaidStep, ScoredCard};
 use game_data::random;
-use rules::mana::ManaPurpose;
-use rules::mutations::RealizeCards;
-use rules::{mana, mutations, queries};
 
 /// Returns a vector of the cards accessed for the current raid target, mutating
 /// the [GameState] to store the results of random zone selections.

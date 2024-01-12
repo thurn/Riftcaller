@@ -23,7 +23,7 @@ dependencies = [
  "dispatcher",
  "enum-iterator",
  "game_data",
- "raid_state",
+ "raid_display",
  "rules",
  "tracing",
  "with_error",
@@ -444,7 +444,7 @@ dependencies = [
  "enumset",
  "game_data",
  "prompt_ui",
- "raid_state",
+ "raid_display",
  "rules",
 ]
 
@@ -472,7 +472,6 @@ dependencies = [
  "card_helpers",
  "core_data",
  "game_data",
- "raid_state",
  "rules",
  "with_error",
 ]
@@ -500,7 +499,6 @@ dependencies = [
  "core_data",
  "core_ui",
  "game_data",
- "raid_state",
  "rules",
  "with_error",
 ]
@@ -1095,7 +1093,7 @@ dependencies = [
  "panels",
  "prompt_ui",
  "protos",
- "raid_state",
+ "raid_display",
  "rules",
  "rules_text",
  "with_error",
@@ -2395,7 +2393,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "raid_state"
+name = "raid_display"
 version = "0.0.0"
 dependencies = [
  "adapters",
@@ -3689,7 +3687,7 @@ dependencies = [
  "core_ui",
  "game_data",
  "once_cell",
- "raid_state",
+ "raid_display",
  "rules",
  "tracing",
  "with_error",

@@ -24,7 +24,8 @@ use game_data::prompt_data::PromptData;
 use game_data::raid_data::RaidJumpRequest;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
-use raid_state::{custom_access, InitiateRaidOptions};
+use rules::raids::raid_state::InitiateRaidOptions;
+use rules::raids::{custom_access, raid_state};
 use rules::{curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, prompts};
 use with_error::WithError;
 

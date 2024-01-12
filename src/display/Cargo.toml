@@ -13,7 +13,7 @@ test = false
 actions = { path = "../actions", version = "0.0.0" }
 assets = { path = "../assets", version = "0.0.0" }
 adapters = { path = "../adapters", version = "0.0.0" }
-raid_state = { path = "../raid_state", version = "0.0.0" }
+raid_display = { path = "../raid_display", version = "0.0.0" }
 rules = { path = "../rules", version = "0.0.0" }
 rules_text = { path = "../rules_text", version = "0.0.0" }
 constants = { path = "../constants", version = "0.0.0" }

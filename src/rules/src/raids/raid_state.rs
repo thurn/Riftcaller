@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::mana::ManaPurpose;
+use crate::mutations::SummonMinion;
+use crate::{combat, end_raid, flags, mana, mutations, prompts, queries};
 use anyhow::Result;
 use core_data::game_primitives::{
     CardId, GameObjectId, InitiatedBy, MinionEncounterId, RaidId, RoomAccessId, RoomId, Side,
@@ -34,17 +37,10 @@ use game_data::raid_data::{
     MinionDefeated, PopulateAccessPromptSource, RaidChoice, RaidData, RaidInfo, RaidJumpRequest,
     RaidLabel, RaidState, RaidStatus, RaidStep, ScoredCard, WeaponInteraction,
 };
-use rules::mana::ManaPurpose;
-use rules::mutations::SummonMinion;
-use rules::{combat, end_raid, flags, mana, mutations, prompts, queries};
 use tracing::debug;
 use with_error::{fail, verify, WithError};
 
-pub mod access;
-pub mod custom_access;
-pub mod defenders;
-pub mod raid_display_state;
-pub mod raid_prompt;
+use crate::raids::{access, custom_access, defenders};
 
 /// Handle a client request to initiate a new raid. Deducts action points and
 /// then invokes [initiate_with_callback].

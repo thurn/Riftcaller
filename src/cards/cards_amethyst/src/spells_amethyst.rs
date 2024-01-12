@@ -25,7 +25,8 @@ use game_data::card_configuration::{CardConfig, CardConfigBuilder, TargetRequire
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
 use game_data::delegate_data::{GameDelegate, QueryDelegate};
-use raid_state::InitiateRaidOptions;
+use rules::raids::raid_state;
+use rules::raids::raid_state::InitiateRaidOptions;
 use rules::{draw_cards, flags, mana, mutations};
 
 pub fn meditation(_: CardMetadata) -> CardDefinition {

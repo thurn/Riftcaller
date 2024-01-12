@@ -231,7 +231,7 @@ pub static SEQUENCE: Lazy<TutorialSequence> = Lazy::new(|| {
             TutorialStep::DefaultOpponentAction(TutorialOpponentAction::GainMana),
             TutorialStep::Display(vec![
                 permanent_toast(
-                    "Minions are never permanently defeated. They respawn between raid_state.",
+                    "Minions are never permanently defeated. They respawn between raid_display.",
                     Milliseconds(0),
                 ),
                 user_say("You can't keep me out of that room.", Milliseconds(4000)),

@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::flags;
+use crate::raids::raid_state;
 use anyhow::Result;
 use core_data::game_primitives::{CardId, InitiatedBy, RaidId, RoomId};
 use dispatcher::dispatch;
 use game_data::delegate_data::CustomAccessEndEvent;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
-use rules::flags;
 use with_error::verify;
 
 /// Initiates a "Custom Access" raid.
@@ -75,7 +76,7 @@ pub fn initiate(
         is_custom_access: true,
     });
 
-    crate::run(game, None)
+    raid_state::run(game, None)
 }
 
 /// Ends an ongoing custom access raid.

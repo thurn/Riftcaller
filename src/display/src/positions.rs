@@ -37,7 +37,7 @@ use protos::riftcaller::{
     ObjectPositionScoring, ObjectPositionStackedBehindCard, ObjectPositionStaging,
     RevealedCardsBrowserSize, RoomIdentifier,
 };
-use raid_state::raid_display_state;
+use raid_display::raid_display_state;
 use rules::{activate_ability, prompts, queries};
 
 pub const RELEASE_SORTING_KEY: u32 = 100;

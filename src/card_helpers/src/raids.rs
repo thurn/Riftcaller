@@ -18,7 +18,8 @@ use game_data::delegate_data::{GameDelegate, QueryDelegate, RequirementFn, Scope
 use game_data::game_actions::CardTarget;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidState, RaidStatus};
-use raid_state::InitiateRaidOptions;
+use rules::raids::raid_state;
+use rules::raids::raid_state::InitiateRaidOptions;
 
 /// Starts a new raid from a card ability associated with the provided [Scope]
 /// and [CardTarget] room.

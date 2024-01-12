@@ -26,7 +26,7 @@ use game_data::game_actions::{CardTarget, CardTargetKind, GameAction, GameStateA
 use game_data::game_state::{GamePhase, GameState, MulliganDecision};
 use game_data::prompt_data::{GamePrompt, PromptAction};
 use game_data::state_machine_data::PlayCardOptions;
-use raid_state::raid_prompt;
+use raid_display::raid_prompt;
 use rules::{flags, prompts, queries};
 use with_error::fail;
 

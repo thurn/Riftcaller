@@ -42,8 +42,9 @@ use game_data::prompt_data::{
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextElement;
 use game_data::text::TextToken::*;
-use raid_state::{custom_access, InitiateRaidOptions};
 use rules::mutations::{OnZeroStored, RealizeCards};
+use rules::raids::custom_access;
+use rules::raids::raid_state::InitiateRaidOptions;
 use rules::visual_effects::{ShowAlert, VisualEffects};
 use rules::{curses, destroy, draw_cards, flags, mana, mutations, prompts, visual_effects};
 

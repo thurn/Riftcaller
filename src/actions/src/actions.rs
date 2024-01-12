@@ -37,6 +37,7 @@ use game_data::raid_data::RaidJumpRequest;
 use game_data::state_machine_data::PlayCardOptions;
 use game_data::utils;
 use rules::mana::ManaPurpose;
+use rules::raids::raid_state;
 use rules::{
     activate_ability, curses, damage, destroy, draw_cards, end_raid, flags, leylines, mana,
     mutations, play_card, prompts, queries, wounds,
