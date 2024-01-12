@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::flags;
 use anyhow::Result;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidInfo, RaidStep};
 use with_error::WithError;
+
+use crate::flags;
 
 /// Mutates the provided game to update the current raid encounter to the next
 /// available encounter number, if one is available. Returns the next

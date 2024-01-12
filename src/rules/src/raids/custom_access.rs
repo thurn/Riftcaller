@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::flags;
-use crate::raids::raid_state;
 use anyhow::Result;
 use core_data::game_primitives::{CardId, InitiatedBy, RaidId, RoomId};
 use dispatcher::dispatch;
@@ -21,6 +19,9 @@ use game_data::delegate_data::CustomAccessEndEvent;
 use game_data::game_state::GameState;
 use game_data::raid_data::{RaidData, RaidState, RaidStep};
 use with_error::verify;
+
+use crate::flags;
+use crate::raids::raid_state;
 
 /// Initiates a "Custom Access" raid.
 ///

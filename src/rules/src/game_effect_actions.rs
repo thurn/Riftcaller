@@ -24,12 +24,12 @@ use game_data::prompt_data::PromptData;
 use game_data::raid_data::RaidJumpRequest;
 use game_data::special_effects::SpecialEffect;
 use game_data::state_machine_data::PlayCardOptions;
-use rules::raids::raid_state::InitiateRaidOptions;
-use rules::raids::{custom_access, raid_state};
-use rules::{curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, prompts};
 use with_error::WithError;
 
 use crate::mana::ManaPurpose;
+use crate::raids::raid_state::InitiateRaidOptions;
+use crate::raids::{custom_access, raid_state};
+use crate::{curses, damage, destroy, draw_cards, end_raid, mana, mutations, play_card, prompts};
 
 pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
     match effect {

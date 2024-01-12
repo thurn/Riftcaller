@@ -23,6 +23,7 @@ pub mod destroy;
 pub mod draw_cards;
 pub mod end_raid;
 pub mod flags;
+pub mod game_effect_actions;
 pub mod leylines;
 pub mod mana;
 pub mod mutations;
