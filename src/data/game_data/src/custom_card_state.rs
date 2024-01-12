@@ -43,6 +43,9 @@ pub enum CustomCardState {
     /// A Riftcaller's ability has triggered in the indicated turn.
     IdentityTriggeredForTurn { turn: TurnData },
 
+    /// An ability which triggers once per turn while a card is in play has triggered
+    InPlayAbilityTriggeredForTurn { turn: TurnData, play_id: CardPlayId },
+
     /// A card type selected for the duration of a given turn
     CardTypeForTurn { card_type: CardType, turn: TurnData },
 }
@@ -160,6 +163,20 @@ impl CustomCardStateList {
         self.list.iter().rev().any(|state| {
             matches!(state,
                 CustomCardState::ActiveForEncounter { encounter_id } if id == *encounter_id)
+        })
+    }
+
+    /// Returns true if a [CustomCardState::InPlayAbilityTriggeredForTurn] entry
+    /// has been recorded for the provided turn and card play id.
+    pub fn in_play_ability_triggered_for_turn(
+        &self,
+        turn_data: TurnData,
+        card_play_id: CardPlayId,
+    ) -> bool {
+        self.list.iter().rev().any(|state| {
+            matches!(state,
+                CustomCardState::InPlayAbilityTriggeredForTurn { turn, play_id }
+                if turn_data == *turn && card_play_id == *play_id)
         })
     }
 

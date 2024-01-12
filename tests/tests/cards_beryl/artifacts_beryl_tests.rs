@@ -825,3 +825,76 @@ fn vengeance_cannot_activate_resonance() {
     g.initiate_raid(RoomId::Vault);
     assert!(g.activate_ability_with_result(id, 1).is_err());
 }
+
+#[test]
+fn summermorn() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::Summermorn);
+    let charge_id = g.create_and_play(CardName::TestChargeArtifact);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Summermorn);
+    g.click_card_button(g.user_id(), charge_id, Button::AddPowerCharges);
+    assert!(g.client.cards.get(charge_id).arena_icon().contains("1"));
+}
+
+#[test]
+fn summermorn_does_not_trigger_twice() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::Summermorn);
+    let charge_id = g.create_and_play(CardName::TestChargeArtifact);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Summermorn);
+    g.click_card_button(g.user_id(), charge_id, Button::AddPowerCharges);
+    g.click(Button::EndRaid);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Summermorn);
+    assert!(!g.has(Button::AddPowerCharges));
+    g.click(Button::EndRaid);
+    assert!(g.client.cards.get(charge_id).arena_icon().contains("1"));
+}
+
+#[test]
+fn summermorn_does_not_trigger_if_played_later() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play(CardName::Summermorn);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Summermorn);
+    assert!(!g.has(Button::AddPowerCharges));
+    g.click(Button::EndRaid);
+    g.create_and_play(CardName::TestChargeArtifact);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Summermorn);
+    assert!(!g.has(Button::AddPowerCharges));
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn summermorn_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestInfernalMinion),
+        )
+        .build();
+    g.create_and_play_upgraded(CardName::Summermorn);
+    let charge_id = g.create_and_play(CardName::TestChargeArtifact);
+    g.initiate_raid(RoomId::Vault);
+    g.click_card_name(CardName::Summermorn);
+    g.click_card_button(g.user_id(), charge_id, Button::AddPowerCharges);
+    assert!(g.client.cards.get(charge_id).arena_icon().contains("2"));
+}

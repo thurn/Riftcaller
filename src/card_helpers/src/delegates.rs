@@ -23,7 +23,7 @@ use game_data::delegate_data::{
 };
 use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_state::GameState;
-use game_data::raid_data::PopulateAccessPromptSource;
+use game_data::raid_data::{MinionDefeated, PopulateAccessPromptSource};
 
 /// A [TransformationFn] which invokes [Flag::allow] to enable an action.
 pub fn allow<T>(_: &GameState, _: Scope, _: &T, flag: Flag) -> Flag {
@@ -95,6 +95,13 @@ pub fn on_minion_approached(
     mutation: MutationFn<RaidEvent<CardId>>,
 ) -> GameDelegate {
     GameDelegate::ApproachMinion(EventDelegate { requirement, mutation })
+}
+
+pub fn on_minion_defeated(
+    requirement: RequirementFn<MinionDefeated>,
+    mutation: MutationFn<MinionDefeated>,
+) -> GameDelegate {
+    GameDelegate::MinionDefeated(EventDelegate { requirement, mutation })
 }
 
 pub fn on_raid_access_start(

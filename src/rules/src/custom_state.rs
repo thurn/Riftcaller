@@ -17,7 +17,26 @@ use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::Scope;
 use game_data::game_state::GameState;
 
-/// Invokes a function associated with a Riftcaller once per turn
+/// Invokes a function associated with a card in play once per turn
+pub fn in_play_ability_once_per_turn(
+    game: &mut GameState,
+    scope: Scope,
+    function: impl FnOnce(&mut GameState, Scope) -> Result<()>,
+) -> Result<()> {
+    let turn = game.info.turn;
+    let Some(play_id) = game.card(scope).last_card_play_id else {
+        return Ok(());
+    };
+    if !game.card(scope).custom_state.in_play_ability_triggered_for_turn(turn, play_id) {
+        game.card_mut(scope)
+            .custom_state
+            .push(CustomCardState::InPlayAbilityTriggeredForTurn { turn, play_id });
+        function(game, scope)?;
+    }
+    Ok(())
+}
+
+/// Invokes a function associated with an identity card once per turn
 pub fn identity_once_per_turn(
     game: &mut GameState,
     scope: Scope,

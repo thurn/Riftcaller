@@ -88,6 +88,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::amaras_decree);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::lawbringer);
     DEFINITIONS.insert(cards_beryl::artifacts_beryl::vengeance);
+    DEFINITIONS.insert(cards_beryl::artifacts_beryl::summermorn);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::nimbus_enclave);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::enforcers_of_silence);
     DEFINITIONS.insert(cards_beryl::chapters_beryl::keepers_of_the_eye);
@@ -214,4 +215,5 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::test_ritual_destroy_all_enemy_permanents);
     DEFINITIONS.insert(cards_test::test_cards::test_ally_access_additional_sanctum_card);
     DEFINITIONS.insert(cards_test::test_cards::test_ally_access_additional_vault_card);
+    DEFINITIONS.insert(cards_test::test_cards::test_charge_artifact);
 }

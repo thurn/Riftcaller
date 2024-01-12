@@ -219,6 +219,7 @@ pub enum CardName {
     TestRitualDestroyAllEnemyPermanents,
     TestAllyAccessAdditionalSanctumCard,
     TestAllyAccessAdditionalVaultCard,
+    TestChargeArtifact,
 
     // Proof of Concept
     GoldMine,
@@ -385,6 +386,7 @@ pub enum CardName {
     Vengeance,
     Mazeshaper,
     EchoingValor,
+    Summermorn,
 }
 
 impl CardName {

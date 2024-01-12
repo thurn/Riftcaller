@@ -90,7 +90,7 @@ use crate::flag_data::{AbilityFlag, Flag};
 use crate::game_actions::{CardTarget, GameStateAction};
 use crate::game_state::GameState;
 use crate::prompt_data::{AbilityPromptSource, FromZone, GamePrompt};
-use crate::raid_data::PopulateAccessPromptSource;
+use crate::raid_data::{MinionDefeated, PopulateAccessPromptSource};
 use crate::text::TextElement;
 
 /// Identifies the context for a given request to a delegate: which player,
@@ -497,7 +497,7 @@ pub enum GameDelegate {
     UsedWeapon(EventDelegate<RaidEvent<UsedWeapon>>),
     /// A minion is defeated during an encounter by dealing damage to it equal
     /// to its health
-    MinionDefeated(EventDelegate<CardId>),
+    MinionDefeated(EventDelegate<MinionDefeated>),
     /// A minion's 'combat' ability is triggered during an encounter, typically
     /// because the minion was not defeated by the Riftcaller.
     MinionCombatAbility(EventDelegate<CardId>),

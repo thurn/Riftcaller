@@ -146,5 +146,12 @@ fn prompt_context(game: &GameState, prompt_context: Option<&ButtonPromptContext>
         ButtonPromptContext::ChooseCardType(_) => {
             GameInstructions::new("Choose a card type".to_string()).build()
         }
+        ButtonPromptContext::AddPowerCharges(count) => {
+            if *count == 1 {
+                GameInstructions::new(format!("Add {}.", icons::POWER_CHARGE)).build()
+            } else {
+                GameInstructions::new(format!("Add {}{}.", count, icons::POWER_CHARGE)).build()
+            }
+        }
     }
 }

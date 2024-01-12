@@ -26,7 +26,7 @@ use game_data::card_set_name::CardSetName;
 use game_data::card_state::{CardCounter, CardPosition};
 use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker, Scope};
-use game_data::game_actions::CardTarget;
+use game_data::game_actions::{ButtonPromptContext, CardTarget};
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{PromptChoice, PromptData};
@@ -45,7 +45,9 @@ use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use rules::mana::ManaPurpose;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{draw_cards, end_raid, flags, mana, mutations, prompts, queries, visual_effects};
+use rules::{
+    custom_state, draw_cards, end_raid, flags, mana, mutations, prompts, queries, visual_effects,
+};
 use with_error::WithError;
 
 pub fn pathfinder(meta: CardMetadata) -> CardDefinition {
@@ -1052,6 +1054,61 @@ pub fn vengeance(meta: CardMetadata) -> CardDefinition {
                 ProjectileData::new(Projectile::Projectiles1(13))
                     .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile01"))
                     .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact01")),
+            )
+            .build(),
+    }
+}
+
+pub fn summermorn(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Summermorn,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(10),
+        image: assets::riftcaller_card(meta, "summermorn"),
+        card_type: CardType::Artifact,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new(text![
+                "The first time each turn this weapon defeats a minion,",
+                AddPowerCharges(meta.upgrade(1, 2)),
+                "to a card in play"
+            ])
+            .delegate(in_play::on_minion_defeated(|g, s, defeated| {
+                if defeated.weapon_id == Some(s.card_id()) {
+                    custom_state::in_play_ability_once_per_turn(g, s, |g, s| {
+                        visual_effects::show_alert(g, s);
+                        prompts::push(g, Side::Riftcaller, s);
+                        Ok(())
+                    })?;
+                }
+                Ok(())
+            }))
+            .delegate(this::prompt(|g, s, _, _| {
+                show_prompt::with_context_and_choices(
+                    ButtonPromptContext::AddPowerCharges(s.upgrade(1, 2)),
+                    g.all_permanents(Side::Riftcaller)
+                        .filter(|card| card.definition().subtypes.contains(&CardSubtype::Charge))
+                        .map(|card| {
+                            PromptChoice::new()
+                                .effect(GameEffect::AddPowerCharges(card.id, s.upgrade(1, 2)))
+                                .anchor_card(card.id)
+                        })
+                        .collect(),
+                )
+            })),
+            abilities::encounter_boost(),
+        ],
+        config: CardConfigBuilder::new()
+            .base_attack(3)
+            .attack_boost(AttackBoost::new().mana_cost(2).bonus(3))
+            .resonance(Resonance::Infernal)
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(15))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile02"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact02")),
             )
             .build(),
     }

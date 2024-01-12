@@ -24,7 +24,7 @@ use game_data::delegate_data::{
 };
 use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_state::GameState;
-use game_data::raid_data::PopulateAccessPromptSource;
+use game_data::raid_data::{MinionDefeated, PopulateAccessPromptSource};
 
 use crate::{delegates, requirements};
 
@@ -146,6 +146,12 @@ pub fn on_minion_summoned(mutation: MutationFn<CardId>) -> GameDelegate {
 /// approached.
 pub fn on_minion_approached(mutation: MutationFn<RaidEvent<CardId>>) -> GameDelegate {
     delegates::on_minion_approached(requirements::face_up_in_play, mutation)
+}
+
+/// A delegate which fires when a card is face up & in play when a minion is
+/// defeated.
+pub fn on_minion_defeated(mutation: MutationFn<MinionDefeated>) -> GameDelegate {
+    delegates::on_minion_defeated(requirements::face_up_in_play, mutation)
 }
 
 /// A delegate which fires when a card is face up & in play when an ability is

@@ -822,3 +822,15 @@ pub fn test_ally_access_additional_vault_card(meta: CardMetadata) -> CardDefinit
         ..test_spell(meta)
     }
 }
+
+pub fn test_charge_artifact(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TestChargeArtifact,
+        cost: cost(test_constants::ARTIFACT_COST),
+        card_type: CardType::Artifact,
+        subtypes: vec![CardSubtype::Charge],
+        abilities: vec![],
+        config: CardConfig::default(),
+        ..test_spell(metadata)
+    }
+}

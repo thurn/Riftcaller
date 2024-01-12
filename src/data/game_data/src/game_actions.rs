@@ -20,7 +20,8 @@ use std::fmt;
 
 use anyhow::{anyhow, Result};
 use core_data::game_primitives::{
-    AbilityId, CardId, CardSubtype, CardType, CurseCount, DamageAmount, ManaValue, RoomId,
+    AbilityId, CardId, CardSubtype, CardType, CurseCount, DamageAmount, ManaValue,
+    PowerChargeValue, RoomId,
 };
 use enum_kinds::EnumKind;
 use serde::{Deserialize, Serialize};
@@ -99,6 +100,8 @@ pub enum ButtonPromptContext {
     PayToPreventRevealing(ManaValue),
     /// Prompt from the indicated card to pick a card type
     ChooseCardType(CardId),
+    /// Prompt to add power charges to a card
+    AddPowerCharges(PowerChargeValue),
 }
 
 impl ButtonPromptContext {

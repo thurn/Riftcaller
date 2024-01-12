@@ -52,6 +52,14 @@ pub enum PopulateAccessPromptSource {
     FromRaze,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, Hash)]
+pub struct MinionDefeated {
+    /// The weapon which defeated this defender, or None if the defender has been defeated by an ability.
+    pub weapon_id: Option<CardId>,
+    /// The minion which was defeated.
+    pub defender_id: CardId,
+}
+
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum RaidStep {
     Begin,
@@ -66,7 +74,7 @@ pub enum RaidStep {
     EncounterMinion(CardId),
     PopulateEncounterPrompt(CardId),
     UseWeapon(WeaponInteraction),
-    MinionDefeated(CardId),
+    MinionDefeated(MinionDefeated),
     FireMinionCombatAbility(CardId),
     PopulateApproachPrompt,
     AccessStart,
