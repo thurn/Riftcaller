@@ -23,7 +23,7 @@ use core_data::game_primitives::{
 use game_data::card_state::{CardPosition, CardState};
 use game_data::game_actions::{CardTarget, DisplayPreference};
 use game_data::game_state::{GamePhase, GameState, MulliganData};
-use game_data::prompt_data::{BrowserPromptTarget, GamePrompt};
+use game_data::prompt_data::{GamePrompt, SelectorPromptTarget};
 use game_data::raid_data::{RaidData, RaidDisplayState};
 use protos::riftcaller::object_position::Position;
 use protos::riftcaller::{
@@ -465,9 +465,9 @@ fn non_card_position_override(
     let current_prompt = prompts::current(game, builder.user_side);
     if let Some(GamePrompt::CardSelector(browser)) = current_prompt {
         let target = match browser.target {
-            BrowserPromptTarget::DiscardPile => GameObjectId::DiscardPile(builder.user_side),
-            BrowserPromptTarget::DeckTop => GameObjectId::Deck(builder.user_side),
-            BrowserPromptTarget::DeckShuffled => GameObjectId::Deck(builder.user_side),
+            SelectorPromptTarget::DiscardPile => GameObjectId::DiscardPile(builder.user_side),
+            SelectorPromptTarget::DeckTop => GameObjectId::Deck(builder.user_side),
+            SelectorPromptTarget::DeckShuffled => GameObjectId::Deck(builder.user_side),
         };
         if id == target {
             return Some(for_sorting_key(

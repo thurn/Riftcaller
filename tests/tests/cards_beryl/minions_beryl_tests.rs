@@ -330,3 +330,35 @@ fn mazeshaper_no_crypt_defenders() {
     g.click(Button::Score);
     g.click(Button::EndRaid);
 }
+
+#[test]
+fn soldier_servitor_health() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let id = g.create_and_play_with_target(CardName::SoldierServitor, RoomId::Vault);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::Summon);
+    assert_eq!(g.client.cards.get(id).health_icon(), "7");
+}
+
+#[test]
+fn soldier_servitor_shuffle() {
+    let mut g = TestGame::new(
+        TestSide::new(Side::Covenant)
+            .in_discard_face_down(CardName::TestScheme3_10)
+            .in_hand(CardName::TestScheme4_20),
+    )
+    .build();
+    let crypt_scheme = g.client.cards.discard_pile()[0].id();
+    let hand_scheme = g.client.cards.hand()[0].id();
+    g.create_and_play_with_target(CardName::SoldierServitor, RoomId::Vault);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::Summon);
+    g.opponent_click(Button::NoWeapon);
+    g.move_selector_card(crypt_scheme);
+    g.move_selector_card(hand_scheme);
+    g.click(Button::SubmitCardSelector);
+    assert_eq!(g.client.cards.discard_pile().len(), 0);
+    assert_eq!(g.client.cards.hand().len(), 0);
+}

@@ -29,7 +29,8 @@ use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::game_state::GameState;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, FromZone, PromptChoice, PromptContext, PromptData,
+    CardSelectorPromptValidation, FromZone, PromptChoice, PromptContext, PromptData,
+    SelectorPromptTarget,
 };
 use game_data::text::TextToken::*;
 use rules::mutations::RealizeCards;
@@ -214,11 +215,11 @@ pub fn foresee(meta: CardMetadata) -> CardDefinition {
             let PromptData::Cards(cards) = &source.data else {
                 return None;
             };
-            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::DeckTop)
+            CardSelectorPromptBuilder::new(s, SelectorPromptTarget::DeckTop)
                 .subjects(cards.clone())
                 .context(PromptContext::ReorderTopOfVault)
                 .can_reorder(true)
-                .validation(BrowserPromptValidation::AllSubjects)
+                .validation(CardSelectorPromptValidation::AllSubjects)
                 .build()
         }))
         .delegate(this::on_card_selector_submitted(|g, s, _| {

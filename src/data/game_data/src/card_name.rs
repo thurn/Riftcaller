@@ -387,6 +387,7 @@ pub enum CardName {
     Mazeshaper,
     EchoingValor,
     Summermorn,
+    SoldierServitor,
 }
 
 impl CardName {

@@ -15,8 +15,10 @@
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
 use card_definition_data::cards::CardDefinitionExt;
+use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
 use card_helpers::{
-    combat_abilities, costs, delegates, requirements, show_prompt, text, text_helpers, this,
+    combat_abilities, costs, delegates, history, requirements, show_prompt, text, text_helpers,
+    this,
 };
 use core_data::game_primitives::{
     CardSubtype, CardType, GameObjectId, ManaValue, Rarity, Resonance, RoomId, School, Side,
@@ -30,7 +32,10 @@ use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::delegate_data::RaidOutcome;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
-use game_data::prompt_data::{PromptChoice, PromptChoiceLabel, PromptData};
+use game_data::prompt_data::{
+    CardSelectorPromptValidation, PromptChoice, PromptChoiceLabel, PromptContext, PromptData,
+    SelectorPromptTarget,
+};
 use game_data::raid_data::RaidJumpRequest;
 use game_data::special_effects::{
     Projectile, ProjectileData, SoundEffect, TimedEffect, TimedEffectData,
@@ -421,6 +426,77 @@ pub fn mazeshaper(meta: CardMetadata) -> CardDefinition {
                 ProjectileData::new(Projectile::Projectiles2(12))
                     .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles03"))
                     .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact03")),
+            )
+            .build(),
+    }
+}
+
+pub fn soldier_servitor(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::SoldierServitor,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(meta.upgrade(3, 1)),
+        image: assets::covenant_card(meta, "soldier_servitor"),
+        card_type: CardType::Minion,
+        subtypes: vec![CardSubtype::Construct],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new(text_helpers::named_trigger(Summon, text![Plus(6), "health this turn"]))
+                .delegate(this::health(|g, s, _, health| {
+                    health
+                        + if history::minions_summoned_this_turn(g)
+                            .any(|event| event.data == s.card_id())
+                        {
+                            6
+                        } else {
+                            0
+                        }
+                })),
+            Ability::new(text_helpers::named_trigger(
+                Combat,
+                text![
+                    text!["End the raid"],
+                    text![
+                        "Pick up to",
+                        3,
+                        "schemes in the",
+                        Sanctum,
+                        "or",
+                        Crypt,
+                        "and shuffle them into the",
+                        Vault
+                    ]
+                ],
+            ))
+            .delegate(this::combat(|g, s, _| {
+                end_raid::run(g, s.initiated_by(), RaidOutcome::Failure)?;
+                prompts::push(g, Side::Covenant, s);
+                Ok(())
+            }))
+            .delegate(this::prompt(|g, s, _, _| {
+                CardSelectorPromptBuilder::new(s, SelectorPromptTarget::DeckShuffled)
+                    .subjects(
+                        g.discard_pile(Side::Covenant)
+                            .chain(g.hand(Side::Covenant))
+                            .filter(|c| c.definition().is_scheme())
+                            .map(|c| c.id)
+                            .collect(),
+                    )
+                    .context(PromptContext::ShuffleIntoVault)
+                    .validation(CardSelectorPromptValidation::LessThanOrEqualTo(3))
+                    .build()
+            })),
+        ],
+        config: CardConfigBuilder::new()
+            .health(1)
+            .shield(2)
+            .resonance(Resonance::Mortal)
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles1(23))
+                    .fire_sound(SoundEffect::LightMagic("RPG3_LightMagic2_Projectile03"))
+                    .impact_sound(SoundEffect::LightMagic("RPG3_LightMagic_Impact03")),
             )
             .build(),
     }

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, AttackValue, CardId, HasAbilityId, HasCardId, Resonance, TurnNumber,
+    AbilityId, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, Resonance, TurnNumber,
 };
 use enumset::EnumSet;
 use game_data::card_configuration::Cost;
@@ -152,6 +152,11 @@ pub fn can_evade(transformation: TransformationFn<CardId, Flag>) -> GameDelegate
 /// A delegate which modifies this card's base attack value
 pub fn base_attack(transformation: TransformationFn<CardId, AttackValue>) -> GameDelegate {
     GameDelegate::BaseAttack(QueryDelegate { requirement: card, transformation })
+}
+
+/// A delegate which modifies this card's health value
+pub fn health(transformation: TransformationFn<CardId, HealthValue>) -> GameDelegate {
+    GameDelegate::HealthValue(QueryDelegate { requirement: card, transformation })
 }
 
 /// A delegate which modifies whether this card is a 'slow' weapon (paying

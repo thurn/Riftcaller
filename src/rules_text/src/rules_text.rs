@@ -234,6 +234,7 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
         TextToken::Health => "health".to_string(),
         TextToken::Lose => "lose".to_string(),
         TextToken::Play => "Play".to_string(),
+        TextToken::Summon => "Summon".to_string(),
         TextToken::Dawn => "Dawn".to_string(),
         TextToken::Dusk => "Dusk".to_string(),
         TextToken::Score => "Score".to_string(),

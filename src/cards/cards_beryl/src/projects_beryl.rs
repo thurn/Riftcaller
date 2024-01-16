@@ -29,7 +29,7 @@ use game_data::card_state::CardIdsExt;
 use game_data::delegate_data::Scope;
 use game_data::game_state::GameState;
 use game_data::history_data::HistoryCounters;
-use game_data::prompt_data::{BrowserPromptTarget, BrowserPromptValidation, PromptContext};
+use game_data::prompt_data::{CardSelectorPromptValidation, PromptContext, SelectorPromptTarget};
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::{ShowAlert, VisualEffects};
@@ -144,10 +144,10 @@ pub fn sealed_necropolis(meta: CardMetadata) -> CardDefinition {
                 Ok(())
             }))
             .delegate(this::prompt(|g, s, _, _| {
-                CardSelectorPromptBuilder::new(s, BrowserPromptTarget::DeckShuffled)
+                CardSelectorPromptBuilder::new(s, SelectorPromptTarget::DeckShuffled)
                     .subjects(g.discard_pile(Side::Covenant).card_ids())
                     .context(PromptContext::ShuffleIntoVault)
-                    .validation(BrowserPromptValidation::LessThanOrEqualTo(3))
+                    .validation(CardSelectorPromptValidation::LessThanOrEqualTo(3))
                     .build()
             }))
             .build(),

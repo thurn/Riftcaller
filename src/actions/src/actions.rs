@@ -30,8 +30,8 @@ use game_data::game_effect::GameEffect;
 use game_data::game_state::{GamePhase, GameState, MulliganDecision, TurnState};
 use game_data::history_data::HistoryEvent;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, ButtonPrompt, CardSelectorPrompt, FromZone,
-    GamePrompt, PromptAction, PromptChoice, PromptContext, RoomSelectorPromptEffect,
+    ButtonPrompt, CardSelectorPrompt, CardSelectorPromptValidation, FromZone, GamePrompt,
+    PromptAction, PromptChoice, PromptContext, RoomSelectorPromptEffect, SelectorPromptTarget,
 };
 use game_data::raid_data::RaidJumpRequest;
 use game_data::state_machine_data::PlayCardOptions;
@@ -414,8 +414,8 @@ pub fn discard_to_hand_size_prompt(game: &GameState, side: Side) -> GamePrompt {
         context: Some(PromptContext::DiscardToHandSize(max_hand_size)),
         unchosen_subjects: hand,
         chosen_subjects: vec![],
-        target: BrowserPromptTarget::DiscardPile,
-        validation: Some(BrowserPromptValidation::ExactlyCount(discard)),
+        target: SelectorPromptTarget::DiscardPile,
+        validation: Some(CardSelectorPromptValidation::ExactlyCount(discard)),
         can_reorder: false,
     })
 }
@@ -536,16 +536,16 @@ fn handle_card_selector_submit(
     user_side: Side,
     initiated_by: InitiatedBy,
     subjects: Vec<CardId>,
-    target: BrowserPromptTarget,
+    target: SelectorPromptTarget,
 ) -> Result<()> {
     match target {
-        BrowserPromptTarget::DiscardPile => {
+        SelectorPromptTarget::DiscardPile => {
             mutations::move_cards(game, &subjects, CardPosition::DiscardPile(user_side))?;
         }
-        BrowserPromptTarget::DeckTop => {
+        SelectorPromptTarget::DeckTop => {
             mutations::move_cards(game, &subjects, CardPosition::DeckTop(user_side))?;
         }
-        BrowserPromptTarget::DeckShuffled => {
+        SelectorPromptTarget::DeckShuffled => {
             mutations::shuffle_into_deck(game, user_side, &subjects)?;
         }
     }

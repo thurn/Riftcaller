@@ -36,7 +36,7 @@ use game_data::flag_data::{AbilityFlag, Flag};
 use game_data::game_actions::CardTarget;
 use game_data::game_state::{GamePhase, GameState, TurnState};
 use game_data::prompt_data::{
-    BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PlayCardBrowser,
+    CardSelectorPrompt, CardSelectorPromptValidation, GamePrompt, PlayCardBrowser,
 };
 use game_data::raid_data::RaidStatus;
 use game_data::state_machine_data::PlayCardOptions;
@@ -565,11 +565,13 @@ pub fn can_activate_for_subtypes(game: &GameState, card_id: CardId) -> bool {
 /// currently satisfied.
 pub fn card_selector_state_is_valid(prompt: &CardSelectorPrompt) -> bool {
     match prompt.validation {
-        Some(BrowserPromptValidation::ExactlyCount(count)) => prompt.chosen_subjects.len() == count,
-        Some(BrowserPromptValidation::LessThanOrEqualTo(count)) => {
+        Some(CardSelectorPromptValidation::ExactlyCount(count)) => {
+            prompt.chosen_subjects.len() == count
+        }
+        Some(CardSelectorPromptValidation::LessThanOrEqualTo(count)) => {
             prompt.chosen_subjects.len() <= count
         }
-        Some(BrowserPromptValidation::AllSubjects) => prompt.unchosen_subjects.is_empty(),
+        Some(CardSelectorPromptValidation::AllSubjects) => prompt.unchosen_subjects.is_empty(),
         None => true,
     }
 }

@@ -15,20 +15,21 @@
 use core_data::game_primitives::{CardId, InitiatedBy};
 use game_data::delegate_data::Scope;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, CardSelectorPrompt, GamePrompt, PromptContext,
+    CardSelectorPrompt, CardSelectorPromptValidation, GamePrompt, PromptContext,
+    SelectorPromptTarget,
 };
 
 pub struct CardSelectorPromptBuilder {
     initiated_by: InitiatedBy,
-    target: BrowserPromptTarget,
+    target: SelectorPromptTarget,
     subjects: Vec<CardId>,
     context: Option<PromptContext>,
-    validation: Option<BrowserPromptValidation>,
+    validation: Option<CardSelectorPromptValidation>,
     can_reorder: bool,
 }
 
 impl CardSelectorPromptBuilder {
-    pub fn new(scope: Scope, target: BrowserPromptTarget) -> Self {
+    pub fn new(scope: Scope, target: SelectorPromptTarget) -> Self {
         Self {
             initiated_by: scope.initiated_by(),
             target,
@@ -49,7 +50,7 @@ impl CardSelectorPromptBuilder {
         self
     }
 
-    pub fn validation(mut self, validation: BrowserPromptValidation) -> Self {
+    pub fn validation(mut self, validation: CardSelectorPromptValidation) -> Self {
         self.validation = Some(validation);
         self
     }

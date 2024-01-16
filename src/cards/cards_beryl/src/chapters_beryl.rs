@@ -29,9 +29,9 @@ use game_data::custom_card_state::CustomCardState;
 use game_data::game_actions::ButtonPromptContext;
 use game_data::game_effect::GameEffect;
 use game_data::prompt_data::{
-    BrowserPromptTarget, BrowserPromptValidation, FromZone, PromptChoice, PromptChoiceLabel,
-    PromptContext, PromptData, RoomSelectorPrompt, RoomSelectorPromptContext,
-    RoomSelectorPromptEffect,
+    CardSelectorPromptValidation, FromZone, PromptChoice, PromptChoiceLabel, PromptContext,
+    PromptData, RoomSelectorPrompt, RoomSelectorPromptContext, RoomSelectorPromptEffect,
+    SelectorPromptTarget,
 };
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
@@ -173,10 +173,10 @@ pub fn keepers_of_the_eye(meta: CardMetadata) -> CardDefinition {
             }),
         )
         .delegate(this::prompt(|g, s, _, _| {
-            CardSelectorPromptBuilder::new(s, BrowserPromptTarget::DeckTop)
+            CardSelectorPromptBuilder::new(s, SelectorPromptTarget::DeckTop)
                 .subjects(g.discard_pile(Side::Covenant).card_ids())
                 .context(PromptContext::MoveToTopOfVault)
-                .validation(BrowserPromptValidation::LessThanOrEqualTo(1))
+                .validation(CardSelectorPromptValidation::LessThanOrEqualTo(1))
                 .build()
         }))],
         config: CardConfigBuilder::new()

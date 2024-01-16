@@ -103,7 +103,7 @@ pub enum PromptContext {
 /// Target game object for a [CardSelectorPrompt] to which cards must be
 /// dragged.
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum BrowserPromptTarget {
+pub enum SelectorPromptTarget {
     DiscardPile,
     DeckTop,
     DeckShuffled,
@@ -112,7 +112,7 @@ pub enum BrowserPromptTarget {
 /// Describes which configurations of subjects for a [CardSelectorPrompt] are
 /// valid and should allow the prompt to be exited.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum BrowserPromptValidation {
+pub enum CardSelectorPromptValidation {
     /// User must select an exact quantity of cards.
     ExactlyCount(usize),
     /// User must select at most this many cards.
@@ -144,10 +144,10 @@ pub struct CardSelectorPrompt {
     /// be empty.
     pub chosen_subjects: Vec<CardId>,
     /// Target game object to which cards card being moved.
-    pub target: BrowserPromptTarget,
+    pub target: SelectorPromptTarget,
     /// Describes which configurations of subjects are valid and should allow
     /// the prompt to be exited.
-    pub validation: Option<BrowserPromptValidation>,
+    pub validation: Option<CardSelectorPromptValidation>,
     /// If true, the player seeing this prompt can rearrange the cards within
     /// the `target` position.
     pub can_reorder: bool,
