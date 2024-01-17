@@ -15,7 +15,7 @@
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::{abilities, costs, text, text_helpers, this};
-use core_data::game_primitives::{CardType, GameObjectId, Rarity, School, Side};
+use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
 use game_data::card_configuration::{CardConfigBuilder, SchemePoints};
@@ -216,6 +216,33 @@ pub fn ritual_of_binding(meta: CardMetadata) -> CardDefinition {
         ],
         config: CardConfigBuilder::new()
             .scheme_points(SchemePoints { progress_requirement: 5, points: 30 })
+            .build(),
+    }
+}
+
+pub fn haunting_melody(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::HauntingMelody,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::scheme(),
+        image: assets::covenant_card(meta, "haunting_melody"),
+        card_type: CardType::Scheme,
+        subtypes: vec![CardSubtype::Dictate],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![Ability::new(text![
+            "This scheme is worth",
+            Minus(10),
+            "points when scored by the Riftcaller"
+        ])
+        .delegate(this::points_value(|g, s, _, current| {
+            current.saturating_sub(
+                if g.card(s).position() == CardPosition::Scored(Side::Riftcaller) { 10 } else { 0 },
+            )
+        }))],
+        config: CardConfigBuilder::new()
+            .scheme_points(SchemePoints { progress_requirement: meta.upgrade(5, 4), points: 30 })
             .build(),
     }
 }

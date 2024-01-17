@@ -48,6 +48,7 @@ pub enum TextToken {
     AddPowerCharges(PowerChargeValue),
     Number(u32),
     Plus(u32),
+    Minus(u32),
     EncounterBoostCost,
     EncounterBoostBonus,
     SacrificeCost,

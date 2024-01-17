@@ -70,8 +70,8 @@ use anyhow::Result;
 use core_data::game_primitives::{
     AbilityId, ActionCount, AttackValue, BreachValue, CardId, CardPlayId, CurseCount, HasAbilityId,
     HasCardId, HasRaidId, HasRoomId, HasSide, HealthValue, InitiatedBy, ManaValue,
-    MinionEncounterId, RaidId, Resonance, RoomAccessId, RoomId, ShieldValue, Side, TurnNumber,
-    WoundCount,
+    MinionEncounterId, PointsValue, RaidId, Resonance, RoomAccessId, RoomId, ShieldValue, Side,
+    TurnNumber, WoundCount,
 };
 use enum_kinds::EnumKind;
 use enumset::EnumSet;
@@ -654,6 +654,9 @@ pub enum GameDelegate {
     /// Query the current shield value of a card. Invoked with
     /// [CardStats::shield] or 0.
     ShieldValue(QueryDelegate<ShieldCardInfo, ShieldValue>),
+    /// Queries the points value of a card in a score area. Invoked with
+    /// `CardStats::scheme_points::points` or 0.
+    PointsValue(QueryDelegate<CardId, PointsValue>),
     /// Query whether a weapon has the 'slow' attribute and thus should pay
     /// double for shield costs.
     IsSlowWeapon(QueryDelegate<CardId, bool>),

@@ -222,7 +222,8 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
             }
         }
         TextToken::Number(n) => n.to_string(),
-        TextToken::Plus(n) => format!("+{n}"),
+        TextToken::Plus(n) => format!("+{}{}", icons::NON_BREAKING_SPACE, n),
+        TextToken::Minus(n) => format!("{}{}", icons::NON_BREAKING_HYPHEN, n),
         TextToken::EncounterBoostCost => {
             format!("{}{}", encounter_boost(context).map_or(0, |boost| boost.cost), icons::MANA)
         }

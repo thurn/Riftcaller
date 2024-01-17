@@ -388,6 +388,7 @@ pub enum CardName {
     EchoingValor,
     Summermorn,
     SoldierServitor,
+    HauntingMelody,
 }
 
 impl CardName {

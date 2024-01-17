@@ -13,6 +13,7 @@
 // limitations under the License.
 
 pub const NON_BREAKING_SPACE: &str = "\u{00a0}";
+pub const NON_BREAKING_HYPHEN: &str = "\u{2011}";
 pub const MANA: &str = "\u{f06d}";
 pub const CLOSE: &str = "\u{f00d}";
 pub const BACK: &str = "\u{f104}";

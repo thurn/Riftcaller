@@ -30,9 +30,9 @@ use game_data::card_configuration::{AttackBoost, CardStats, Cost, TargetRequirem
 use game_data::card_state::{CardPosition, CardState};
 use game_data::delegate_data::{
     AbilityManaCostQuery, ActionCostQuery, BaseAttackQuery, BreachValueQuery, HealthValueQuery,
-    ManaCostQuery, MaximumHandSizeQuery, RazeCostQuery, ResonanceQuery, SanctumAccessCountQuery,
-    ScoreAccessedCardCostQuery, ShieldCardInfo, ShieldValueQuery, StartOfTurnActionsQuery,
-    VaultAccessCountQuery,
+    ManaCostQuery, MaximumHandSizeQuery, PointsValueQuery, RazeCostQuery, ResonanceQuery,
+    SanctumAccessCountQuery, ScoreAccessedCardCostQuery, ShieldCardInfo, ShieldValueQuery,
+    StartOfTurnActionsQuery, VaultAccessCountQuery,
 };
 use game_data::game_actions::{CardTarget, CardTargetKind};
 use game_data::game_state::GameState;
@@ -46,11 +46,22 @@ pub fn stats(game: &GameState, card_id: CardId) -> &CardStats {
     &cards::get(game.card(card_id).variant).config.stats
 }
 
+/// Queries the number of points the `card_id` card is worth in a score area.
+///
+/// Returns 0 if this card has no associated scheme points value.
+pub fn points_value(game: &GameState, card_id: CardId) -> PointsValue {
+    let Some(scheme_points) = game.card(card_id).definition().config.stats.scheme_points else {
+        return 0;
+    };
+
+    dispatch::perform_query(game, PointsValueQuery(&card_id), scheme_points.points)
+}
+
 /// Returns the current score for the `side` player.
 pub fn score(game: &GameState, side: Side) -> PointsValue {
     // All scored cards are owned by the Covenant
     game.cards_in_position(Side::Covenant, CardPosition::Scored(side))
-        .filter_map(|c| Some(c.definition().config.stats.scheme_points?.points))
+        .map(|c| points_value(game, c.id))
         .sum::<u32>()
         + game.player(side).bonus_points
 }

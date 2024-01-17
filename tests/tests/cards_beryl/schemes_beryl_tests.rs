@@ -180,3 +180,39 @@ fn ritual_of_binding_score() {
     g.progress_room_times(5);
     assert_eq!(g.me().mana(), test_constants::STARTING_MANA + gained - requirement);
 }
+
+#[test]
+fn haunting_melody() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::HauntingMelody),
+        )
+        .build();
+    g.initiate_raid(RoomId::RoomA);
+    g.click(Button::Score);
+    assert_eq!(g.me().score(), 20);
+}
+
+#[test]
+fn haunting_melody_score_covenant() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(5).build();
+    g.create_and_play_upgraded(CardName::HauntingMelody);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    g.progress_room(test_constants::ROOM_ID);
+    assert_eq!(g.me().score(), 30);
+}
+
+#[test]
+fn haunting_melody_does_not_win_game() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).bonus_points(30))
+        .opponent(
+            TestSide::new(Side::Covenant).room_occupant(RoomId::RoomA, CardName::HauntingMelody),
+        )
+        .build();
+    g.initiate_raid(RoomId::RoomA);
+    g.click(Button::Score);
+    assert_eq!(g.me().score(), 50);
+    g.click(Button::EndRaid);
+}

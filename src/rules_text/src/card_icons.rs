@@ -96,7 +96,7 @@ pub fn build(context: &CardViewContext, revealed: bool) -> CardIcons {
         } else {
             definition.config.stats.scheme_points.map(|points| CardIcon {
                 background: Some(assets::card_icon(CardIconType::Points)),
-                text: Some(points.points.to_string()),
+                text: Some(context.query_id_or(points.points, queries::points_value).to_string()),
                 background_scale: assets::icon_background_scale(CardIconType::Points),
             })
         };
