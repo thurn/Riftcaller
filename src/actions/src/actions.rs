@@ -23,7 +23,8 @@ use dispatcher::dispatch;
 use game_data::animation_tracker::AnimationState;
 use game_data::card_state::CardPosition;
 use game_data::delegate_data::{
-    CardSelectorSubmittedEvent, DrawCardActionEvent, GainManaActionEvent, ProgressCardActionEvent,
+    CardSelectorPromptSubmitted, CardSelectorSubmittedEvent, DrawCardActionEvent,
+    GainManaActionEvent, ProgressCardActionEvent,
 };
 use game_data::game_actions::{CardTarget, GameAction, GameStateAction};
 use game_data::game_effect::GameEffect;
@@ -553,7 +554,10 @@ fn handle_card_selector_submit(
     prompts::pop(game, user_side);
 
     if let InitiatedBy::Ability(ability_id) = initiated_by {
-        dispatch::invoke_event(game, CardSelectorSubmittedEvent(&ability_id))?;
+        dispatch::invoke_event(
+            game,
+            CardSelectorSubmittedEvent(&CardSelectorPromptSubmitted { ability_id, subjects }),
+        )?;
     }
 
     check_start_next_turn(game)

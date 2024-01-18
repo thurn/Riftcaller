@@ -133,6 +133,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::foresee);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::dusks_ascension);
+    DEFINITIONS.insert(cards_beryl::rituals_beryl::foretell_fate);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::ethereal_form);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::echoing_cacophony);
     DEFINITIONS.insert(cards_beryl::schemes_beryl::solidarity);

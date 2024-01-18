@@ -437,6 +437,18 @@ pub struct ManaLostToOpponentAbility {
     pub amount: ManaValue,
 }
 
+#[derive(Debug, Clone)]
+pub struct CardSelectorPromptSubmitted {
+    pub ability_id: AbilityId,
+    pub subjects: Vec<CardId>,
+}
+
+impl HasAbilityId for CardSelectorPromptSubmitted {
+    fn ability_id(&self) -> AbilityId {
+        self.ability_id
+    }
+}
+
 /// The core of the delegate pattern, used to identify which event or which
 /// query this delegate wishes to respond to. Each enum variant here
 /// automatically gets an associated struct value generated for it by the
@@ -569,7 +581,7 @@ pub enum GameDelegate {
     /// The provided cards have been destroyed
     CardsDestroyed(EventDelegate<Vec<CardId>>),
     /// A Card Selector prompt for the provided ability has been submitted
-    CardSelectorSubmitted(EventDelegate<AbilityId>),
+    CardSelectorSubmitted(EventDelegate<CardSelectorPromptSubmitted>),
     /// An ability is about to end the current raid
     AbilityWillEndRaid(EventDelegate<RaidEvent<AbilityId>>),
 

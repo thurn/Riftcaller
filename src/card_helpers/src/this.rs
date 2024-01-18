@@ -13,14 +13,14 @@
 // limitations under the License.
 
 use core_data::game_primitives::{
-    AbilityId, AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, PointsValue, Resonance,
-    TurnNumber,
+    AttackValue, CardId, HasAbilityId, HasCardId, HealthValue, PointsValue, Resonance, TurnNumber,
 };
 use enumset::EnumSet;
 use game_data::card_configuration::Cost;
 use game_data::delegate_data::{
-    AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, DiscardedCard, EventDelegate,
-    GameDelegate, MutationFn, QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
+    AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, CardSelectorPromptSubmitted,
+    DiscardedCard, EventDelegate, GameDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
+    TransformationFn, UsedWeapon,
 };
 use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
@@ -120,7 +120,9 @@ pub fn on_scored_by_riftcaller(mutation: MutationFn<CardId>) -> GameDelegate {
 }
 
 /// A delegate which triggers when a card's CardSelector prompt is submitted.
-pub fn on_card_selector_submitted(mutation: MutationFn<AbilityId>) -> GameDelegate {
+pub fn on_card_selector_submitted(
+    mutation: MutationFn<CardSelectorPromptSubmitted>,
+) -> GameDelegate {
     GameDelegate::CardSelectorSubmitted(EventDelegate { requirement: card, mutation })
 }
 

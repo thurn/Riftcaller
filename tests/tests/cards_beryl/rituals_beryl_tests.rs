@@ -245,3 +245,44 @@ fn dusks_ascension_progress_again() {
     g.pass_turn(Side::Riftcaller);
     assert_eq!(g.me().score(), 20);
 }
+
+#[test]
+fn foretell_fate() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let scheme = g.add_to_hand(CardName::TestScheme3_10);
+    g.create_and_play(CardName::ForetellFate);
+    g.move_selector_card(scheme);
+    g.click(Button::SubmitCardSelector);
+    assert_eq!(g.client.cards.hand().len(), 1);
+}
+
+#[test]
+fn foretell_fate_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let scheme = g.add_to_hand(CardName::TestScheme3_10);
+    g.create_and_play_upgraded(CardName::ForetellFate);
+    g.move_selector_card(scheme);
+    g.click(Button::SubmitCardSelector);
+    assert_eq!(g.client.cards.hand().len(), 2);
+}
+
+#[test]
+fn foretell_fate_empty_hand() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.create_and_play_upgraded(CardName::ForetellFate);
+    // No submit button shown
+    assert!(!g.has(Button::SubmitCardSelector));
+    assert_eq!(g.client.cards.hand().len(), 0);
+}
+
+#[test]
+fn foretell_fate_5_cards() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant).hand_size(5)).build();
+    let id1 = g.client.cards.hand()[0].id();
+    let id2 = g.client.cards.hand()[1].id();
+    g.create_and_play_upgraded(CardName::ForetellFate);
+    g.move_selector_card(id1);
+    g.move_selector_card(id2);
+    g.click(Button::SubmitCardSelector);
+    assert_eq!(g.client.cards.hand().len(), 6);
+}

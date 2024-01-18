@@ -283,3 +283,40 @@ pub fn dusks_ascension(meta: CardMetadata) -> CardDefinition {
         config: CardConfigBuilder::new().custom_targeting(requirements::occupied_room()).build(),
     }
 }
+
+pub fn foretell_fate(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::ForetellFate,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::covenant_card(meta, "foretell_fate"),
+        card_type: CardType::Ritual,
+        subtypes: vec![CardSubtype::Incantation],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Common,
+        abilities: vec![Ability::new(text![
+            text!["Shuffle any number of cards from the", Sanctum, "into the", Vault],
+            text!["Draw that many cards", meta.upgrade("", "plus one")]
+        ])
+        .delegate(this::on_played(|g, s, _| {
+            prompts::push(g, Side::Covenant, s);
+            Ok(())
+        }))
+        .delegate(this::prompt(|g, s, _, _| {
+            CardSelectorPromptBuilder::new(s, SelectorPromptTarget::DeckShuffled)
+                .subjects(g.hand(Side::Covenant).card_ids())
+                .context(PromptContext::ShuffleIntoVault)
+                .build()
+        }))
+        .delegate(this::on_card_selector_submitted(|g, s, event| {
+            draw_cards::run(
+                g,
+                Side::Covenant,
+                event.subjects.len() as u32 + s.upgrade(0, 1),
+                s.initiated_by(),
+            )
+        }))],
+        config: CardConfig::default(),
+    }
+}
