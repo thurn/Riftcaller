@@ -216,3 +216,14 @@ fn haunting_melody_does_not_win_game() {
     assert_eq!(g.me().score(), 50);
     g.click(Button::EndRaid);
 }
+
+#[test]
+fn condemn_to_eternity() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .room_occupant(RoomId::RoomA, CardName::TestProject2Cost3Raze),
+        )
+        .build();
+    g.create_and_play_with_target(CardName::CondemnToEternity, RoomId::RoomA);
+}

@@ -29,7 +29,7 @@ use core_ui::design::TimedEffectDataExt;
 use game_data::card_configuration::{CardConfig, CardConfigBuilder, TargetRequirement};
 use game_data::card_name::{CardMetadata, CardName};
 use game_data::card_set_name::CardSetName;
-use game_data::card_state::CardPosition;
+use game_data::card_state::{CardIdsExt, CardPosition};
 use game_data::custom_card_state::CustomCardState;
 use game_data::delegate_data::{CardInfoElementKind, CardStatusMarker};
 use game_data::game_actions::CardTarget;
@@ -44,8 +44,9 @@ use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::mutations::RealizeCards;
 use rules::raids::custom_access;
+use rules::raids::raid_state::InitiateRaidOptions;
 use rules::visual_effects::VisualEffects;
-use rules::{curses, draw_cards, flags, mutations, prompts};
+use rules::{curses, draw_cards, flags, mana, mutations, prompts, visual_effects};
 use with_error::fail;
 
 pub fn restoration(meta: CardMetadata) -> CardDefinition {
@@ -726,5 +727,60 @@ pub fn echoing_valor(meta: CardMetadata) -> CardDefinition {
             })),
         ],
         config: CardConfigBuilder::new().custom_targeting(requirements::any_raid_target()).build(),
+    }
+}
+
+pub fn condemn_to_eternity(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::CondemnToEternity,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::riftcaller_card(meta, "condemn_to_eternity"),
+        card_type: CardType::Spell,
+        subtypes: vec![CardSubtype::Raid],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Rare,
+        abilities: vec![Ability::new(text![
+            text!["Raid target", OuterRoom],
+            meta.upgrade(
+                text![
+                    "If successful, instead of accessing cards,",
+                    "shuffle the card occupying that room into the",
+                    Vault
+                ],
+                text![
+                    "If successful, instead of accessing cards,",
+                    GainMana(3),
+                    "and shuffle the card occupying that room into the",
+                    Vault
+                ]
+            )
+        ])
+        .delegate(this::on_played(|g, s, played| {
+            raids::initiate_with_options(
+                g,
+                s,
+                played.target,
+                InitiateRaidOptions { is_card_access_prevented: true },
+            )
+        }))
+        .delegate(delegates::on_raid_successful(
+            requirements::matching_raid,
+            |g, s, event| {
+                visual_effects::show_alert(g, s);
+                if s.is_upgraded() {
+                    mana::gain(g, Side::Riftcaller, 3);
+                }
+                mutations::shuffle_into_deck(
+                    g,
+                    Side::Covenant,
+                    &g.occupants(event.target).card_ids(),
+                )
+            },
+        ))],
+        config: CardConfigBuilder::new()
+            .custom_targeting(requirements::any_outer_room_raid_target())
+            .build(),
     }
 }

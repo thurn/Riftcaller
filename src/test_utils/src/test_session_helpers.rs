@@ -114,6 +114,14 @@ pub trait TestSessionHelpers {
         room_id: RoomId,
     ) -> CardIdentifier;
 
+    /// Equivalent method to [Self::create_and_play] which creates the upgraded
+    /// version of the card.
+    fn create_and_play_upgraded_with_target(
+        &mut self,
+        card_name: CardName,
+        room_id: RoomId,
+    ) -> CardIdentifier;
+
     /// Activates an ability of a card owned by the user based on its ability
     /// index.
     fn activate_ability(&mut self, card_id: CardIdentifier, index: u32);
@@ -383,7 +391,7 @@ impl TestSessionHelpers for TestSession {
         play_impl(
             self,
             CardVariant::upgraded(card_name),
-            match cards::get(CardVariant::standard(card_name)).card_type {
+            match cards::get(CardVariant::upgraded(card_name)).card_type {
                 CardType::Minion | CardType::Project | CardType::Scheme => {
                     Some(test_constants::ROOM_ID)
                 }
@@ -398,6 +406,14 @@ impl TestSessionHelpers for TestSession {
         room_id: RoomId,
     ) -> CardIdentifier {
         play_impl(self, CardVariant::standard(card_name), Some(room_id))
+    }
+
+    fn create_and_play_upgraded_with_target(
+        &mut self,
+        card_name: CardName,
+        room_id: RoomId,
+    ) -> CardIdentifier {
+        play_impl(self, CardVariant::upgraded(card_name), Some(room_id))
     }
 
     fn activate_ability(&mut self, card_id: CardIdentifier, index: u32) {
