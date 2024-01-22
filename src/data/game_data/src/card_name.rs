@@ -391,6 +391,7 @@ pub enum CardName {
     HauntingMelody,
     ForetellFate,
     CondemnToEternity,
+    PhalanxGuardian,
 }
 
 impl CardName {

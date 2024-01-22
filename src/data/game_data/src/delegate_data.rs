@@ -547,8 +547,8 @@ pub enum GameDelegate {
     RaidSuccess(EventDelegate<RaidEvent<()>>),
     /// Stored mana is taken from a card
     StoredManaTaken(EventDelegate<CardId>),
-    /// Damage is about to be dealt to the Riftcaller player in a given amount.
-    WillDealDamage(EventDelegate<DealtDamage>),
+    /// Damage is about to be dealt to the Riftcaller player by the given Ability
+    WillDealDamage(EventDelegate<AbilityId>),
     /// Damage has been dealt to the Riftcaller player (in the form of discarded
     /// cards).
     DealtDamage(EventDelegate<DealtDamage>),

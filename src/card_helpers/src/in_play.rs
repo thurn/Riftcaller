@@ -79,7 +79,7 @@ pub fn on_progress_card_action(mutation: MutationFn<RoomId>) -> GameDelegate {
 
 /// A delegate which triggers if a card is face up in play before damage is
 /// dealt.
-pub fn on_will_deal_damage(mutation: MutationFn<DealtDamage>) -> GameDelegate {
+pub fn on_will_deal_damage(mutation: MutationFn<AbilityId>) -> GameDelegate {
     GameDelegate::WillDealDamage(EventDelegate {
         requirement: requirements::face_up_in_play,
         mutation,

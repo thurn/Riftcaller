@@ -152,8 +152,8 @@ pub fn visitation(meta: CardMetadata) -> CardDefinition {
                 cost: text![SacrificeCost],
                 effect: text!["Prevent up to", meta.upgrade(2, 5), Damage]
             }],
-            in_play::on_will_deal_damage(|g, s, damage| {
-                if damage.source.side() == Side::Covenant {
+            in_play::on_will_deal_damage(|g, s, source| {
+                if source.side() == Side::Covenant {
                     prompts::push(g, Side::Riftcaller, s);
                 }
                 Ok(())

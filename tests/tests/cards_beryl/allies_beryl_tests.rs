@@ -244,3 +244,64 @@ fn rift_adept_godmir() {
     // has not yet ended.
     assert_eq!(g.client.cards.browser().len(), 1);
 }
+
+#[test]
+fn phalanx_guardian() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5)).build();
+    g.create_and_play(CardName::PhalanxGuardian);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDeal5Damage);
+    assert_eq!(g.client.cards.hand().len(), 1);
+}
+
+#[test]
+fn phalanx_guardian_two_copies() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5)).build();
+    g.create_and_play(CardName::PhalanxGuardian);
+    g.create_and_play(CardName::PhalanxGuardian);
+    g.pass_turn(Side::Riftcaller);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
+    assert_eq!(g.client.cards.hand().len(), 5);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
+    assert_eq!(g.client.cards.hand().len(), 5);
+    g.create_and_play(CardName::TestRitualDeal1Damage);
+    assert_eq!(g.client.cards.hand().len(), 4);
+}
+
+#[test]
+fn phalanx_guardian_minion_damage() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionDealDamage),
+        )
+        .build();
+    g.create_and_play(CardName::PhalanxGuardian);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    g.click(Button::EndRaid);
+    assert_eq!(g.client.cards.hand().len(), 5);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    g.click(Button::EndRaid);
+    assert_eq!(g.client.cards.hand().len(), 4);
+}
+
+#[test]
+fn phalanx_guardian_play_after_damage() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller).hand_size(5))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::TestMinionDealDamage),
+        )
+        .build();
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    g.click(Button::EndRaid);
+    assert_eq!(g.client.cards.hand().len(), 4);
+    g.create_and_play(CardName::PhalanxGuardian);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::NoWeapon);
+    g.click(Button::EndRaid);
+    assert_eq!(g.client.cards.hand().len(), 3);
+}

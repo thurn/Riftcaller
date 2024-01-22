@@ -38,7 +38,9 @@ use game_data::text::TextToken::*;
 use game_data::utils;
 use rules::mutations::OnZeroStored;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{curses, draw_cards, mana, mutations, prompts, queries, visual_effects, wounds};
+use rules::{
+    curses, damage, draw_cards, mana, mutations, prompts, queries, visual_effects, wounds,
+};
 
 pub fn astrian_oracle(meta: CardMetadata) -> CardDefinition {
     CardDefinition {
@@ -400,6 +402,50 @@ pub fn rift_adept(meta: CardMetadata) -> CardDefinition {
                     .scale(2.0)
                     .effect_color(design::BLUE_500)
                     .sound(SoundEffect::WaterMagic("RPG3_WaterMagic3_TimeStop_Full")),
+            )
+            .build(),
+    }
+}
+
+pub fn phalanx_guardian(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::PhalanxGuardian,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(1),
+        image: assets::riftcaller_card(meta, "phalanx_guardian"),
+        card_type: CardType::Ally,
+        subtypes: vec![CardSubtype::Warrior],
+        side: Side::Riftcaller,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: vec![Ability::new(text![
+            "Prevent the first",
+            meta.upgrade(1, 2),
+            "damage you would take each turn"
+        ])
+        .delegate(in_play::on_will_deal_damage(|g, s, _| {
+            let turn = g.info.turn;
+            let Some(play_id) = g.card(s).last_card_play_id else {
+                return Ok(());
+            };
+            if utils::is_true(|| Some(damage::incoming_amount(g)? > 0))
+                && !g.card(s).custom_state.in_play_ability_triggered_for_turn(turn, play_id)
+                && history::counters(g, Side::Riftcaller).damage_received == 0
+            {
+                visual_effects::show(g, s, s.card_id(), ShowAlert::Yes);
+                g.card_mut(s)
+                    .custom_state
+                    .push(CustomCardState::InPlayAbilityTriggeredForTurn { turn, play_id });
+                damage::prevent(g, s.upgrade(1, 2));
+            }
+            Ok(())
+        }))],
+        config: CardConfigBuilder::new()
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(19))
+                    .scale(1.5)
+                    .effect_color(design::YELLOW_900)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Heal01")),
             )
             .build(),
     }
