@@ -15,12 +15,15 @@
 use card_definition_data::ability_data::{Ability, AbilityType};
 use core_data::game_primitives::{ActionCount, DamageAmount, InitiatedBy, ManaValue, Side};
 use game_data::delegate_data::RaidOutcome;
+use game_data::game_actions::ButtonPromptContext;
+use game_data::game_effect::GameEffect;
+use game_data::prompt_data::PromptChoice;
 use game_data::text::TextToken::*;
 use rules::mana::ManaPurpose;
-use rules::{damage, end_raid, mana, mutations};
+use rules::{damage, end_raid, mana, mutations, prompts};
 
 use crate::text_macro::text;
-use crate::{abilities, text_helpers, this};
+use crate::{abilities, show_prompt, text_helpers, this};
 
 /// Minion combat ability which deals damage to the Riftcaller player during
 /// combat, causing them to discard `N` random cards and lose the game if they
@@ -72,8 +75,29 @@ pub fn lose_action_points<const N: ActionCount>() -> Ability {
     Ability {
         ability_type: AbilityType::Standard,
         text: text_helpers::named_trigger(Combat, text!["Remove", Actions(1)]),
-        delegates: abilities::game(vec![this::combat(|g, _s, _| {
+        delegates: abilities::game(vec![this::combat(|g, _, _| {
             mutations::lose_action_points_if_able(g, Side::Riftcaller, N)
         })]),
     }
+}
+
+/// Minion combat ability which allows an artifact to be destroyed
+pub fn destroy_artifact() -> Ability {
+    Ability::new(text_helpers::named_trigger(Combat, text!["Destroy an artifact"]))
+        .delegate(this::combat(|g, s, _| {
+            prompts::push(g, Side::Covenant, s);
+            Ok(())
+        }))
+        .delegate(this::prompt(|g, s, _, _| {
+            show_prompt::with_context_and_choices(
+                ButtonPromptContext::Card(s.card_id()),
+                g.artifacts()
+                    .map(|card| {
+                        PromptChoice::new()
+                            .effect(GameEffect::DestroyCard(card.id, s.initiated_by()))
+                            .anchor_card(card.id)
+                    })
+                    .collect(),
+            )
+        }))
 }

@@ -501,3 +501,56 @@ pub fn soldier_servitor(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn windmare(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::Windmare,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::covenant_card(meta, "windmare"),
+        card_type: CardType::Minion,
+        subtypes: vec![CardSubtype::Beast],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new(text![
+                "The Riftcaller may",
+                PayMana(meta.upgrade(4, 6)),
+                "to defeat this minion"
+            ])
+            .delegate(this::on_encountered(|g, s, _| {
+                prompts::push(g, Side::Riftcaller, s);
+                Ok(())
+            }))
+            .delegate(this::prompt(|_, s, _, _| {
+                show_prompt::with_context_and_choices(
+                    ButtonPromptContext::Card(s.card_id()),
+                    vec![
+                        PromptChoice::new()
+                            .effect(GameEffect::DefeatCurrentMinion)
+                            .effect(GameEffect::ManaCost(
+                                Side::Riftcaller,
+                                s.upgrade(4, 6),
+                                s.initiated_by(),
+                            ))
+                            .custom_label(PromptChoiceLabel::DefeatForCost(s.upgrade(4, 6))),
+                        PromptChoice::new_continue(),
+                    ],
+                )
+            })),
+            combat_abilities::gain_mana::<2>(),
+            combat_abilities::destroy_artifact(),
+        ],
+        config: CardConfigBuilder::new()
+            .health(4)
+            .shield(2)
+            .resonance(Resonance::Astral)
+            .combat_projectile(
+                ProjectileData::new(Projectile::Projectiles2(14))
+                    .fire_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Projectiles01"))
+                    .impact_sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Impact01")),
+            )
+            .build(),
+    }
+}

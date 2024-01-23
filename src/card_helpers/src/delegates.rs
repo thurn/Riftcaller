@@ -97,6 +97,13 @@ pub fn on_minion_approached(
     GameDelegate::ApproachMinion(EventDelegate { requirement, mutation })
 }
 
+pub fn on_minion_encountered(
+    requirement: RequirementFn<CardId>,
+    mutation: MutationFn<CardId>,
+) -> GameDelegate {
+    GameDelegate::EncounterMinion(EventDelegate { requirement, mutation })
+}
+
 pub fn on_minion_defeated(
     requirement: RequirementFn<MinionDefeated>,
     mutation: MutationFn<MinionDefeated>,

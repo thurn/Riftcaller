@@ -88,6 +88,8 @@ pub enum GameEffect {
     PreventRaidCardAccess,
     /// Change the current raid target to the indicated room.
     ChangeRaidTarget(RoomId, InitiatedBy),
+    /// Defeat the minion currently being encountered during a raid.
+    DefeatCurrentMinion,
     /// Reveal the indicated card. This is an explicit game event which must use
     /// the word "reveal" in card text.
     RevealCard(CardId),

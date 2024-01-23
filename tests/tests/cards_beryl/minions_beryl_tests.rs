@@ -362,3 +362,35 @@ fn soldier_servitor_shuffle() {
     assert_eq!(g.client.cards.discard_pile().len(), 0);
     assert_eq!(g.client.cards.hand().len(), 0);
 }
+
+#[test]
+fn windmare() {
+    let mut g = TestGame::new(TestSide::new(Side::Riftcaller))
+        .opponent(
+            TestSide::new(Side::Covenant)
+                .face_up_defender(RoomId::Vault, CardName::Windmare)
+                .deck_top(CardName::TestScheme3_10),
+        )
+        .build();
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::DefeatMinion);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 4);
+    g.click(Button::Score);
+    g.click(Button::EndRaid);
+}
+
+#[test]
+fn windmare_destroy_artifact() {
+    let (summon_cost, gained) = (4, 2);
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    g.create_and_play_with_target(CardName::Windmare, RoomId::Vault);
+    g.pass_turn(Side::Covenant);
+    let artifact_id = g.create_and_play(CardName::TestChargeArtifact);
+    g.initiate_raid(RoomId::Vault);
+    g.click(Button::Summon);
+    g.opponent_click(Button::NoPromptAction);
+    g.opponent_click(Button::NoWeapon);
+    g.click_card_button(g.user_id(), artifact_id, Button::Destroy);
+    assert!(matches!(g.client.cards.get(artifact_id).position(), Position::DiscardPile(..)));
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - summon_cost + gained);
+}

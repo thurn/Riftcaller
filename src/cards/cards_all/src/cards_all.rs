@@ -116,6 +116,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::minions_beryl::aeon_swimmer);
     DEFINITIONS.insert(cards_beryl::minions_beryl::mazeshaper);
     DEFINITIONS.insert(cards_beryl::minions_beryl::soldier_servitor);
+    DEFINITIONS.insert(cards_beryl::minions_beryl::windmare);
     DEFINITIONS.insert(cards_beryl::projects_beryl::magistrates_thronehall);
     DEFINITIONS.insert(cards_beryl::projects_beryl::living_stone);
     DEFINITIONS.insert(cards_beryl::projects_beryl::sealed_necropolis);

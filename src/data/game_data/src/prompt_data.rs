@@ -200,6 +200,7 @@ pub enum PromptChoiceLabel {
     Select,
     RaidVault,
     RaidSanctum,
+    DefeatForCost(ManaValue),
 }
 
 /// A specific card choice shown in a [ButtonPrompt].

@@ -80,6 +80,11 @@ pub fn once_per_turn() -> GameDelegate {
     })
 }
 
+/// A delegate which triggers when this minion is encountered
+pub fn on_encountered(mutation: MutationFn<CardId>) -> GameDelegate {
+    delegates::on_minion_encountered(card, mutation)
+}
+
 /// A minion combat delegate
 pub fn combat(mutation: MutationFn<CardId>) -> GameDelegate {
     GameDelegate::MinionCombatAbility(EventDelegate { requirement: card, mutation })

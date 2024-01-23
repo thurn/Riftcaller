@@ -70,6 +70,7 @@ pub enum Button {
     AddPowerCharges,
     AccessVault,
     AccessSanctum,
+    DefeatMinion,
 }
 
 pub trait TestInterfaceHelpers {
@@ -302,6 +303,7 @@ fn resolve_button(button: Button) -> String {
         Button::AddPowerCharges => "Add",
         Button::AccessVault => "Access Vault",
         Button::AccessSanctum => "Access Sanctum",
+        Button::DefeatMinion => "Defeat",
     }
     .to_string()
 }

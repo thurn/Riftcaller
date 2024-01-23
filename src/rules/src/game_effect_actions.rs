@@ -127,6 +127,9 @@ pub fn handle(game: &mut GameState, effect: GameEffect) -> Result<()> {
         GameEffect::ChangeRaidTarget(room_id, _) => {
             mutations::apply_raid_jump(game, RaidJumpRequest::ChangeTarget(room_id));
         }
+        GameEffect::DefeatCurrentMinion => {
+            mutations::apply_raid_jump(game, RaidJumpRequest::DefeatCurrentMinion);
+        }
         GameEffect::PreventRaidCardAccess => {
             if let Some(raid) = game.raid.as_mut() {
                 raid.is_card_access_prevented = true;
