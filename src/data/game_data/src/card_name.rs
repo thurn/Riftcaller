@@ -393,6 +393,7 @@ pub enum CardName {
     CondemnToEternity,
     PhalanxGuardian,
     Windmare,
+    TheGrandDesign,
 }
 
 impl CardName {

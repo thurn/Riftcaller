@@ -215,6 +215,8 @@ pub fn can_take_activate_ability_action(
         can_activate &= (custom_cost.can_pay)(game, ability_id);
     }
 
+    can_activate &= cost.actions <= game.player(side).actions;
+
     if let Some(cost) = queries::ability_mana_cost(game, ability_id) {
         can_activate &= cost <= mana::get(game, side, ManaPurpose::ActivateAbility(ability_id));
     }

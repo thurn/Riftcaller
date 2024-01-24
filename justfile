@@ -3,10 +3,13 @@ set positional-arguments
 code-review: disallowed check-format build clippy test check-docs
 
 check:
+    cargo check --workspace --all-targets --all-features --exclude "protos"
+
+check-warnings:
     RUSTFLAGS="--deny warnings" cargo check --workspace --all-targets --all-features --exclude "protos"
 
 build:
-    RUSTFLAGS="--deny warnings" cargo build --all-targets --all-features
+    cargo build --all-targets --all-features
 
 run:
     cargo run --bin riftcaller -- sled local forest
@@ -15,7 +18,7 @@ run-firestore:
     cargo run --bin riftcaller -- firestore local forest
 
 test:
-    RUSTFLAGS="--deny warnings" cargo test
+    cargo test
 
 disallowed:
     ! grep -r --include '*.rs' 'ERROR_PANIC: bool = true'
@@ -270,7 +273,7 @@ watch-firestore:
 fix-amend: git-status fmt git-amend1 clippy-fix git-amend2 fix-lints git-amend3
 
 clippy:
-    RUSTFLAGS="--deny warnings" cargo clippy --workspace --exclude "protos" -- -D warnings -D clippy::all
+    cargo clippy --workspace --exclude "protos" -- -D warnings -D clippy::all
 
 clippy-fix:
     cargo clippy --fix --allow-dirty -- -D warnings -D clippy::all
@@ -281,7 +284,7 @@ fmt:
     cargo +nightly fmt
 
 check-format:
-    RUSTFLAGS="--deny warnings" cargo +nightly fmt -- --check
+    cargo +nightly fmt -- --check
 
 fix-lints:
     cargo fix --allow-dirty --all-targets
@@ -302,7 +305,7 @@ benchmark *args='':
 
 # Checks documentation lints, haven't figured out how to do this with a single command
 check-docs:
-    RUSTFLAGS="--deny warnings" RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links -D rustdoc::private-intra-doc-links -D rustdoc::bare-urls" cargo doc --all
+    RUSTDOCFLAGS="-D rustdoc::broken-intra-doc-links -D rustdoc::private-intra-doc-links -D rustdoc::bare-urls" cargo doc --all
 
 # Need to run
 # rustup target add x86_64-unknown-linux-gnu

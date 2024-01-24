@@ -21,6 +21,7 @@ pub use test_interface_helpers::{Button, TestInterfaceHelpers};
 pub use test_session_helpers::TestSessionHelpers;
 
 pub mod client_interface;
+pub mod client_positions;
 pub mod fake_database;
 pub mod summarize;
 pub mod test_adventure;

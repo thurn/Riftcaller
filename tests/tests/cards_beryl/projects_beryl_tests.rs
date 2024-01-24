@@ -17,7 +17,9 @@ use game_data::card_name::CardName;
 use protos::riftcaller::client_action::Action;
 use protos::riftcaller::DrawCardAction;
 use test_utils::test_game::{TestGame, TestSide};
-use test_utils::{test_helpers, Button, CardNamesExt, TestInterfaceHelpers, TestSessionHelpers};
+use test_utils::{
+    client_positions, test_helpers, Button, CardNamesExt, TestInterfaceHelpers, TestSessionHelpers,
+};
 
 #[test]
 fn magistrates_thronehall() {
@@ -295,4 +297,33 @@ fn haste_resonator_multiple_action_types() {
     g.gain_mana();
     g.gain_mana();
     assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn the_grand_design() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(4).build();
+    let id = g.create_and_play(CardName::TheGrandDesign);
+    g.summon_project(id);
+    g.activate_ability(id, 0);
+    assert_eq!(g.me().score(), 10);
+    assert_eq!(g.client.cards.get(id).position(), client_positions::BANISHED);
+    assert_eq!(g.me().actions(), 0);
+}
+
+#[test]
+fn the_grand_design_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).actions(4).build();
+    let id = g.create_and_play_upgraded(CardName::TheGrandDesign);
+    g.summon_project(id);
+    g.activate_ability(id, 0);
+    assert_eq!(g.me().score(), 10);
+    assert_eq!(g.me().actions(), 1);
+}
+
+#[test]
+fn the_grand_design_cannot_activate_without_actions() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let id = g.create_and_play(CardName::TheGrandDesign);
+    g.summon_project(id);
+    assert!(!g.client.cards.hand().find_ability_card(CardName::TheGrandDesign).can_play());
 }

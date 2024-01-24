@@ -208,3 +208,36 @@ pub fn haste_resonator(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn the_grand_design(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::TheGrandDesign,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(4),
+        image: assets::covenant_card(meta, "the_grand_design"),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Nightbound],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Uncommon,
+        abilities: vec![ActivatedAbility::new(
+            costs::actions(meta.upgrade(3, 2)),
+            text![text!["Score", 10, "points"], text![Banish, "this card"]],
+        )
+        .delegate(this::on_activated(|g, s, _| {
+            visual_effects::show(g, s, GameObjectId::Character(Side::Covenant), ShowAlert::No);
+            mutations::score_bonus_points(g, Side::Covenant, 10)?;
+            mutations::banish_card(g, s.card_id())
+        }))
+        .build()],
+        config: CardConfigBuilder::new()
+            .raze_cost(1)
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(21))
+                    .scale(2.0)
+                    .effect_color(design::BLUE_500)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagicEpic_Buff01")),
+            )
+            .build(),
+    }
+}
