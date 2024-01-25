@@ -58,6 +58,9 @@ pub trait TestSessionHelpers {
     /// Equivalent function to [Self::draw_card] which returns the result
     fn draw_card_with_result(&mut self) -> Result<GameResponseOutput>;
 
+    /// Causes the opponent player to take the draw_card action
+    fn opponent_draw_card(&mut self);
+
     /// Helper to perform the standard gain mana action
     fn gain_mana(&mut self);
 
@@ -285,6 +288,11 @@ impl TestSessionHelpers for TestSession {
 
     fn draw_card_with_result(&mut self) -> Result<GameResponseOutput> {
         self.perform_action(Action::DrawCard(DrawCardAction {}), self.user_id())
+    }
+
+    fn opponent_draw_card(&mut self) {
+        self.perform_action(Action::DrawCard(DrawCardAction {}), self.opponent_id())
+            .expect("Error performing opponent_draw_card action");
     }
 
     fn gain_mana(&mut self) {

@@ -15,7 +15,7 @@
 use core_data::game_primitives::{RoomId, Side};
 use game_data::card_name::CardName;
 use protos::riftcaller::client_action::Action;
-use protos::riftcaller::DrawCardAction;
+use protos::riftcaller::{DrawCardAction, MoveCardAction};
 use test_utils::test_game::{TestGame, TestSide};
 use test_utils::{
     client_positions, test_helpers, Button, CardNamesExt, TestInterfaceHelpers, TestSessionHelpers,
@@ -326,4 +326,46 @@ fn the_grand_design_cannot_activate_without_actions() {
     let id = g.create_and_play(CardName::TheGrandDesign);
     g.summon_project(id);
     assert!(!g.client.cards.hand().find_ability_card(CardName::TheGrandDesign).can_play());
+}
+
+#[test]
+fn healing_pool() {
+    let (gained, cost) = (1, 0);
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(5))
+        .build();
+    let id = g.create_and_play(CardName::HealingPool);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
+    g.summon_project(id);
+    g.click(Button::StartTurn);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA + gained - cost);
+
+    g.pass_turn(Side::Covenant);
+    g.opponent_draw_card();
+    g.move_to_end_step(Side::Riftcaller);
+    // No discard to hand size prompt shown
+    assert!(g.dusk());
+}
+
+#[test]
+fn healing_pool_upgraded() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant))
+        .opponent(TestSide::new(Side::Riftcaller).hand_size(5))
+        .build();
+    let id = g.create_and_play_upgraded(CardName::HealingPool);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
+    g.summon_project(id);
+    g.click(Button::StartTurn);
+    g.pass_turn(Side::Covenant);
+    g.opponent_draw_card();
+    let discard = g.opponent.cards.hand()[0].id();
+    g.move_to_end_step(Side::Riftcaller);
+    g.perform_action(
+        Action::MoveCard(MoveCardAction { card_id: Some(discard), index: None }),
+        g.opponent_id(),
+    )
+    .expect("Error moving card");
+    g.opponent_click(Button::SubmitDiscard);
 }

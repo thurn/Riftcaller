@@ -394,6 +394,12 @@ pub fn on_query_resonance(
     delegates::on_query_resonance(requirements::face_up_in_play, transformation)
 }
 
+/// A delegate which intercepts queries for a player's maximum hand size while
+/// its card is face up & in play.
+pub fn on_query_maximum_hand_size(transformation: TransformationFn<Side, u32>) -> GameDelegate {
+    delegates::maximum_hand_size(requirements::face_up_in_play, transformation)
+}
+
 /// A delegate which intercepts queries for a card's [CardStatusMarker]s when
 /// its card is face up & in play.
 pub fn on_query_card_status_markers(

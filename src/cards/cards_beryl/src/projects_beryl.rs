@@ -18,7 +18,9 @@ use anyhow::Result;
 use card_definition_data::ability_data::{Ability, ActivatedAbility};
 use card_definition_data::card_definition::CardDefinition;
 use card_helpers::card_selector_prompt_builder::CardSelectorPromptBuilder;
-use card_helpers::{costs, delegates, history, in_play, requirements, text, this};
+use card_helpers::{
+    abilities, costs, delegates, history, in_play, requirements, text, text_helpers, this,
+};
 use core_data::game_primitives::{CardSubtype, CardType, GameObjectId, Rarity, School, Side};
 use core_ui::design;
 use core_ui::design::TimedEffectDataExt;
@@ -33,7 +35,7 @@ use game_data::prompt_data::{CardSelectorPromptValidation, PromptContext, Select
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{damage, draw_cards, mutations, prompts, visual_effects};
+use rules::{damage, draw_cards, mana, mutations, prompts, visual_effects};
 use with_error::fail;
 
 pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
@@ -237,6 +239,47 @@ pub fn the_grand_design(meta: CardMetadata) -> CardDefinition {
                     .scale(2.0)
                     .effect_color(design::BLUE_500)
                     .sound(SoundEffect::WaterMagic("RPG3_WaterMagicEpic_Buff01")),
+            )
+            .build(),
+    }
+}
+
+pub fn healing_pool(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::HealingPool,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::covenant_card(meta, "healing_pool"),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound, CardSubtype::Arcane],
+        side: Side::Covenant,
+        school: School::Law,
+        rarity: Rarity::Uncommon,
+        abilities: abilities::some(vec![
+            Some(Ability::new(text_helpers::named_trigger(Dusk, text![GainMana(1)])).delegate(
+                this::at_dusk(|g, _, _| {
+                    mana::gain(g, Side::Covenant, 1);
+                    Ok(())
+                }),
+            )),
+            (!meta.is_upgraded).then(|| {
+                Ability::new(text!["The Riftcaller's maximum hand size is increased by", 1])
+                    .delegate(in_play::on_query_maximum_hand_size(|_, _, side, count| {
+                        count
+                            + match side {
+                                Side::Covenant => 0,
+                                Side::Riftcaller => 1,
+                            }
+                    }))
+            }),
+        ]),
+        config: CardConfigBuilder::new()
+            .raze_cost(3)
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(22))
+                    .scale(1.5)
+                    .effect_color(design::YELLOW_900)
+                    .sound(SoundEffect::LightMagic("RPG3_LightMagicEpic_Heal02")),
             )
             .build(),
     }

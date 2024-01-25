@@ -394,6 +394,7 @@ pub enum CardName {
     PhalanxGuardian,
     Windmare,
     TheGrandDesign,
+    HealingPool,
 }
 
 impl CardName {

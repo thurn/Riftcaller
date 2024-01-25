@@ -69,6 +69,13 @@ pub fn shield_value(
     GameDelegate::ShieldValue(QueryDelegate { requirement, transformation })
 }
 
+pub fn maximum_hand_size(
+    requirement: RequirementFn<Side>,
+    transformation: TransformationFn<Side, u32>,
+) -> GameDelegate {
+    GameDelegate::MaximumHandSize(QueryDelegate { requirement, transformation })
+}
+
 pub fn on_played(
     requirement: RequirementFn<CardPlayed>,
     mutation: MutationFn<CardPlayed>,

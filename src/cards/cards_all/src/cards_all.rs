@@ -122,6 +122,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::projects_beryl::sealed_necropolis);
     DEFINITIONS.insert(cards_beryl::projects_beryl::haste_resonator);
     DEFINITIONS.insert(cards_beryl::projects_beryl::the_grand_design);
+    DEFINITIONS.insert(cards_beryl::projects_beryl::healing_pool);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::illea_the_high_sage);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::strazihar_the_all_seeing);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::godmir_spark_of_defiance);
