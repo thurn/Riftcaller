@@ -199,6 +199,9 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
             format!("pay{}{}{}", icons::NON_BREAKING_SPACE, value, icons::MANA)
         }
         TextToken::ManaMinus(n) => format!("-{n}{}", icons::MANA),
+        TextToken::ManaLess(value) => {
+            format!("{}{}{}less", value, icons::MANA, icons::NON_BREAKING_SPACE)
+        }
         TextToken::ActionSymbol => icons::ACTION.to_string(),
         TextToken::Actions(n) => icons::ACTION.repeat(*n as usize),
         TextToken::PaysActions(n) => format!("pays {}", icons::ACTION.repeat(*n as usize)),

@@ -637,6 +637,10 @@ impl ClientCard {
         self.top_left_icon.clone().expect("top_left_icon")
     }
 
+    pub fn cost_icon(&self) -> String {
+        self.top_left_icon()
+    }
+
     pub fn top_right_icon(&self) -> String {
         self.top_right_icon.clone().expect("top_right_icon")
     }

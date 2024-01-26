@@ -505,8 +505,12 @@ pub fn test_0_cost_ritual(metadata: CardMetadata) -> CardDefinition {
     CardDefinition { name: CardName::Test0CostRitual, cost: cost(0), ..test_ritual(metadata) }
 }
 
-pub fn test_1_cost_riftcaller_spell(metadata: CardMetadata) -> CardDefinition {
+pub fn test_1_cost_spell(metadata: CardMetadata) -> CardDefinition {
     CardDefinition { name: CardName::Test1CostSpell, cost: cost(1), ..test_spell(metadata) }
+}
+
+pub fn test_5_cost_spell(metadata: CardMetadata) -> CardDefinition {
+    CardDefinition { name: CardName::Test5CostSpell, cost: cost(5), ..test_spell(metadata) }
 }
 
 pub fn deal_damage_end_raid(metadata: CardMetadata) -> CardDefinition {

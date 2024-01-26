@@ -336,3 +336,18 @@ fn sariandi_raid_sanctum() {
     g.click(Button::AccessSanctum);
     g.click(Button::EndRaid);
 }
+
+#[test]
+fn usria() {
+    let mut g =
+        TestGame::new(TestSide::new(Side::Riftcaller).identity(CardName::UsriaYinrelSpellseeker))
+            .build();
+    let cost_5 = g.add_to_hand(CardName::Test5CostSpell);
+    assert_eq!(g.client.cards.get(cost_5).cost_icon(), "5");
+    g.create_and_play(CardName::Test0CostSpell);
+    assert_eq!(g.client.cards.get(cost_5).cost_icon(), "3");
+    g.create_and_play(CardName::Test0CostSpell);
+    assert_eq!(g.client.cards.get(cost_5).cost_icon(), "1");
+    g.play_card(cost_5, g.user_id(), None);
+    assert_eq!(g.me().mana(), test_constants::STARTING_MANA - 1);
+}

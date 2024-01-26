@@ -133,6 +133,7 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::eria_the_ghost_of_vasilor);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::usilyna_master_artificer);
     DEFINITIONS.insert(cards_beryl::riftcallers_beryl::sariandi_phase_walker);
+    DEFINITIONS.insert(cards_beryl::riftcallers_beryl::usria_yinrel_spellseeker);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::equivalent_exchange);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::lightbond);
     DEFINITIONS.insert(cards_beryl::rituals_beryl::foresee);
@@ -205,7 +206,8 @@ pub fn initialize() {
     DEFINITIONS.insert(cards_test::test_cards::trap_project);
     DEFINITIONS.insert(cards_test::test_cards::test_0_cost_spell);
     DEFINITIONS.insert(cards_test::test_cards::test_0_cost_ritual);
-    DEFINITIONS.insert(cards_test::test_cards::test_1_cost_riftcaller_spell);
+    DEFINITIONS.insert(cards_test::test_cards::test_1_cost_spell);
+    DEFINITIONS.insert(cards_test::test_cards::test_5_cost_spell);
     DEFINITIONS.insert(cards_test::test_cards::deal_damage_end_raid);
     DEFINITIONS.insert(cards_test::test_cards::test_attack_weapon);
     DEFINITIONS.insert(cards_test::test_cards::test_sacrifice_draw_card_artifact);

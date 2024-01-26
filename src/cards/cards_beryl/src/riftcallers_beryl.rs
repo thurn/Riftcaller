@@ -587,3 +587,38 @@ pub fn sariandi_phase_walker(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn usria_yinrel_spellseeker(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::UsriaYinrelSpellseeker,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::identity(),
+        image: assets::riftcaller_card(meta, "Riptaid/usria"),
+        card_type: CardType::Riftcaller,
+        subtypes: vec![],
+        side: Side::Riftcaller,
+        school: School::Beyond,
+        rarity: Rarity::Identity,
+        abilities: vec![Ability::new(text!["Spells cost you", ManaLess(2), "for each other spell played this turn"])
+            .delegate(in_play::on_query_mana_cost(|g, s, card_id, cost| {
+                cost.map(|cost|
+                    if s.side() == Side::Riftcaller && g.card(*card_id).definition().is_spell() {
+                        cost.saturating_sub(2 * history::cards_played_this_turn(g)
+                            .filter(|id| g.card(*id).definition().is_spell()).count() as u32)
+                    } else {
+                        cost
+                    }
+                )
+        }))],
+        config: CardConfigBuilder::new()
+            .identity(IdentityConfig {
+                starting_coins: Coins(525),
+                secondary_schools: vec![School::Pact],
+                skills: vec![Skill::Lore, Skill::Persuasion],
+                bio: "Usria's quest began in the mystical shadows of the Seban Empire's jungles. Driven by an \
+                insatiable thirst for arcane secrets, her path is lit by the glow of forbidden spells, each \
+                incantation a key unlocking the universe's hidden doors.",
+            })
+            .build(),
+    }
+}

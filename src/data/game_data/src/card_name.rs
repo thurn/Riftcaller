@@ -198,6 +198,8 @@ pub enum CardName {
     Test0CostRitual,
     /// Riftcaller spell with a mana cost of 1
     Test1CostSpell,
+    /// Riftcaller spell with a mana cost of 5
+    Test5CostSpell,
     TestMinionDealDamageEndRaid,
     TestAttackWeapon,
     TestSacrificeDrawCardArtifact,
@@ -395,6 +397,7 @@ pub enum CardName {
     Windmare,
     TheGrandDesign,
     HealingPool,
+    UsriaYinrelSpellseeker,
 }
 
 impl CardName {
@@ -422,6 +425,7 @@ impl CardName {
             Self::AmarasDecree => "Amara's Decree",
             Self::DusksAscension => "Dusk's Ascension",
             Self::SariandiPhaseWalker => "Sariandi, Phase Walker",
+            Self::UsriaYinrelSpellseeker => "Usria Yinrel, Spellseeker",
             _ => "",
         };
 
