@@ -398,6 +398,7 @@ pub enum CardName {
     TheGrandDesign,
     HealingPool,
     UsriaYinrelSpellseeker,
+    PhasewarpPortal,
 }
 
 impl CardName {

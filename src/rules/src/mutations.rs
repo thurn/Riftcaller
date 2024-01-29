@@ -567,12 +567,13 @@ pub fn start_turn(game: &mut GameState, next_side: Side, turn_number: TurnNumber
     debug!(?next_side, "Starting player turn");
     game.add_animation(|| GameAnimation::StartTurn(next_side));
 
+    game.player_mut(next_side).actions = queries::start_of_turn_action_count(game, next_side);
+
     if next_side == Side::Covenant {
         dispatch::invoke_event(game, DuskEvent(&turn_number))?;
     } else {
         dispatch::invoke_event(game, DawnEvent(&turn_number))?;
     }
-    game.player_mut(next_side).actions = queries::start_of_turn_action_count(game, next_side);
 
     if next_side == Side::Covenant {
         draw_cards::run(game, next_side, 1, InitiatedBy::GameAction)?;

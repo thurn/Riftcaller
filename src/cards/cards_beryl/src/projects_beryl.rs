@@ -284,3 +284,41 @@ pub fn healing_pool(meta: CardMetadata) -> CardDefinition {
             .build(),
     }
 }
+
+pub fn phasewarp_portal(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::PhasewarpPortal,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(3),
+        image: assets::covenant_card(meta, "phasewarp_portal"),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Duskbound],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            Ability::new(text_helpers::named_trigger(Dusk, text![GainActions(1)])).delegate(
+                in_play::at_dusk(|g, _, _| mutations::gain_action_points(g, Side::Covenant, 1)),
+            ),
+            Ability::new(text![
+                "When the Riftcaller uses the",
+                RazeAbility,
+                "of this card, they score",
+                meta.upgrade(20, 10),
+                "points"
+            ])
+            .delegate(this::on_razed(|g, s, _| {
+                mutations::score_bonus_points(g, Side::Riftcaller, s.upgrade(20, 10))
+            })),
+        ],
+        config: CardConfigBuilder::new()
+            .raze_cost(5)
+            .visual_effect(
+                TimedEffectData::new(TimedEffect::MagicCircles2(23))
+                    .scale(1.5)
+                    .effect_color(design::BLUE_500)
+                    .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Buff03")),
+            )
+            .build(),
+    }
+}

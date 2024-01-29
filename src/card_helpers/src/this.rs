@@ -18,9 +18,9 @@ use core_data::game_primitives::{
 use enumset::EnumSet;
 use game_data::card_configuration::Cost;
 use game_data::delegate_data::{
-    AbilityActivated, CanActivateAbility, CardEncounter, CardPlayed, CardSelectorPromptSubmitted,
-    DiscardedCard, EventDelegate, GameDelegate, MutationFn, QueryDelegate, RaidEvent, Scope,
-    TransformationFn, UsedWeapon,
+    AbilityActivated, AccessEvent, CanActivateAbility, CardEncounter, CardPlayed,
+    CardSelectorPromptSubmitted, DiscardedCard, EventDelegate, GameDelegate, MutationFn,
+    QueryDelegate, RaidEvent, Scope, TransformationFn, UsedWeapon,
 };
 use game_data::flag_data::Flag;
 use game_data::game_state::GameState;
@@ -114,17 +114,22 @@ pub fn on_weapon_used(mutation: MutationFn<RaidEvent<UsedWeapon>>) -> GameDelega
     })
 }
 
-/// A delegate which triggers when a card is scored by the Covenant player
+/// A delegate which triggers when its card is scored by the Covenant player
 pub fn on_scored_by_covenant(mutation: MutationFn<CardId>) -> GameDelegate {
     GameDelegate::CovenantScoreCard(EventDelegate { requirement: card, mutation })
 }
 
-/// A delegate which triggers when a card is scored by the Riftcaller player
+/// A delegate which triggers when its card is scored by the Riftcaller player
 pub fn on_scored_by_riftcaller(mutation: MutationFn<CardId>) -> GameDelegate {
     GameDelegate::RiftcallerScoreCard(EventDelegate { requirement: card, mutation })
 }
 
-/// A delegate which triggers when a card's CardSelector prompt is submitted.
+/// A delegate which triggers when its card is razed
+pub fn on_razed(mutation: MutationFn<AccessEvent<CardId>>) -> GameDelegate {
+    delegates::on_card_razed(card, mutation)
+}
+
+/// A delegate which triggers when its card's CardSelector prompt is submitted.
 pub fn on_card_selector_submitted(
     mutation: MutationFn<CardSelectorPromptSubmitted>,
 ) -> GameDelegate {

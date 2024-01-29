@@ -369,3 +369,19 @@ fn healing_pool_upgraded() {
     .expect("Error moving card");
     g.opponent_click(Button::SubmitDiscard);
 }
+
+#[test]
+fn phasewarp_portal() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let id = g.create_and_play_with_target(CardName::PhasewarpPortal, RoomId::RoomA);
+    g.pass_turn(Side::Covenant);
+    g.move_to_end_step(Side::Riftcaller);
+    g.summon_project(id);
+    g.click(Button::StartTurn);
+    assert_eq!(g.me().actions(), 4);
+    g.pass_turn(Side::Covenant);
+    g.initiate_raid(RoomId::RoomA);
+    g.opponent_click(Button::Destroy);
+    g.opponent_click(Button::EndRaid);
+    assert_eq!(g.client.other_player.score(), 20);
+}

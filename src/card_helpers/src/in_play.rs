@@ -276,7 +276,7 @@ pub fn on_card_scored(mutation: MutationFn<ScoreCard>) -> GameDelegate {
 /// A delegate which fires when its card is face up & in play when a card is
 /// razed
 pub fn on_card_razed(mutation: MutationFn<AccessEvent<CardId>>) -> GameDelegate {
-    GameDelegate::RazeCard(EventDelegate { requirement: requirements::face_up_in_play, mutation })
+    delegates::on_card_razed(requirements::face_up_in_play, mutation)
 }
 
 /// A delegate which fires when its card is face up & in play when a card is
