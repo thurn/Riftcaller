@@ -224,6 +224,13 @@ fn process_token(context: &CardViewContext, token: &TextToken) -> String {
                 format!("add{}{}{}", icons::NON_BREAKING_SPACE, n, icons::POWER_CHARGE)
             }
         }
+        TextToken::ProgressCounters(n) => {
+            if *n == 1 {
+                "progress counter".to_string()
+            } else {
+                format!("{n} progress counters")
+            }
+        }
         TextToken::Number(n) => n.to_string(),
         TextToken::Plus(n) => format!("+{}{}", icons::NON_BREAKING_SPACE, n),
         TextToken::Minus(n) => format!("{}{}", icons::NON_BREAKING_HYPHEN, n),

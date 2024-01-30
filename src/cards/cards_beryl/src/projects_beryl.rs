@@ -35,7 +35,7 @@ use game_data::prompt_data::{CardSelectorPromptValidation, PromptContext, Select
 use game_data::special_effects::{SoundEffect, TimedEffect, TimedEffectData};
 use game_data::text::TextToken::*;
 use rules::visual_effects::{ShowAlert, VisualEffects};
-use rules::{damage, draw_cards, mana, mutations, prompts, visual_effects};
+use rules::{curses, damage, draw_cards, mana, mutations, prompts, visual_effects};
 use with_error::fail;
 
 pub fn magistrates_thronehall(meta: CardMetadata) -> CardDefinition {
@@ -320,5 +320,29 @@ pub fn phasewarp_portal(meta: CardMetadata) -> CardDefinition {
                     .sound(SoundEffect::WaterMagic("RPG3_WaterMagic_Buff03")),
             )
             .build(),
+    }
+}
+
+pub fn delirium_engine(meta: CardMetadata) -> CardDefinition {
+    CardDefinition {
+        name: CardName::DeliriumEngine,
+        sets: vec![CardSetName::Beryl],
+        cost: costs::mana(0),
+        image: assets::covenant_card(meta, "delirium_engine"),
+        card_type: CardType::Project,
+        subtypes: vec![CardSubtype::Nightbound],
+        side: Side::Covenant,
+        school: School::Beyond,
+        rarity: Rarity::Rare,
+        abilities: vec![
+            abilities::can_progress(),
+            ActivatedAbility::new(
+                costs::progress_counters::<2>(),
+                text!["Give the Riftcaller a", Curse],
+            )
+            .delegate(this::on_activated(|g, s, _| curses::give_curses(g, s, 1)))
+            .build(),
+        ],
+        config: CardConfigBuilder::new().raze_cost(meta.upgrade(1, 3)).build(),
     }
 }

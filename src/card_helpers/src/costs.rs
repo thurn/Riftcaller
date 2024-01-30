@@ -102,6 +102,20 @@ pub fn power_charges_custom_cost<const N: u32>() -> Option<CustomCost<AbilityId>
     })
 }
 
+/// Cost for an ability which costs progress counters to use.
+pub fn progress_counters<const N: u32>() -> Cost<AbilityId> {
+    Cost { mana: None, actions: 0, custom_cost: progress_counters_custom_cost::<N>() }
+}
+
+/// A [CustomCost] for an ability which costs progress counters to use.
+pub fn progress_counters_custom_cost<const N: u32>() -> Option<CustomCost<AbilityId>> {
+    Some(CustomCost {
+        can_pay: |g, id| g.card(id.card_id).counters(CardCounter::Progress) >= N,
+        pay: |g, id| g.card_mut(id.card_id).remove_counters_or_error(CardCounter::Progress, N),
+        description: Some(TextElement::Token(TextToken::ProgressCounters(N))),
+    })
+}
+
 /// A [CustomCost] which allows an ability to be activated once per turn.
 pub fn once_per_turn() -> Option<CustomCost<AbilityId>> {
     Some(CustomCost {

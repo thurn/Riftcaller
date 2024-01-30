@@ -30,6 +30,8 @@ use crate::custom_card_state::CustomCardStateList;
 use crate::game_actions::CardTarget;
 #[allow(unused_imports)] // Used in Rustdocs
 use crate::history_data::HistoryEvent;
+use anyhow::Result;
+use with_error::verify;
 
 #[derive(PartialEq, Eq, Hash, Debug, Copy, Clone, Serialize, Deserialize, Ord, PartialOrd)]
 pub struct BanishedByCard {
@@ -339,6 +341,13 @@ impl CardState {
     /// Removes *up to* `amount` [CardCounter]s from this card
     pub fn remove_counters_saturating(&mut self, counter: CardCounter, amount: u32) {
         *self.counters_mut(counter) = self.counters(counter).saturating_sub(amount);
+    }
+
+    /// Removes `amount` [CardCounter]s from this card, returning an error if insufficient counters are present.
+    pub fn remove_counters_or_error(&mut self, counter: CardCounter, amount: u32) -> Result<()> {
+        verify!(self.counters(counter) >= amount, "Insufficient counters available");
+        self.remove_counters_saturating(counter, amount);
+        Ok(())
     }
 
     /// Sets the current `amount` of [CardCounter]s on this card

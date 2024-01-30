@@ -385,3 +385,14 @@ fn phasewarp_portal() {
     g.opponent_click(Button::EndRaid);
     assert_eq!(g.client.other_player.score(), 20);
 }
+
+#[test]
+fn delirium_engine() {
+    let mut g = TestGame::new(TestSide::new(Side::Covenant)).build();
+    let id = g.create_and_play_with_target(CardName::DeliriumEngine, RoomId::RoomC);
+    g.progress_room(RoomId::RoomC);
+    g.progress_room(RoomId::RoomC);
+    g.summon_project(id);
+    g.activate_ability(id, 1);
+    assert_eq!(g.client.cards.opponent_hand().curse_count(), 1);
+}

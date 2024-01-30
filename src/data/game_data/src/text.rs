@@ -47,6 +47,7 @@ pub enum TextToken {
     PowerChargeSymbol,
     PowerCharges(PowerChargeValue),
     AddPowerCharges(PowerChargeValue),
+    ProgressCounters(u32),
     Number(u32),
     Plus(u32),
     Minus(u32),

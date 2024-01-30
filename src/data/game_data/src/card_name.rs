@@ -399,6 +399,7 @@ pub enum CardName {
     HealingPool,
     UsriaYinrelSpellseeker,
     PhasewarpPortal,
+    DeliriumEngine,
 }
 
 impl CardName {
